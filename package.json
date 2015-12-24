@@ -1,0 +1,12 @@
+{
+  "name": "cloudbudget",
+  "version": "0.0.1",
+  "description": "CloudBudget",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test"
+  },
+  "author": "Matthew Jacobs",
+  "license": "ISC",
+  "homepage": "https://bitbucket.org/mattjdev/cloudbudget#readme"
+}
