@@ -40,15 +40,16 @@ transactionSchema.post('remove', function removeTransactionIdFromAccount(transac
   });
 });
 
-const Transaction = mongoose.model('Transaction', transactionSchema);
-
-Transaction.schema.path('account').validate((value, next) => {
-  Account.findById(value, (err, account) => {
+transactionSchema.path('account').validate(function validateTransactionAccount(value, next) {
+  const transaction = this;
+  Account.findOne({ _id: value, user: transaction.user }, (err, account) => {
+    console.log(account);
     if (!account) {
-      return next(false);
+      return next(false, 'Account does not exist.');
     }
     return next(true);
   });
-}, 'Account does not exist.');
+});
 
+const Transaction = mongoose.model('Transaction', transactionSchema);
 export default Transaction;
