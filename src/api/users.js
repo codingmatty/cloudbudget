@@ -5,7 +5,7 @@ import { User } from '../db';
 import passport from 'passport';
 // import { BasicStrategy } from 'passport-http';
 import { Strategy } from 'passport-local';
-import { handleError, getInclusions, authenticate } from './index';
+import { handleError, authenticate } from './index';
 
 const api = new Router();
 

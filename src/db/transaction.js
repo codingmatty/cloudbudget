@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import mongoose, { Schema } from 'mongoose';
 import Account from './account';
 

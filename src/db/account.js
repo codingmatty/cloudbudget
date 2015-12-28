@@ -1,4 +1,3 @@
-import { inspect } from 'util';
 import mongoose, { Schema } from 'mongoose';
 import Transaction from './transaction';
 
@@ -20,19 +19,6 @@ const accountSchema = new Schema({
   }
 });
 
-// accountSchema.virtual('balance').get(function getBalance(...args) {
-//   const account = this;
-//   let balance = 0;
-//   console.log(inspect(args));
-//   Transaction.find({ _id: { $in: account.transactions } }, (err, transactions) => {
-//     console.log(err, transactions);
-//     balance = transactions.reduce((sum, transaction) => {
-//       console.log(transaction);
-//       return sum + transaction.amount;
-//     }, 0);
-//     return balance;
-//   });
-// });
 accountSchema.methods.getBalance = function getBalance(cb) {
   const account = this;
   let balance = 0;
