@@ -2,7 +2,7 @@ import _ from 'lodash';
 // import passport from 'passport';
 import { Router } from 'express';
 import * as db from '../db';
-import { handleError, authenticate } from './index';
+import { handleError, getInclusions, authenticate } from './index';
 
 export default function (model, shouldAuthenticate, actions = ['list', 'create', 'show', 'update', 'delete']) {
   const Model = db[model];
@@ -24,7 +24,7 @@ export default function (model, shouldAuthenticate, actions = ['list', 'create',
       case 'list':
         // GET - List
         api.get('/', (req, res) => {
-          Model.find(addUserToParams({}, req.user.id), (err, docs) => {
+          Model.find(addUserToParams({}, req.user.id)).populate(getInclusions(req)).exec((err, docs) => {
             if (err) {
               handleError(err, res, 'list', model);
             } else {
@@ -53,7 +53,7 @@ export default function (model, shouldAuthenticate, actions = ['list', 'create',
         // GET - Show
         api.get('/:id', (req, res) => {
           const query = addUserToParams({ _id: req.params.id }, req.user.id);
-          Model.findOne(query, (err, doc) => {
+          Model.findOne(query).populate(getInclusions(req)).exec((err, doc) => {
             if (err) {
               handleError(err, res, 'show', model);
             } else {

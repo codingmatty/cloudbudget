@@ -24,6 +24,10 @@ export function handleError(err, res, method, model) {
   });
 }
 
+export function getInclusions(req) {
+  return Array.isArray(req.query.include) ? req.query.include.join(' ') : req.query.include || '';
+}
+
 export function authenticate(req, res, next) {
   if (!req.isAuthenticated || !req.isAuthenticated()) {
     res.status(401).send({

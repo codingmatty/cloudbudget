@@ -22,6 +22,7 @@
   "dependencies": {
     "async": "^1.5.0",
     "babel": "^5.8.21",
+    "bcrypt": "^0.8.5",
     "body-parser": "^1.14.2",
     "compression": "^1.5.2",
     "connect-mongo": "^1.1.0",
@@ -30,6 +31,7 @@
     "express": "^4.13.3",
     "express-session": "^1.12.1",
     "inflection": "^1.8.0",
+    "is_js": "^0.7.4",
     "lodash": "^3.10.1",
     "mongo-store": "0.0.2",
     "mongoose": "^4.3.4",
