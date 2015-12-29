@@ -10,7 +10,10 @@
     "lint": "eslint src",
     "prestart": "npm run build",
     "start": "node ./lib/app",
-    "test": "node test"
+    "test": "node test",
+    "preversion": "npm test",
+    "version": "babel src -d dist && git add -A dist",
+    "postversion": "git push --tags && rm -rf dist"
   },
   "repository": {
     "type": "git",
