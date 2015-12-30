@@ -3,6 +3,9 @@ import inflection from 'inflection';
 import users from './users';
 import accounts from './accounts';
 import transactions from './transactions';
+import jwt from 'jsonwebtoken';
+import { Types } from 'mongoose';
+import { User } from '../db';
 
 const api = new Router();
 
@@ -29,7 +32,7 @@ export function handleError(err, res, method, model) {
   } else if (err.code === 11000) {
     const errmsgRegex = /index: (\S+\$)?([\w\d]+)_.* dup key: { : \\?\"(\S+)\\?\" }$/;
     if (errmsgRegex.test(err.errmsg)) {
-      const [,, field, value] = errmsgRegex.exec(err.errmsg);
+      const [, , field, value] = errmsgRegex.exec(err.errmsg);
       errorObj = {
         [field]: `${field} '${value}' already exists.`
       };
@@ -46,13 +49,34 @@ export function getInclusions(req) {
 }
 
 export function authenticate(req, res, next) {
-  if (!req.isAuthenticated || !req.isAuthenticated()) {
-    res.status(401).send({
-      message: 'Unauthorized Action'
+  const token = req.body.token || req.query.token || req.headers['x-access-token'];
+
+  if (!token) {
+    return res.status(401).send({
+      message: 'Unauthorized Action! No Token Provided.'
     });
-  } else {
-    next();
   }
+  function failedToAuthenticate(tokenExpired) {
+    res.status(401).send({
+      message: tokenExpired ? 'Token Expired' : 'Failed to authenticate token.'
+    });
+  }
+  const userId = jwt.decode(token).id;
+  if (!userId || !Types.ObjectId.isValid(userId)) {
+    return failedToAuthenticate();
+  }
+  User.findById(userId, (queryErr, user) => {
+    if (queryErr) {
+      return failedToAuthenticate();
+    }
+    jwt.verify(token, user.key, (err, decodedUser) => {
+      if (err || userId !== decodedUser.id) {
+        return failedToAuthenticate(err.name === 'TokenExpiredError');
+      }
+      req.user = decodedUser;
+      next();
+    });
+  });
 }
 
 export default api;

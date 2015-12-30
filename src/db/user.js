@@ -9,7 +9,8 @@ const userSchema = new Schema({
       validator: (value) => {return is.email(value);},
       message: '{VALUE} is not a valid email address.'
     }
-  }
+  },
+  key: { type: String }
 }, {
   toJSON: {
     getters: true,
@@ -18,6 +19,7 @@ const userSchema = new Schema({
       delete ret._id;
       delete ret.__v;
       delete ret.password;
+      delete ret.key;
     }
   }
 });

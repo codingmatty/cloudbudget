@@ -6,10 +6,8 @@ import logger from 'morgan';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 import session from 'express-session';
-import passport from 'passport';
 import connectMongo from 'connect-mongo';
 import api from './api';
-import db from './db';
 import config from '../config.json';
 
 const MongoStore = connectMongo(session);
@@ -36,8 +34,6 @@ app.use(session({
     ttl: 7 * 24 * 60 * 60 // 1 week
   })
 }));
-app.use(passport.initialize());
-app.use(passport.session());
 
 app.use('/api/v1', api);
 
