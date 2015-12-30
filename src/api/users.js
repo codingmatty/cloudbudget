@@ -3,22 +3,11 @@ import { Router } from 'express';
 import bcrypt from 'bcrypt';
 import { User } from '../db';
 import passport from 'passport';
-// import { BasicStrategy } from 'passport-http';
 import { Strategy } from 'passport-local';
 import { handleError, authenticate } from './index';
 
 const api = new Router();
 
-// passport.use(new BasicStrategy(
-//   (username, password, done) => {
-//     User.findOne({ username }, (err, user) => {
-//       if (err) { return done(err); }
-//       if (!user) { return done(null, false); }
-//       // if (user.password !== password) { return done(null, false); }
-//       return done(null, user);
-//     });
-//   }
-// ));
 passport.use(new Strategy(
   (username, password, done) => {
     User.findOne({ username }, (err, user) => {

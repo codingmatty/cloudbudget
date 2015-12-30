@@ -5,8 +5,8 @@ const accountSchema = new Schema({
   name: { type: String, required: true },
   accountType: { type: String, enum: ['savings', 'checking', 'credit_card', 'loan', 'investment'], default: 'savings' },
   budget: { type: Boolean, required: true },
+  accountGroup: { type: String, required: true },
   user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-  accountGroup: { type: Schema.Types.ObjectId, ref: 'AccountGroup' /* , required: true */ },
   transactions: [{ type: Schema.Types.ObjectId, ref: 'Transaction' }]
 }, {
   toJSON: {
