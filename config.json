@@ -1,0 +1,11 @@
+{
+  "development": {
+    "db": "mongodb://localhost:27017/cloudbudget_development"
+  },
+  "test": {
+    "db": "mongodb://localhost:27017/cloudbudget_test"
+  },
+  "production": {
+    "db": "mongodb://localhost:27017/cloudbudget"
+  }
+}

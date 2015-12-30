@@ -8,7 +8,7 @@ const api = new Router();
 
 // perhaps expose some API metadata at the root
 api.get('/', (req, res) => {
-  res.json({
+  res.status(200).send({
     version: '0.0.2'
   });
 });
@@ -18,9 +18,24 @@ api.use('/accounts', accounts);
 api.use('/transactions', transactions);
 
 export function handleError(err, res, method, model) {
+  let errorObj = err;
+  if (err.errors) {
+    errorObj = {};
+    for (const singleErrKey in err.errors) {
+      if (err.errors.hasOwnProperty(singleErrKey)) {
+        errorObj[singleErrKey] = err.errors[singleErrKey].message;
+      }
+    }
+  } else if (err.code === 11000) {
+    const errmsgRegex = /index: ([\w\d]+)_.*dup key: { : \"(.+)\" }/;
+    const [, field, value] = errmsgRegex.exec(err.errmsg);
+    errorObj = {
+      [field]: `${field} '${value}' already exists.`
+    };
+  }
   res.status(400).send({
-    error: `Unable to ${method} ${method === 'list' ? inflection.pluralize(model) : model}`,
-    msg: err
+    message: `Error! Unable to ${method} ${method === 'list' ? inflection.pluralize(model) : model}`,
+    error: errorObj
   });
 }
 
@@ -31,10 +46,11 @@ export function getInclusions(req) {
 export function authenticate(req, res, next) {
   if (!req.isAuthenticated || !req.isAuthenticated()) {
     res.status(401).send({
-      msg: 'Unauthorized Action'
+      message: 'Unauthorized Action'
     });
+  } else {
+    next();
   }
-  next();
 }
 
 export default api;

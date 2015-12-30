@@ -42,7 +42,6 @@ transactionSchema.post('remove', function removeTransactionIdFromAccount(transac
 transactionSchema.path('account').validate(function validateTransactionAccount(value, next) {
   const transaction = this;
   Account.findOne({ _id: value, user: transaction.user }, (err, account) => {
-    console.log(account);
     if (!account) {
       return next(false, 'Account does not exist.');
     }

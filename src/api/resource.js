@@ -117,7 +117,7 @@ export default function (model, shouldAuthenticate, actions = ['list', 'create',
         // POST - Create
         createMethod(api, model, shouldAuthenticate, (req, res, doc) => {
           res.status(201).send({
-            msg: `Success! ${model} created`,
+            message: `Success! ${model} created`,
             data: doc
           });
         });
@@ -132,7 +132,7 @@ export default function (model, shouldAuthenticate, actions = ['list', 'create',
         // PUT - Update
         updateMethod(api, model, shouldAuthenticate, (req, res, doc) => {
           res.status(200).send({
-            msg: `Success! ${model} updated`,
+            message: `Success! ${model} updated`,
             data: doc
           });
         });
@@ -141,7 +141,7 @@ export default function (model, shouldAuthenticate, actions = ['list', 'create',
         // DELETE - Delete
         deleteMethod(api, model, shouldAuthenticate, (req, res, doc) => {
           res.status(200).send({
-            msg: `Success! ${model} deleted.`,
+            message: `Success! ${model} deleted.`,
             data: doc
           });
         });

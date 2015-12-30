@@ -13,9 +13,7 @@ passport.use(new Strategy(
     User.findOne({ username }, (err, user) => {
       if (err) { return done(err); }
       if (!user) { return done(null, false); }
-      console.log(password, user.password);
       bcrypt.compare(password, user.password, (hashErr, res) => {
-        console.log(res);
         if (res) {
           return done(null, user);
         }
@@ -43,7 +41,7 @@ api.post('/register', (req, res) => {
         handleError(err, res, 'create', 'User');
       } else {
         res.status(201).send({
-          msg: `Success! User created`,
+          message: `Success! User created`,
           data: user
         });
       }
@@ -60,7 +58,7 @@ api.put('/:id', (req, res) => {
       handleError(err, res, 'update', 'User');
     } else {
       res.status(200).send({
-        msg: `Success! User updated`,
+        message: `Success! User updated`,
         data: user
       });
     }
@@ -69,19 +67,19 @@ api.put('/:id', (req, res) => {
 
 api.get('/current', (req, res) => {
   if (req.user) {
-    res.json({ user: req.user });
+    res.status(200).send({ data: req.user });
   } else {
-    res.json({ msg: 'No User Logged In.' });
+    res.status(400).send({ message: 'No User Logged In.' });
   }
 });
 
 api.post('/login', passport.authenticate('local'), (req, res) => {
-  res.json({ msg: 'Login Succeeded!', user: req.user });
+  res.status(200).send({ message: 'Login Succeeded!', data: req.user });
 });
 
 api.get('/logout', authenticate, (req, res) => {
   req.logout();
-  res.json({ msg: 'Logout Succeeded!' });
+  res.status(200).send({ message: 'Logout Succeeded!' });
 });
 
 export default api;

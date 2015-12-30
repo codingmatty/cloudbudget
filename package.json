@@ -10,7 +10,7 @@
     "lint": "eslint src",
     "prestart": "npm run build",
     "start": "node ./lib/app",
-    "test": "node test",
+    "test": "NODE_ENV=test mocha --compilers js:babel-register",
     "preversion": "npm test",
     "version": "babel src -d dist && git add -A dist",
     "postversion": "git push --tags && rm -rf dist"
@@ -46,8 +46,11 @@
     "babel-cli": "^6.3.17",
     "babel-eslint": "^4.1.6",
     "babel-preset-es2015": "^6.3.13",
+    "babel-register": "^6.3.13",
     "eslint": "^1.10.3",
     "eslint-config-airbnb": "^2.1.1",
-    "source-map-support": "^0.4.0"
+    "mocha": "^2.3.4",
+    "source-map-support": "^0.4.0",
+    "supertest": "^1.1.0"
   }
 }

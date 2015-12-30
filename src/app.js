@@ -9,6 +9,8 @@ import session from 'express-session';
 import passport from 'passport';
 import connectMongo from 'connect-mongo';
 import api from './api';
+import db from './db';
+import config from '../config.json';
 
 const MongoStore = connectMongo(session);
 const app = express();
@@ -17,7 +19,9 @@ const app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-app.use(logger('dev'));
+if (process.env.NODE_ENV !== 'test') {
+  app.use(logger('dev'));
+}
 // app.use(favicon(__dirname + '/public/favicon.ico'));
 // app.use(express.static('public'));
 app.use(bodyParser.json());
@@ -28,7 +32,7 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   store: new MongoStore({
-    url: 'mongodb://localhost/cloudbudget_dev',
+    url: config[process.env.NODE_ENV].db,
     ttl: 7 * 24 * 60 * 60 // 1 week
   })
 }));
@@ -54,9 +58,14 @@ app.use((err, req, res) => {
   });
 });
 
-const port = process.env.PORT || 8080;
-const server = app.listen(port, () => {
-  const host = server.address().address;
+if (process.env.NODE_ENV !== 'test') {
 
-  console.log('Example app listening at %s:%s', host, port);
-});
+  const port = process.env.PORT || 8080;
+  const server = app.listen(port, () => {
+    const host = server.address().address;
+
+    console.log('Example app listening at %s:%s', host, port);
+  });
+}
+
+export default app;
