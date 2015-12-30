@@ -27,11 +27,13 @@ export function handleError(err, res, method, model) {
       }
     }
   } else if (err.code === 11000) {
-    const errmsgRegex = /index: ([\w\d]+)_.*dup key: { : \"(.+)\" }/;
-    const [, field, value] = errmsgRegex.exec(err.errmsg);
-    errorObj = {
-      [field]: `${field} '${value}' already exists.`
-    };
+    const errmsgRegex = /index: (\S+\$)?([\w\d]+)_.* dup key: { : \\?\"(\S+)\\?\" }$/;
+    if (errmsgRegex.test(err.errmsg)) {
+      const [,, field, value] = errmsgRegex.exec(err.errmsg);
+      errorObj = {
+        [field]: `${field} '${value}' already exists.`
+      };
+    }
   }
   res.status(400).send({
     message: `Error! Unable to ${method} ${method === 'list' ? inflection.pluralize(model) : model}`,
