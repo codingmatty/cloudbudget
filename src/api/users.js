@@ -14,21 +14,22 @@ api.post('/register', (req, res) => {
     User.create(newUser, (err, user) => {
       if (err) { return handleError(err, res, 'create', 'User'); }
       res.status(201).send({
-        message: `Success! User created`,
+        message: `Success! User created.`,
         data: user
       });
     });
   });
 });
 
-api.put('/:id', (req, res) => {
+api.put('/:id', authenticate, (req, res) => {
   if (req.body.password) {
     req.body.password = bcrypt.hashSync(req.body.password, 8);
+    req.body.$unset = { key: 1 };
   }
-  User.findOneAndUpdate({ _id: req.params.id }, req.body, { new: true }, (err, user) => {
+  User.findByIdAndUpdate({ _id: req.params.id }, req.body, { new: true }, (err, user) => {
     if (err) { return handleError(err, res, 'update', 'User'); }
     res.status(200).send({
-      message: `Success! User updated`,
+      message: `Success! User updated.`,
       data: user
     });
   });
@@ -53,7 +54,7 @@ api.post('/login', (req, res) => {
         }, (token) => {
           res.status(200).send({
             message: 'Login Succeeded!',
-            data: req.user,
+            data: updatedUser,
             token
           });
         });

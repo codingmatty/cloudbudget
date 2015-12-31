@@ -10,7 +10,15 @@ const userSchema = new Schema({
       message: '{VALUE} is not a valid email address.'
     }
   },
-  key: { type: String }
+  key: { type: String },
+  firstName: String,
+  lastName: String,
+  phone: { type: String,
+    validate: {
+      validator: (value) => {return is.nanpPhone(value) || is.eppPhone(value);},
+      message: '{VALUE} is not a valid phone number.'
+    }
+  }
 }, {
   toJSON: {
     getters: true,

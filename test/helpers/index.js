@@ -40,3 +40,5 @@ export function client(method, url, body, expectedStatus, callback) {
     .expect(expectedStatus)
     .end(callback);
 }
+
+export * from './factory';

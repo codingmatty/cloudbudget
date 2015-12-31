@@ -39,7 +39,7 @@ export function handleError(err, res, method, model) {
     }
   }
   res.status(400).send({
-    message: `Error! Unable to ${method} ${method === 'list' ? inflection.pluralize(model) : model}`,
+    message: `Error! Unable to ${method} ${method === 'list' ? inflection.pluralize(model) : model}.`,
     error: errorObj
   });
 }
@@ -58,7 +58,7 @@ export function authenticate(req, res, next) {
   }
   function failedToAuthenticate(tokenExpired) {
     res.status(401).send({
-      message: tokenExpired ? 'Token Expired' : 'Failed to authenticate token.'
+      message: tokenExpired ? 'Token Expired.' : 'Failed to authenticate token.'
     });
   }
   const userId = jwt.decode(token).id;

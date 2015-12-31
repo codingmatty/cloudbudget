@@ -55,7 +55,6 @@ app.use((err, req, res) => {
 });
 
 if (process.env.NODE_ENV !== 'test') {
-
   const port = process.env.PORT || 8080;
   const server = app.listen(port, () => {
     const host = server.address().address;
