@@ -3,6 +3,7 @@ import inflection from 'inflection';
 import users from './users';
 import accounts from './accounts';
 import transactions from './transactions';
+import accountGroups from './accountGroups';
 import jwt from 'jsonwebtoken';
 import { Types } from 'mongoose';
 import { User } from '../db';
@@ -19,23 +20,26 @@ api.get('/', (req, res) => {
 api.use('/users', users);
 api.use('/accounts', accounts);
 api.use('/transactions', transactions);
+api.use('/accountGroups', accountGroups);
 
 export function handleError(err, res, method, model) {
   let errorObj = err;
-  if (err.errors) {
-    errorObj = {};
-    for (const singleErrKey in err.errors) {
-      if (err.errors.hasOwnProperty(singleErrKey)) {
-        errorObj[singleErrKey] = err.errors[singleErrKey].message;
+  if (err) {
+    if (err.errors) {
+      errorObj = {};
+      for (const singleErrKey in err.errors) {
+        if (err.errors.hasOwnProperty(singleErrKey)) {
+          errorObj[singleErrKey] = err.errors[singleErrKey].message;
+        }
       }
-    }
-  } else if (err.code === 11000) {
-    const errmsgRegex = /index: (\S+\$)?([\w\d]+)_.* dup key: { : \\?\"(\S+)\\?\" }$/;
-    if (errmsgRegex.test(err.errmsg)) {
-      const [, , field, value] = errmsgRegex.exec(err.errmsg);
-      errorObj = {
-        [field]: `${field} '${value}' already exists.`
-      };
+    } else if (err.code === 11000) {
+      const errmsgRegex = /index: (\S+\$)?([\w\d]+)_.* dup key: { : \\?\"(\S+)\\?\" }$/;
+      if (errmsgRegex.test(err.errmsg)) {
+        const [, , field, value] = errmsgRegex.exec(err.errmsg);
+        errorObj = {
+          [field]: `${field} '${value}' already exists.`
+        };
+      }
     }
   }
   res.status(400).send({

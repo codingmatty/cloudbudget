@@ -1,34 +1,40 @@
-import { client, insertUser, getAccessToken } from './helpers';
-import { assert } from 'chai';
+import { Types } from 'mongoose';
+import { clearCollections, client, getAccessToken, insertFactoryModel } from './helpers';
+import { assert, factory } from 'chai';
 import bcrypt from 'bcrypt';
 import db, { User } from '../src/db';
 
 describe('Users', function () {
   beforeEach(function (done) {
-    const self = this;
-    insertUser((err, user) => {
+    insertFactoryModel('User', {
+      username: 'test',
+      password: bcrypt.hashSync('test', 8),
+      email: 'test@test.com',
+      key: 'abcdef012345'
+    }, (err, user) => {
       if (err) return done(err);
-      getAccessToken((tokenErr, token) => {
+      getAccessToken(user, (tokenErr, token) => {
         if (tokenErr) return done(tokenErr);
-        self.user = user;
-        self.token = token;
+        this.user = user;
+        this.token = token;
         done();
       });
     });
   });
   afterEach(function () {
-    db.connection.db.collection('users').remove({});
+    clearCollections(['users']);
   });
   it('should login a user', function (done) {
     client('post', 'users/login', {
-      username: 'test', password: 'test'
+      username: this.user.username,
+      password: 'test'
     }, 200, (err, res) => {
       if (err) return done(err);
       assert.equal(res.body.message, 'Login Succeeded!');
-      assert(res.body.data.id);
+      assert(Types.ObjectId.isValid(res.body.data.id));
       assert.equal(res.body.data.username, 'test');
       assert.equal(res.body.data.email, 'test@test.com');
-      getAccessToken((tokenErr, token) => {
+      getAccessToken(this.user, (tokenErr, token) => {
         if (tokenErr) return done(tokenErr);
         assert.equal(res.body.token, token);
         done();
@@ -41,9 +47,9 @@ describe('Users', function () {
       assert.isUndefined(res.body.data._id);
       assert.isUndefined(res.body.data.password);
       assert.isUndefined(res.body.data.key);
-      assert(res.body.data.id);
-      assert.equal(res.body.data.username, 'test');
-      assert.equal(res.body.data.email, 'test@test.com');
+      assert(Types.ObjectId.isValid(res.body.data.id));
+      assert.match(res.body.data.username, /test/);
+      assert.match(res.body.data.email, /test@test.com/);
       done();
     });
   });
@@ -56,21 +62,17 @@ describe('Users', function () {
   });
   describe('Register', function () {
     it('should register a user', function (done) {
-      client('post', 'users/register', {
-        username: 'newUser1', password: 'test', email: 'newUser1@test.com'
-      }, 201, (err, res) => {
+      client('post', 'users/register', factory.create('User'), 201, (err, res) => {
         if (err) return done(err);
         assert.equal(res.body.message, 'Success! User created.');
-        assert(res.body.data.id);
-        assert.equal(res.body.data.username, 'newUser1');
-        assert.equal(res.body.data.email, 'newUser1@test.com');
+        assert(Types.ObjectId.isValid(res.body.data.id));
+        assert.match(res.body.data.username, /User \d+/);
+        assert.match(res.body.data.email, /user\d+@test.com/);
         done();
       });
     });
     it('should not register a duplicate username', function (done) {
-      client('post', 'users/register', {
-        username: 'test', password: 'test', email: 'newUser2@test.com'
-      }, 400, (err, res) => {
+      client('post', 'users/register', factory.create('User', { username: 'test' }), 400, (err, res) => {
         if (err) return done(err);
         assert.equal(res.body.message, 'Error! Unable to create User.');
         assert.equal(res.body.error.username, `username 'test' already exists.`);
@@ -78,9 +80,7 @@ describe('Users', function () {
       });
     });
     it('should not register a duplicate email', function (done) {
-      client('post', 'users/register', {
-        username: 'newUser3', password: 'test', email: 'test@test.com'
-      }, 400, (err, res) => {
+      client('post', 'users/register', factory.create('User', { email: 'test@test.com' }), 400, (err, res) => {
         if (err) return done(err);
         assert.equal(res.body.message, 'Error! Unable to create User.');
         assert.equal(res.body.error.email, `email 'test@test.com' already exists.`);
@@ -88,9 +88,7 @@ describe('Users', function () {
       });
     });
     it('should not register an invalid email', function (done) {
-      client('post', 'users/register', {
-        username: 'newUser4', password: 'test', email: 'test'
-      }, 400, (err, res) => {
+      client('post', 'users/register', factory.create('User', { email: 'test' }), 400, (err, res) => {
         if (err) return done(err);
         assert.equal(res.body.message, 'Error! Unable to create User.');
         assert.equal(res.body.error.email, 'test is not a valid email address.');
@@ -101,36 +99,35 @@ describe('Users', function () {
   describe('Update', function () {
     it('should update username', function (done) {
       client('put', `users/${this.user.id}?token=${this.token}`, {
-        username: 'newUser5'
+        username: 'newUser'
       }, 200, (err, res) => {
         if (err) return done(err);
         assert.equal(res.body.message, 'Success! User updated.');
-        assert.equal(res.body.data.username, 'newUser5');
+        assert.equal(res.body.data.username, 'newUser');
         done();
       });
     });
     it('should update email', function (done) {
       client('put', `users/${this.user.id}?token=${this.token}`, {
-        email: 'newUser6@test.com'
+        email: 'newUser@test.com'
       }, 200, (err, res) => {
         if (err) return done(err);
         assert.equal(res.body.message, 'Success! User updated.');
-        assert.equal(res.body.data.email, 'newUser6@test.com');
+        assert.equal(res.body.data.email, 'newUser@test.com');
         done();
       });
     });
     it('should update password (and invalidate any outstanding access tokens)', function (done) {
-      const self = this;
-      client('put', `users/${self.user.id}?token=${this.token}`, {
-        password: 'newUser7password'
+      client('put', `users/${this.user.id}?token=${this.token}`, {
+        password: 'newPassword'
       }, 200, (err, res) => {
         if (err) return done(err);
         assert.equal(res.body.message, 'Success! User updated.');
         assert.isUndefined(res.body.password);
-        User.findById(self.user.id, (queryErr, user) => {
+        User.findById(this.user.id, (queryErr, user) => {
           if (queryErr) return done(queryErr);
           assert.isUndefined(user.key);
-          bcrypt.compare('newUser7password', user.password, (hashErr, result) => {
+          bcrypt.compare('newPassword', user.password, (hashErr, result) => {
             if (hashErr) return done(hashErr);
             assert(result);
             done();

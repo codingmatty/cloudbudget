@@ -8,11 +8,11 @@ api.use(authenticate);
 
 // GET - List
 listMethod(api, 'Account', true, (req, res, accounts) => {
-  async.map(accounts, (account, cb) => {
-    account.getBalance((balance) => {
+  async.map(accounts, (account, callback) => {
+    account.getBalance((err, balance) => {
       const normalizedAccount = account.toJSON();
       normalizedAccount.balance = balance;
-      cb(null, normalizedAccount);
+      callback(null, normalizedAccount);
     });
   }, (err, normalizedAccounts) => {
     res.status(200).send({ data: normalizedAccounts });
@@ -21,13 +21,13 @@ listMethod(api, 'Account', true, (req, res, accounts) => {
 
 // GET - Show
 showMethod(api, 'Account', true, (req, res, account) => {
-  account.getBalance((balance) => {
+  account.getBalance((err, balance) => {
     const normalizedAccount = account.toJSON();
     normalizedAccount.balance = balance;
     res.status(200).send({ data: normalizedAccount });
   });
 });
 
-api.use('/', resource('Account', true, ['create', 'update', 'remove']));
+api.use('/', resource('Account', true, ['create', 'update', 'delete']));
 
 export default api;

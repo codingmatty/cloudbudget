@@ -1,41 +1,41 @@
-import mongoose, { Schema } from 'mongoose';
-import Account from './account';
+import mongoose, { Schema, Types } from 'mongoose';
+import { defaultJSONOptions, Account } from './';
 
 const transactionSchema = new Schema({
   date: { type: Date, default: new Date() },
-  cleared: { type: Boolean, default: false },
+  state: { type: String, enum: ['none', 'cleared', 'reconciled'], required: true },
   payee: { type: String, required: true },
-  memo: { type: String, default: '' },
   amount: { type: Number, required: true },
+  memo: { type: String, default: '' },
   tags: [{ type: String }],
   user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   account: { type: Schema.Types.ObjectId, ref: 'Account', required: true }
 }, {
-  toJSON: {
-    getters: true,
-    virtuals: true,
-    transform: (doc, ret) => {
-      delete ret._id;
-      delete ret.__v;
-    }
-  }
+  toJSON: defaultJSONOptions((doc, ret) => {
+    ret.account = ret.account instanceof Types.ObjectId ? ret.account.toString() : ret.account;
+    ret.date = ret.date.toString();
+  })
+});
+
+transactionSchema.static('readonlyProps', () => {
+  return ['user', 'account'];
 });
 
 transactionSchema.pre('save', function addTransactionIdToAccount(next) {
   const transaction = this;
   Account.findById(transaction.account, (err, account) => {
+    if (err) return next(err);
     account.transactions.push(transaction.id);
-    account.save();
-    next();
+    account.save(next);
   });
 });
 
-transactionSchema.post('remove', function removeTransactionIdFromAccount(transaction) {
+transactionSchema.post('remove', function removeTransactionIdFromAccount(transaction, next) {
   Account.findById(transaction.account, (err, account) => {
-    if (!account) return;
+    if (!account) return next();
     const index = account.transactions.indexOf(transaction.id);
     account.transactions.splice(index, 1);
-    account.save();
+    account.save(next);
   });
 });
 

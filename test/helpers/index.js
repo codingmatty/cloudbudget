@@ -1,6 +1,7 @@
 import 'source-map-support/register';
 import app from '../../src/app';
-import db from '../../src/db';
+import jwt from 'jsonwebtoken';
+import db, * as dbModels from '../../src/db';
 import request from 'supertest';
 
 function clearDb() {
@@ -31,6 +32,12 @@ after(function () {
 
 export { server };
 
+export function clearCollections(collections = []) {
+  collections.forEach((collection) => {
+    db.connection.db.collection(collection).remove({});
+  });
+}
+
 export function client(method, url, body, expectedStatus, callback) {
   const actualRequest = request(server)[method]('/api/v1/' + url);
   if (method !== 'get' && body) {
@@ -39,6 +46,15 @@ export function client(method, url, body, expectedStatus, callback) {
   actualRequest
     .expect(expectedStatus)
     .end(callback);
+}
+
+export function getAccessToken(user, callback) {
+  dbModels.User.findOne({ username: user.username }, (err, dbUser) => {
+    if (err) return callback(err);
+    jwt.sign(dbUser.toJSON(), dbUser.key, {
+      expiresIn: '7d'
+    }, token => callback(null, token));
+  });
 }
 
 export * from './factory';

@@ -1,5 +1,6 @@
 import is from 'is_js';
 import mongoose, { Schema } from 'mongoose';
+import { defaultJSONOptions } from './';
 
 const userSchema = new Schema({
   username: { type: String, required: true, unique: true },
@@ -20,16 +21,10 @@ const userSchema = new Schema({
     }
   }
 }, {
-  toJSON: {
-    getters: true,
-    virtuals: true,
-    transform: (doc, ret) => {
-      delete ret._id;
-      delete ret.__v;
-      delete ret.password;
-      delete ret.key;
-    }
-  }
+  toJSON: defaultJSONOptions((doc, ret) => {
+    delete ret.password;
+    delete ret.key;
+  })
 });
 
 const User = mongoose.model('User', userSchema);

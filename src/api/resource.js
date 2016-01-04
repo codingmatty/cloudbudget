@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { Router } from 'express';
 import * as db from '../db';
 import { handleError, getInclusions, authenticate } from './index';
@@ -49,7 +50,7 @@ export function showMethod(api, model, shouldAuthenticate, callback) {
       query.user = req.user.id;
     }
     Model.findOne(query).populate(getInclusions(req)).exec((err, doc) => {
-      if (err) {
+      if (err || !doc) {
         handleError(err, res, 'show', Model.modelName);
       } else {
         callback(req, res, doc);
@@ -65,7 +66,7 @@ export function updateMethod(api, model, shouldAuthenticate, callback) {
     if (shouldAuthenticate) {
       query.user = req.user.id;
     }
-    Model.findOneAndUpdate(query, req.body, { new: true }, (err, doc) => {
+    Model.findOneAndUpdate(query, _.omit(req.body, Model.readonlyProps() || []), { new: true }, (err, doc) => {
       if (err) {
         handleError(err, res, 'update', Model.modelName);
       } else {
@@ -83,10 +84,10 @@ export function deleteMethod(api, model, shouldAuthenticate, callback) {
       query.user = req.user.id;
     }
     Model.findOne(query, (queryErr, queryDoc) => {
-      if (queryErr) {
+      if (queryErr || !queryDoc) {
         handleError(queryErr, res, 'delete', model);
       } else {
-        queryDoc.remove((err, doc) => {
+        queryDoc.remove(req.query, (err, doc) => {
           if (err) {
             handleError(err, res, 'delete', model);
           } else {
