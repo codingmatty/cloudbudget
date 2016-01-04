@@ -1,8 +1,7 @@
 import _ from 'lodash';
 import async from 'async';
-import Factory from 'js-factories';
 import { Types } from 'mongoose';
-import { assert } from 'chai';
+import { assert, factory } from 'chai';
 import { AccountGroup, Account, Transaction } from '../src/db';
 import { clearCollections, client, getAccessToken, insertFactoryModel } from './helpers';
 
@@ -74,7 +73,7 @@ describe('Accounts', function () {
   });
   describe('Create', function () {
     it('should create an account', function (done) {
-      const newAccount = Factory.create('Account', {
+      const newAccount = factory.create('Account', {
         accountGroup: this.accountGroup.id,
         transactions: []
       });
@@ -91,7 +90,7 @@ describe('Accounts', function () {
       });
     });
     it('should create reference in parent accountGroup', function (done) {
-      const newAccount = Factory.create('Account', {
+      const newAccount = factory.create('Account', {
         accountGroup: this.accountGroup.id,
         transactions: []
       });
