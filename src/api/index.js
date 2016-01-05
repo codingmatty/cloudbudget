@@ -83,4 +83,29 @@ export function authenticate(req, res, next) {
   });
 }
 
+export function buildQuery(Model, req) {
+  const query = {};
+  Model.schema.eachPath((path) => {
+    if (req.query[path]) {
+      if (Array.isArray(req.query[path])) {
+        query[path] = { $in: req.query[path] };
+      } else if (/([\w\d]*,)+[\w\d]*/.test(req.query[path])) {
+        query[path] = { $in: req.query[path].split(',') };
+      } else {
+        query[path] = req.query[path];
+      }
+    }
+  });
+  if (req.query.id) {
+    if (Array.isArray(req.query.id)) {
+      query._id = { $in: req.query.id };
+    } else if (/([\w\d]*,)+[\w\d]*/.test(req.query.id)) {
+      query._id = { $in: req.query.id.split(',') };
+    } else {
+      query._id = req.query.id;
+    }
+  }
+  return query;
+}
+
 export default api;

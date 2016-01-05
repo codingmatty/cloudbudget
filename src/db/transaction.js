@@ -30,7 +30,7 @@ transactionSchema.pre('save', function addTransactionIdToAccount(next) {
   });
 });
 
-transactionSchema.post('remove', function removeTransactionIdFromAccount(transaction, next) {
+transactionSchema.post('remove', (transaction, next) => {
   Account.findById(transaction.account, (err, account) => {
     if (!account) return next();
     const index = account.transactions.indexOf(transaction.id);

@@ -1,17 +1,12 @@
 import _ from 'lodash';
 import { Router } from 'express';
 import * as db from '../db';
-import { handleError, getInclusions, authenticate } from './index';
+import { handleError, getInclusions, authenticate, buildQuery } from './index';
 
 export function listMethod(api, model, shouldAuthenticate, callback) {
   const Model = db[model];
   api.get('/', (req, res) => {
-    const query = {};
-    Model.schema.eachPath((path) => {
-      if (req.query[path]) {
-        query[path] = Array.isArray(req.query[path]) ? { $in: req.query[path] } : req.query[path];
-      }
-    });
+    const query = buildQuery(Model, req);
     if (shouldAuthenticate) {
       query.user = req.user.id;
     }

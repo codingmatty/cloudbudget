@@ -69,7 +69,7 @@ describe('Accounts', function () {
     });
   });
   afterEach(function () {
-    clearCollections(['users', 'accountgroups', 'accounts']);
+    clearCollections(['users', 'accountgroups', 'accounts', 'transactions']);
   });
   describe('Create', function () {
     it('should create an account', function (done) {
@@ -122,26 +122,17 @@ describe('Accounts', function () {
     it('should return a single account', function (done) {
       client('get', `accounts/${this.account.id}?token=${this.user.token}`, {}, 200, (err, res) => {
         if (err) return done(err);
-        const account = _.merge(this.account, {
-          user: this.account.user.toString(),
-          accountGroup: this.account.accountGroup.toString()
-        });
         res.body.data.transactions.sort();
-        assert.deepEqual(res.body.data, account);
+        assert.deepEqual(res.body.data, this.account);
         done();
       });
     });
-    it('should include transactions', function (done) {
-      // const testTransactions = this.account.transactions;
-      client('get', `accounts/${this.account.id}?include=transactions&token=${this.user.token}`, {}, 200, (err, res) => {
+    it('should include references', function (done) {
+      client('get', `accounts/${this.account.id}?include=accountGroups&include=transactions&token=${this.user.token}`, {}, 200, (err, res) => {
         if (err) return done(err);
         const account = _.merge(this.account, {
-          user: this.account.user.toString(),
-          accountGroup: this.account.accountGroup.toString(),
           transactions: _.map(this.account.transactions, transactionId => _.find(this.transactions, 'id', transactionId))
         });
-        // assert.deepEqual(_.omit(res.body.data, 'transactions'), _.omit(account, 'transactions'));
-        // assert.deepEqual(_.sortBy(res.body.data.transactions, 'id'), _.sortBy(testTransactions, 'id'));
         res.body.data.transactions = _.sortBy(res.body.data.transactions, 'id');
         assert.deepEqual(res.body.data, account);
         done();
@@ -150,26 +141,15 @@ describe('Accounts', function () {
     it('should return all accounts', function (done) {
       client('get', `accounts?token=${this.user.token}`, {}, 200, (err, res) => {
         if (err) return done(err);
-        const accounts = this.accounts.map((account) => {
-          return _.merge(account, {
-            user: account.user.toString(),
-            accountGroup: account.accountGroup.toString()
-          });
-        });
         res.body.data.forEach(account => account.transactions.sort());
-        assert.deepEqual(_.sortBy(res.body.data, 'id'), accounts);
+        assert.deepEqual(_.sortBy(res.body.data, 'id'), this.accounts);
         done();
       });
     });
     it('should be able to query a field', function (done) {
       client('get', `accounts?accountType=${this.account.accountType}&token=${this.user.token}`, {}, 200, (err, res) => {
         if (err) return done(err);
-        const accounts = this.accounts.map((account) => {
-          return _.merge(account, {
-            user: account.user.toString(),
-            accountGroup: account.accountGroup.toString()
-          });
-        }).filter(account => account.accountType === this.account.accountType);
+        const accounts = this.accounts.filter(account => account.accountType === this.account.accountType);
         assert.equal(res.body.data.length, accounts.length);
         res.body.data.forEach(account => account.transactions.sort());
         assert.deepEqual(_.sortBy(res.body.data, 'id'), accounts);
