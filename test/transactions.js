@@ -2,7 +2,7 @@ import _ from 'lodash';
 import async from 'async';
 import { Types } from 'mongoose';
 import { assert, factory } from 'chai';
-import { AccountGroup, Account, Transaction } from '../src/db';
+import { Account, Transaction } from '../src/db';
 import { clearCollections, client, getAccessToken, insertFactoryModel } from './helpers';
 
 describe('Transactions', function () {
@@ -18,22 +18,15 @@ describe('Transactions', function () {
           });
         });
       },
-      function createAccountGroup(user, next) {
-        insertFactoryModel('AccountGroup', { user: user.id }, (err, accountGroup) => {
-          if (err) return next(err);
-          next(null, user, accountGroup);
-        });
-      },
-      function createAccount(user, accountGroup, next) {
+      function createAccount(user, next) {
         insertFactoryModel('Account', {
-          user: user.id,
-          accountGroup: accountGroup.id
+          user: user.id
         }, (err, account) => {
           if (err) return next(err);
-          next(null, user, accountGroup, account);
+          next(null, user, account);
         });
       },
-      function createTransactions(user, accountGroup, account, next) {
+      function createTransactions(user, account, next) {
         async.times(10,
           (n, callback) => {
             insertFactoryModel('Transaction', {
@@ -45,12 +38,11 @@ describe('Transactions', function () {
             });
           }, (err, transactions) => {
             if (err) return next(err);
-            next(null, user, accountGroup, account, transactions);
+            next(null, user, account, transactions);
           });
       }
-    ], (err, user, accountGroup, account, transactions) => {
+    ], (err, user, account, transactions) => {
       this.user = user;
-      this.accountGroup = accountGroup;
       this.transactions = _.sortBy(transactions, 'id');
       account.transactions = _.pluck(this.transactions, 'id');
       account.balance = _.sum(this.transactions, 'amount');
@@ -60,7 +52,7 @@ describe('Transactions', function () {
     });
   });
   afterEach(function () {
-    clearCollections(['users', 'accountgroups', 'accounts', 'transactions']);
+    clearCollections(['users', 'accounts', 'transactions']);
   });
   describe('Create', function () {
     beforeEach(function () {
@@ -201,6 +193,18 @@ describe('Transactions', function () {
         Transaction.find({ _id: { $in: _.pluck(selectTransactions, 'id') } }, (dbErr, transactions) => {
           if (dbErr) return done(dbErr);
           assert.deepEqual(transactions, []);
+          done();
+        });
+      });
+    });
+    it('should delete transactions from account', function (done) {
+      const selectTransactions = _.sortBy(_.sample(this.transactions, 5), 'id');
+      client('delete', `transactions/?id=${_.pluck(selectTransactions, 'id')}&token=${this.user.token}`, {}, 200, (err, res) => {
+        if (err) return done(err);
+        assert.deepEqual(_.sortBy(res.body.data, 'id'), selectTransactions);
+        Account.find({ _id: { $in: _.pluck(selectTransactions, 'account') } }, (dbErr, accounts) => {
+          if (dbErr) return done(dbErr);
+          accounts.forEach((account) => { assert.notInclude(account.transactions, _.pluck(selectTransactions, 'id')); });
           done();
         });
       });

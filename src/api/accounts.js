@@ -1,7 +1,9 @@
+import _ from 'lodash';
 import async from 'async';
 import { Router } from 'express';
 import resource, { listMethod, showMethod } from './resource';
-import { authenticate } from './index';
+import { authenticate, buildQuery, handleError } from './index';
+import { Account } from '../db';
 
 const api = new Router();
 api.use(authenticate);
@@ -25,6 +27,25 @@ showMethod(api, 'Account', true, (req, res, account) => {
     const normalizedAccount = account.toJSON();
     normalizedAccount.balance = balance;
     res.status(200).send({ data: normalizedAccount });
+  });
+});
+
+api.put('/', (req, res) => {
+  const query = buildQuery(Account, req);
+  query.user = req.user.id;
+  Account.update(query, _.omit(req.body, Account.readonlyProps() || []), { multi: true }, (updateErr) => {
+    if (updateErr) {
+      return handleError(updateErr, res, 'update', 'Accounts');
+    }
+    Account.find(query, (findErr, accounts) => {
+      if (findErr) {
+        return handleError(updateErr, res, 'update', 'Accounts');
+      }
+      res.status(200).send({
+        message: `Success! Accounts updated.`,
+        data: accounts
+      });
+    });
   });
 });
 

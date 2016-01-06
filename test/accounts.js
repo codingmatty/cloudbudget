@@ -2,7 +2,7 @@ import _ from 'lodash';
 import async from 'async';
 import { Types } from 'mongoose';
 import { assert, factory } from 'chai';
-import { AccountGroup, Account, Transaction } from '../src/db';
+import { Account, Transaction } from '../src/db';
 import { clearCollections, client, getAccessToken, insertFactoryModel } from './helpers';
 
 describe('Accounts', function () {
@@ -18,28 +18,21 @@ describe('Accounts', function () {
           });
         });
       },
-      function createAccountGroup(user, next) {
-        insertFactoryModel('AccountGroup', { user: user.id }, (err, accountGroup) => {
-          if (err) return next(err);
-          next(null, user, accountGroup);
-        });
-      },
-      function createAccounts(user, accountGroup, next) {
+      function createAccounts(user, next) {
         async.times(5,
           (n, callback) => {
             insertFactoryModel('Account', {
-              user: user.id,
-              accountGroup: accountGroup.id
+              user: user.id
             }, (err, account) => {
               if (err) return callback(err);
               callback(null, account);
             });
           }, (err, accounts) => {
             if (err) return next(err);
-            next(null, user, accountGroup, accounts);
+            next(null, user, accounts);
           });
       },
-      function createTransactions(user, accountGroup, accounts, next) {
+      function createTransactions(user, accounts, next) {
         async.times(10,
           (n, callback) => {
             insertFactoryModel('Transaction', {
@@ -51,12 +44,11 @@ describe('Accounts', function () {
             });
           }, (err, transactions) => {
             if (err) return next(err);
-            next(null, user, accountGroup, accounts, transactions);
+            next(null, user, accounts, transactions);
           });
       }
-    ], (err, user, accountGroup, accounts, transactions) => {
+    ], (err, user, accounts, transactions) => {
       this.user = user;
-      this.accountGroup = accountGroup;
       this.accounts = _.sortBy(accounts, 'id');
       this.transactions = _.sortBy(transactions, 'id');
       this.accounts.forEach(account => {
@@ -69,12 +61,11 @@ describe('Accounts', function () {
     });
   });
   afterEach(function () {
-    clearCollections(['users', 'accountgroups', 'accounts', 'transactions']);
+    clearCollections(['users', 'accounts', 'transactions']);
   });
   describe('Create', function () {
     it('should create an account', function (done) {
       const newAccount = factory.create('Account', {
-        accountGroup: this.accountGroup.id,
         transactions: []
       });
       client('post', `accounts?token=${this.user.token}`, newAccount, 201, (err, res) => {
@@ -82,37 +73,20 @@ describe('Accounts', function () {
         assert.isUndefined(res.body.data._id);
         assert(Types.ObjectId.isValid(res.body.data.id));
         assert(Types.ObjectId.isValid(res.body.data.user));
-        assert(Types.ObjectId.isValid(res.body.data.accountGroup));
         assert.deepEqual(_.omit(res.body.data, 'id'), _.merge(newAccount, {
           user: this.user.id
         }));
         done();
       });
     });
-    it('should create reference in parent accountGroup', function (done) {
-      const newAccount = factory.create('Account', {
-        accountGroup: this.accountGroup.id,
-        transactions: []
-      });
-      client('post', `accounts?token=${this.user.token}`, newAccount, 201, (err, res) => {
-        if (err) return done(err);
-        assert(res.body.data.accountGroup);
-        AccountGroup.findById(res.body.data.accountGroup, (dbErr, accountGroup) => {
-          if (dbErr) return done(dbErr);
-          assert.include(accountGroup.accounts, res.body.data.id);
-          done();
-        });
-      });
-    });
     it('should not create an invalid account', function (done) {
       client('post', `accounts?token=${this.user.token}`, {
-        accountType: 'invalid'
+        type: 'invalid'
       }, 400, (err, res) => {
         if (err) return done(err);
         assert.equal(res.body.message, 'Error! Unable to create Account.');
-        assert.equal(res.body.error.accountGroup, 'Path `accountGroup` is required.');
         assert.equal(res.body.error.budget, 'Path `budget` is required.');
-        assert.equal(res.body.error.accountType, '`invalid` is not a valid enum value for path `accountType`.');
+        assert.equal(res.body.error.type, '`invalid` is not a valid enum value for path `type`.');
         assert.equal(res.body.error.name, 'Path `name` is required.');
         done();
       });
@@ -128,7 +102,7 @@ describe('Accounts', function () {
       });
     });
     it('should include references', function (done) {
-      client('get', `accounts/${this.account.id}?include=accountGroups&include=transactions&token=${this.user.token}`, {}, 200, (err, res) => {
+      client('get', `accounts/${this.account.id}?include=transactions&token=${this.user.token}`, {}, 200, (err, res) => {
         if (err) return done(err);
         const account = _.merge(this.account, {
           transactions: _.map(this.account.transactions, transactionId => _.find(this.transactions, 'id', transactionId))
@@ -147,9 +121,9 @@ describe('Accounts', function () {
       });
     });
     it('should be able to query a field', function (done) {
-      client('get', `accounts?accountType=${this.account.accountType}&token=${this.user.token}`, {}, 200, (err, res) => {
+      client('get', `accounts?type=${this.account.type}&token=${this.user.token}`, {}, 200, (err, res) => {
         if (err) return done(err);
-        const accounts = this.accounts.filter(account => account.accountType === this.account.accountType);
+        const accounts = this.accounts.filter(account => account.type === this.account.type);
         assert.equal(res.body.data.length, accounts.length);
         res.body.data.forEach(account => account.transactions.sort());
         assert.deepEqual(_.sortBy(res.body.data, 'id'), accounts);
@@ -164,7 +138,7 @@ describe('Accounts', function () {
     it('should update an account', function (done) {
       const updatedProperties = {
         name: 'New Account Name',
-        accountType: 'savings'
+        type: 'savings'
       };
       client('put', `accounts/${this.account.id}?token=${this.user.token}`, updatedProperties, 200, (err, res) => {
         if (err) return done(err);
@@ -175,6 +149,7 @@ describe('Accounts', function () {
     });
     it('should not update readonly attributes', function (done) {
       const updatedProperties = {
+        balance: 100,
         transactions: [],
         user: new Types.ObjectId() // May be temporary, but for now don't allow.
       };
@@ -182,6 +157,18 @@ describe('Accounts', function () {
         if (err) return done(err);
         res.body.data.transactions.sort();
         assert.deepEqual(res.body.data, this.account);
+        done();
+      });
+    });
+    it('should update multiple accounts', function (done) {
+      const updatedProperties = {
+        group: 'New Group'
+      };
+      const selectAccounts = _.sortBy(_.sample(this.accounts, 3), 'id');
+      client('put', `accounts/?id=${_.pluck(selectAccounts, 'id')}&token=${this.user.token}`, updatedProperties, 200, (err, res) => {
+        if (err) return done(err);
+        res.body.data.forEach((account) => { account.transactions.sort(); });
+        assert.deepEqual(_.sortBy(res.body.data, 'id'), selectAccounts.map(account => _.omit(_.merge(account, updatedProperties), 'balance')));
         done();
       });
     });

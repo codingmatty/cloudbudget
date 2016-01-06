@@ -1,7 +1,6 @@
 import mongoose, { Types } from 'mongoose';
 import User from './user';
 import Account from './account';
-import AccountGroup from './accountGroup';
 import Transaction from './transaction';
 import config from '../../config.json';
 
@@ -28,6 +27,5 @@ export function defaultJSONOptions(specificTransformFunction) {
 export {
   User,
   Account,
-  AccountGroup,
   Transaction
 };

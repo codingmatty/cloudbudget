@@ -28,22 +28,15 @@ Factory.define('User', function (attributes = {}) {
   }, attributes);
 });
 
-Factory.define('AccountGroup', function (attributes = {}) {
-  const {
-    name = this.sequence(i => `Account Group ${i}`)
-  } = attributes;
-  return _.merge({
-    name
-  }, attributes);
-});
-
 Factory.define('Account', function (attributes = {}) {
   const {
-    name = this.sequence(i => `Account ${i}`)
+    name = this.sequence(i => `Account ${i}`),
+    group = this.sequence(i => `Group ${i}`)
   } = attributes;
   return _.merge({
     name,
-    accountType: this.sample('savings', 'checking', 'credit_card', 'loan', 'investment'),
+    group,
+    type: this.sample('savings', 'checking', 'credit_card', 'loan', 'investment'),
     budget: true,
     notes: 'This note applies to an Account'
   }, attributes);

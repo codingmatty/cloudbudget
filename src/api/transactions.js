@@ -11,7 +11,7 @@ api.use(authenticate);
 api.put('/', (req, res) => {
   const query = buildQuery(Transaction, req);
   query.user = req.user.id;
-  Transaction.update(query, _.omit(req.body, Transaction.readonlyProps() || []), { multi: true }, (updateErr, updatedTransactions) => {
+  Transaction.update(query, _.omit(req.body, Transaction.readonlyProps() || []), { multi: true }, (updateErr) => {
     if (updateErr) {
       return handleError(updateErr, res, 'update', 'Transactions');
     }
