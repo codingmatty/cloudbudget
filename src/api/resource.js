@@ -11,11 +11,8 @@ export function listMethod(api, model, shouldAuthenticate, callback) {
       query.user = req.user.id;
     }
     Model.find(query).populate(getInclusions(req)).exec((err, docs) => {
-      if (err) {
-        handleError(err, res, 'list', Model.modelName);
-      } else {
-        callback(req, res, docs);
-      }
+      if (err) { return handleError(err, res, 'list', Model.modelName); }
+      callback(req, res, docs);
     });
   });
 }
@@ -28,11 +25,8 @@ export function createMethod(api, model, shouldAuthenticate, callback) {
       entity.user = req.user.id;
     }
     Model.create(entity, (err, doc) => {
-      if (err) {
-        handleError(err, res, 'create', Model.modelName);
-      } else {
-        callback(req, res, doc);
-      }
+      if (err) { return handleError(err, res, 'create', Model.modelName); }
+      callback(req, res, doc);
     });
   });
 }
@@ -45,11 +39,8 @@ export function showMethod(api, model, shouldAuthenticate, callback) {
       query.user = req.user.id;
     }
     Model.findOne(query).populate(getInclusions(req)).exec((err, doc) => {
-      if (err || !doc) {
-        handleError(err, res, 'show', Model.modelName);
-      } else {
-        callback(req, res, doc);
-      }
+      if (err || !doc) { return handleError(err, res, 'show', Model.modelName); }
+      callback(req, res, doc);
     });
   });
 }
@@ -62,11 +53,8 @@ export function updateMethod(api, model, shouldAuthenticate, callback) {
       query.user = req.user.id;
     }
     Model.findOneAndUpdate(query, _.omit(req.body, Model.readonlyProps() || []), { new: true }, (err, doc) => {
-      if (err) {
-        handleError(err, res, 'update', Model.modelName);
-      } else {
-        callback(req, res, doc);
-      }
+      if (err) { return handleError(err, res, 'update', Model.modelName); }
+      callback(req, res, doc);
     });
   });
 }
@@ -79,17 +67,11 @@ export function deleteMethod(api, model, shouldAuthenticate, callback) {
       query.user = req.user.id;
     }
     Model.findOne(query, (queryErr, queryDoc) => {
-      if (queryErr || !queryDoc) {
-        handleError(queryErr, res, 'delete', model);
-      } else {
-        queryDoc.remove(req.query, (err, doc) => {
-          if (err) {
-            handleError(err, res, 'delete', model);
-          } else {
-            callback(req, res, doc);
-          }
-        });
-      }
+      if (queryErr || !queryDoc) { return handleError(queryErr, res, 'delete', model); }
+      queryDoc.remove(req.query, (removeErr, doc) => {
+        if (removeErr) { return handleError(removeErr, res, 'delete', model); }
+        callback(req, res, doc);
+      });
     });
   });
 }

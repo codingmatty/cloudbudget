@@ -10,9 +10,10 @@ const api = new Router();
 
 api.post('/register', (req, res) => {
   bcrypt.hash(req.body.password, 8, (hashErr, hash) => {
+    if (hashErr) { return handleError(hashErr, res, 'create', 'User'); }
     const newUser = _.merge(req.body, { password: hash });
-    User.create(newUser, (err, user) => {
-      if (err) { return handleError(err, res, 'create', 'User'); }
+    User.create(newUser, (createErr, user) => {
+      if (createErr) { return handleError(createErr, res, 'create', 'User'); }
       res.status(201).send({
         message: `Success! User created.`,
         data: user
@@ -26,8 +27,8 @@ api.put('/:id', authenticate, (req, res) => {
     req.body.password = bcrypt.hashSync(req.body.password, 8);
     req.body.$unset = { key: 1 };
   }
-  User.findByIdAndUpdate({ _id: req.params.id }, req.body, { new: true }, (err, user) => {
-    if (err) { return handleError(err, res, 'update', 'User'); }
+  User.findByIdAndUpdate({ _id: req.params.id }, req.body, { new: true }, (updateErr, user) => {
+    if (updateErr) { return handleError(updateErr, res, 'update', 'User'); }
     res.status(200).send({
       message: `Success! User updated.`,
       data: user
@@ -47,8 +48,8 @@ api.post('/login', (req, res) => {
     bcrypt.compare(password, user.password, (hashErr, result) => {
       if (hashErr || !result) { return handleError(hashErr, res, 'login', 'User'); }
       user.key = randomKey.generate(60);
-      user.save((err, updatedUser) => {
-        if (err) { return handleError(err, res, 'login', 'User'); }
+      user.save((saveErr, updatedUser) => {
+        if (saveErr) { return handleError(saveErr, res, 'login', 'User'); }
         jwt.sign(updatedUser.toJSON(), updatedUser.key, {
           expiresIn: '7d'
         }, (token) => {
@@ -64,8 +65,8 @@ api.post('/login', (req, res) => {
 });
 
 api.get('/logout', authenticate, (req, res) => {
-  User.findByIdAndUpdate(req.user.id, { $unset: { key: 1 } }, (err) => {
-    if (err) { return handleError(err, res, 'logout', 'User'); }
+  User.findByIdAndUpdate(req.user.id, { $unset: { key: 1 } }, (updateErr) => {
+    if (updateErr) { return handleError(updateErr, res, 'logout', 'User'); }
     res.status(200).send({ message: 'Logout Succeeded!' });
   });
 });

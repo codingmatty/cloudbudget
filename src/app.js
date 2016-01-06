@@ -14,10 +14,10 @@ const MongoStore = connectMongo(session);
 const app = express();
 
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+// app.set('views', path.join(__dirname, 'views'));
+// app.set('view engine', 'jade');
 
-if (process.env.NODE_ENV !== 'test') {
+if (app.get('env') !== 'test') {
   app.use(logger('dev'));
 }
 // app.use(favicon(__dirname + '/public/favicon.ico'));
@@ -30,7 +30,7 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   store: new MongoStore({
-    url: config[process.env.NODE_ENV].db,
+    url: config[app.get('env')].db,
     ttl: 7 * 24 * 60 * 60 // 1 week
   })
 }));
@@ -54,7 +54,7 @@ app.use((err, req, res) => {
   });
 });
 
-if (process.env.NODE_ENV !== 'test') {
+if (app.get('env') !== 'test') {
   const port = process.env.PORT || 8080;
   const server = app.listen(port, () => {
     const host = server.address().address;

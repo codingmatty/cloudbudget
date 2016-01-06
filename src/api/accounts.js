@@ -34,13 +34,9 @@ api.put('/', (req, res) => {
   const query = buildQuery(Account, req);
   query.user = req.user.id;
   Account.update(query, _.omit(req.body, Account.readonlyProps() || []), { multi: true }, (updateErr) => {
-    if (updateErr) {
-      return handleError(updateErr, res, 'update', 'Accounts');
-    }
+    if (updateErr) { return handleError(updateErr, res, 'update', 'Accounts'); }
     Account.find(query, (findErr, accounts) => {
-      if (findErr) {
-        return handleError(updateErr, res, 'update', 'Accounts');
-      }
+      if (findErr) { return handleError(findErr, res, 'update', 'Accounts'); }
       res.status(200).send({
         message: `Success! Accounts updated.`,
         data: accounts

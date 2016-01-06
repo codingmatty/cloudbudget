@@ -73,9 +73,9 @@ export function authenticate(req, res, next) {
     if (queryErr) {
       return failedToAuthenticate();
     }
-    jwt.verify(token, user.key, (err, decodedUser) => {
-      if (err || userId !== decodedUser.id) {
-        return failedToAuthenticate(err.name === 'TokenExpiredError');
+    jwt.verify(token, user.key, (jwtErr, decodedUser) => {
+      if (jwtErr || userId !== decodedUser.id) {
+        return failedToAuthenticate(jwtErr.name === 'TokenExpiredError');
       }
       req.user = decodedUser;
       next();
