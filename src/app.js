@@ -1,13 +1,15 @@
 import 'source-map-support/register';
-import express from 'express';
-import path from 'path';
-// import favicon from 'serve-favicon';
+// import path from 'path';
 import logger from 'morgan';
-import cookieParser from 'cookie-parser';
+import express from 'express';
+import passport from 'passport';
+// import favicon from 'serve-favicon';
 import bodyParser from 'body-parser';
 import session from 'express-session';
+import cookieParser from 'cookie-parser';
 import connectMongo from 'connect-mongo';
 import api from './api';
+import setupPassport from './auth/auth';
 import config from '../config.json';
 
 const MongoStore = connectMongo(session);
@@ -17,14 +19,15 @@ const app = express();
 // app.set('views', path.join(__dirname, 'views'));
 // app.set('view engine', 'jade');
 
-if (app.get('env') !== 'test') {
+if (app.get('env') === 'development') {
   app.use(logger('dev'));
 }
 // app.use(favicon(__dirname + '/public/favicon.ico'));
 // app.use(express.static('public'));
+app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
+
 app.use(session({
   secret: 'this is a big long secret. sshhhh!',
   resave: false,
@@ -34,6 +37,10 @@ app.use(session({
     ttl: 7 * 24 * 60 * 60 // 1 week
   })
 }));
+
+app.use(passport.initialize());
+app.use(passport.session());
+setupPassport();
 
 app.use('/api/v1', api);
 
@@ -54,13 +61,11 @@ app.use((err, req, res) => {
   });
 });
 
-if (app.get('env') !== 'test') {
-  const port = process.env.PORT || 8080;
-  const server = app.listen(port, () => {
-    const host = server.address().address;
-
-    console.log('Example app listening at %s:%s', host, port);
-  });
-}
+const port = process.env.PORT || 8080;
+const server = app.listen(port, () => {
+  const host = server.address().address;
+  /* eslint-disable no-console */
+  console.log('Example app listening at %s:%s', host, port);
+});
 
 export default app;

@@ -1,12 +1,13 @@
 import _ from 'lodash';
 import async from 'async';
+import passport from 'passport';
 import { Router } from 'express';
 import resource, { listMethod, showMethod } from './resource';
-import { authenticate, buildQuery, handleError } from './index';
+import { buildQuery, handleError } from './index';
 import { Account } from '../db';
 
 const api = new Router();
-api.use(authenticate);
+api.use(passport.authenticate(['jwt', 'bearer'], { session: false }));
 
 // GET - List
 listMethod(api, 'Account', true, (req, res, accounts) => {

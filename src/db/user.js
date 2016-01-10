@@ -1,4 +1,9 @@
+import _ from 'lodash';
+import fs from 'fs';
 import is from 'is_js';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import randomKey from 'random-key';
 import mongoose, { Schema } from 'mongoose';
 import { defaultJSONOptions } from './';
 
@@ -11,7 +16,7 @@ const userSchema = new Schema({
       message: '{VALUE} is not a valid email address.'
     }
   },
-  key: { type: String },
+  nonce: { type: String },
   firstName: String,
   lastName: String,
   phone: { type: String,
@@ -23,9 +28,29 @@ const userSchema = new Schema({
 }, {
   toJSON: defaultJSONOptions((doc, ret) => {
     delete ret.password;
-    delete ret.key;
+    delete ret.nonce;
   })
 });
+
+userSchema.statics.hashPassword = (password) => {
+  return bcrypt.hashSync(password, 8);
+};
+
+userSchema.methods.generateJwt = function generateJwt(options = {}) {
+  this.nonce = randomKey.generate(64);
+  const key = fs.readFileSync(__dirname + '/../../private.pem').toString();
+  return jwt.sign(this.toJSON(), key, _.merge({
+    algorithm: 'RS256',
+    expiresIn: '1d',
+    audience: 'cloudbudget.io',
+    issuer: 'admin@cloudbudget.io',
+    jwtid: this.nonce
+  }, options));
+};
+
+userSchema.methods.verifyPassword = function verifyPassword(password) {
+  return bcrypt.compareSync(password, this.password);
+};
 
 const User = mongoose.model('User', userSchema);
 

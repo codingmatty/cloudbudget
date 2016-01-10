@@ -1,7 +1,8 @@
 import _ from 'lodash';
+import passport from 'passport';
 import { Router } from 'express';
 import * as db from '../db';
-import { handleError, getInclusions, authenticate, buildQuery } from './index';
+import { handleError, getInclusions, buildQuery } from './index';
 
 export function listMethod(api, model, shouldAuthenticate, callback) {
   const Model = db[model];
@@ -80,7 +81,7 @@ export default function (model, shouldAuthenticate, actions = ['list', 'create',
   const api = new Router();
 
   if (shouldAuthenticate) {
-    api.use(authenticate);
+    api.use(passport.authenticate(['jwt', 'bearer'], { session: false }));
   }
 
   actions.forEach((action) => {

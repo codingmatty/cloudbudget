@@ -1,33 +1,28 @@
 import _ from 'lodash';
+import passport from 'passport';
 import { Router } from 'express';
-import bcrypt from 'bcrypt';
-import { User } from '../db';
-import { handleError, authenticate } from './index';
-import randomKey from 'random-key';
-import jwt from 'jsonwebtoken';
+import { handleError } from './index';
+import { User, AccessToken } from '../db';
 
 const api = new Router();
 
 api.post('/register', (req, res) => {
-  bcrypt.hash(req.body.password, 8, (hashErr, hash) => {
-    if (hashErr) { return handleError(hashErr, res, 'create', 'User'); }
-    const newUser = _.merge(req.body, { password: hash });
-    User.create(newUser, (createErr, user) => {
-      if (createErr) { return handleError(createErr, res, 'create', 'User'); }
-      res.status(201).send({
-        message: `Success! User created.`,
-        data: user
-      });
+  const newUser = _.merge(req.body, { password: User.hashPassword(req.body.password) });
+  User.create(newUser, (createErr, user) => {
+    if (createErr) { return handleError(createErr, res, 'create', 'User'); }
+    res.status(201).send({
+      message: `Success! User created.`,
+      data: user
     });
   });
 });
 
-api.put('/:id', authenticate, (req, res) => {
+api.put('/:id', passport.authenticate(['jwt', 'bearer'], { session: false }), (req, res) => {
   if (req.body.password) {
-    req.body.password = bcrypt.hashSync(req.body.password, 8);
-    req.body.$unset = { key: 1 };
+    req.body.password = User.hashPassword(req.body.password);
+    req.body.$unset = { nonce: 1 };
   }
-  User.findByIdAndUpdate({ _id: req.params.id }, req.body, { new: true }, (updateErr, user) => {
+  User.findByIdAndUpdate(req.params.id, req.body, { new: true }, (updateErr, user) => {
     if (updateErr) { return handleError(updateErr, res, 'update', 'User'); }
     res.status(200).send({
       message: `Success! User updated.`,
@@ -36,7 +31,7 @@ api.put('/:id', authenticate, (req, res) => {
   });
 });
 
-api.get('/info', authenticate, (req, res) => {
+api.get('/info', passport.authenticate(['jwt', 'bearer'], { session: false }), (req, res) => {
   res.status(200).send({ data: req.user });
 });
 
@@ -45,29 +40,30 @@ api.post('/login', (req, res) => {
   const password = req.body.password;
   User.findOne({ username }, (queryErr, user) => {
     if (queryErr || !user) { return handleError(queryErr, res, 'login', 'User'); }
-    bcrypt.compare(password, user.password, (hashErr, result) => {
-      if (hashErr || !result) { return handleError(hashErr, res, 'login', 'User'); }
-      user.key = randomKey.generate(60);
-      user.save((saveErr, updatedUser) => {
-        if (saveErr) { return handleError(saveErr, res, 'login', 'User'); }
-        jwt.sign(updatedUser.toJSON(), updatedUser.key, {
-          expiresIn: '7d'
-        }, (token) => {
-          res.status(200).send({
-            message: 'Login Succeeded!',
-            data: updatedUser,
-            token
-          });
-        });
+    if (!user.verifyPassword(password)) { return handleError(new Error('Authentication Error'), res, 'login', 'User'); }
+    const token = user.generateJwt();
+    user.save((saveErr) => { // Save nonce generated for JWT
+      if (saveErr) { return handleError(saveErr, res, 'login', 'User'); }
+      res.status(200).send({
+        message: 'Login Succeeded!',
+        data: user,
+        token
       });
     });
   });
 });
 
-api.get('/logout', authenticate, (req, res) => {
-  User.findByIdAndUpdate(req.user.id, { $unset: { key: 1 } }, (updateErr) => {
+api.get('/logout', passport.authenticate('jwt', { session: false }), (req, res) => {
+  User.findByIdAndUpdate(req.user.id, { $unset: { nonce: 1 } }, (updateErr) => {
     if (updateErr) { return handleError(updateErr, res, 'logout', 'User'); }
     res.status(200).send({ message: 'Logout Succeeded!' });
+  });
+});
+
+api.get('/revoke', passport.authenticate('bearer', { session: false }), (req, res) => {
+  AccessToken.remove({ token: req.user.token }, (err) => {
+    if (err) { return handleError(err, res, 'revoke', 'AccessToken'); }
+    res.status(200).send({ message: 'Access Token Revoked!' });
   });
 });
 

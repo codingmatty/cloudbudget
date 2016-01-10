@@ -1,6 +1,6 @@
 import 'source-map-support/register';
 import app from '../../src/app';
-import jwt from 'jsonwebtoken';
+import { insertFactoryModel } from './factory';
 import db, * as dbModels from '../../src/db';
 import request from 'supertest';
 
@@ -38,8 +38,14 @@ export function clearCollections(collections = []) {
   });
 }
 
-export function client(method, url, body, expectedStatus, callback) {
+export function httpClient(method, url, { accessToken, jwtToken, body }, expectedStatus, callback) {
   const actualRequest = request(server)[method]('/api/v1/' + url);
+  if (accessToken) {
+    actualRequest.set('Authorization', `Bearer ${accessToken}`);
+  }
+  if (jwtToken) {
+    actualRequest.set('Authorization', `JWT ${jwtToken}`);
+  }
   if (method !== 'get' && body) {
     actualRequest.send(body);
   }
@@ -48,12 +54,19 @@ export function client(method, url, body, expectedStatus, callback) {
     .end(callback);
 }
 
+export function getJwtToken(user, callback) {
+  dbModels.User.findOne({ username: user.username }, (findErr, dbUser) => {
+    if (findErr) return callback(findErr);
+    callback(null, dbUser.generateJwt({ jwtid: dbUser.nonce }));
+  });
+}
+
 export function getAccessToken(user, callback) {
-  dbModels.User.findOne({ username: user.username }, (err, dbUser) => {
-    if (err) return callback(err);
-    jwt.sign(dbUser.toJSON(), dbUser.key, {
-      expiresIn: '7d'
-    }, token => callback(null, token));
+  insertFactoryModel('Client', {}, (err, client) => {
+    insertFactoryModel('AccessToken', {
+      userId: user.id,
+      clientId: client.id
+    }, callback);
   });
 }
 

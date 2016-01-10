@@ -1,12 +1,13 @@
 import _ from 'lodash';
 import async from 'async';
+import passport from 'passport';
 import { Router } from 'express';
 import resource from './resource';
+import { handleError, buildQuery } from './index';
 import { Transaction } from '../db';
-import { handleError, authenticate, buildQuery } from './index';
 
 const api = new Router();
-api.use(authenticate);
+api.use(passport.authenticate(['jwt', 'bearer'], { session: false }));
 
 api.put('/', (req, res) => {
   const query = buildQuery(Transaction, req);
