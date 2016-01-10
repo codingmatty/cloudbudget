@@ -14,6 +14,19 @@ export function insertFactoryModel(model, attributes, callback) {
   });
 }
 
+Factory.define('AccessToken', function (attributes = {}) {
+  return _.merge({
+    permissions: 'password'
+  }, attributes);
+});
+
+Factory.define('Client', function (attributes = {}) {
+  const {
+    name = this.sequence(i => `Name ${i}`)
+  } = attributes;
+  return _.merge({ name }, dbModels.Client.generateCredentials(), attributes);
+});
+
 Factory.define('User', function (attributes = {}) {
   const {
     username = this.sequence(i => `User ${i}`),
@@ -24,7 +37,7 @@ Factory.define('User', function (attributes = {}) {
     username,
     password,
     email,
-    key: randomKey.generate(12)
+    nonce: randomKey.generate(12)
   }, attributes);
 });
 

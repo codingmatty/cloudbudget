@@ -10,7 +10,7 @@
     "lint": "eslint src",
     "prestart": "npm run build",
     "start": "node ./lib/app",
-    "test": "NODE_ENV=test mocha --compilers js:babel-register",
+    "test": "NODE_ENV=test mocha --require source-map-support/register --compilers js:babel-register",
     "preversion": "npm test",
     "version": "babel src -d dist && git add -A dist",
     "postversion": "git push --tags && rm -rf dist"
@@ -27,6 +27,7 @@
     "bcrypt": "^0.8.5",
     "body-parser": "^1.14.2",
     "compression": "^1.5.2",
+    "connect-ensure-login": "^0.1.1",
     "connect-mongo": "^1.1.0",
     "cookie-parser": "^1.4.0",
     "cors": "^2.7.1",
@@ -36,9 +37,18 @@
     "is_js": "^0.7.4",
     "jsonwebtoken": "^5.5.0",
     "lodash": "^3.10.1",
+    "moment": "^2.11.0",
     "mongo-store": "0.0.2",
     "mongoose": "^4.3.4",
     "morgan": "^1.6.1",
+    "oauth2orize": "^1.2.0",
+    "oauth2orize-jwt-bearer": "^0.1.0",
+    "passport": "^0.3.2",
+    "passport-http": "^0.3.0",
+    "passport-http-bearer": "^1.0.1",
+    "passport-jwt": "^1.2.1",
+    "passport-local": "^1.0.0",
+    "passport-oauth2-client-password": "^0.1.2",
     "random-key": "^0.3.2"
   },
   "devDependencies": {
@@ -52,6 +62,7 @@
     "eslint-config-airbnb": "^2.1.1",
     "mocha": "^2.3.4",
     "source-map-support": "^0.4.0",
-    "supertest": "^1.1.0"
+    "supertest": "^1.1.0",
+    "timekeeper": "0.0.5"
   }
 }

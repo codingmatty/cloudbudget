@@ -1,5 +1,7 @@
 import mongoose, { Types } from 'mongoose';
 import User from './user';
+import Client from './client';
+import AccessToken from './accessToken';
 import Account from './account';
 import Transaction from './transaction';
 import config from '../../config.json';
@@ -19,13 +21,15 @@ export function defaultJSONOptions(specificTransformFunction) {
       if (ret.user) {
         ret.user = ret.user instanceof Types.ObjectId ? ret.user.toString() : ret.user;
       }
-      specificTransformFunction(doc, ret);
+      if (specificTransformFunction) specificTransformFunction(doc, ret);
     }
   };
 }
 
 export {
   User,
+  Client,
+  AccessToken,
   Account,
   Transaction
 };
