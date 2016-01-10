@@ -1,4 +1,5 @@
 import fs from 'fs';
+import moment from 'moment';
 import passport from 'passport';
 import { BasicStrategy } from 'passport-http';
 import { Strategy as JwtStrategy } from 'passport-jwt';
@@ -68,6 +69,7 @@ export default function () {
     AccessToken.findOne({ token }, (tokenFindErr, accessToken) => {
       if (tokenFindErr) { return done(tokenFindErr); }
       if (!accessToken) { return done(null, false); }
+      if (moment(accessToken.date).add(2, 'weeks') < moment()) { return done(null, false); }
       User.findById(accessToken.userId, (userFindErr, user) => {
         if (userFindErr) { return done(userFindErr); }
         if (!user) { return done(null, false); }

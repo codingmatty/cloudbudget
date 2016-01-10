@@ -240,6 +240,13 @@ describe('Users', function () {
 
       });
     });
+    it('should not allow expires access token', function (done) {
+      getAccessToken(this.user, (err, accessToken) => {
+        if (err) return done(err);
+        timekeeper.travel(moment().add(3, 'weeks').toDate());
+        httpClient('get', `users/info`, { accessToken: accessToken.token }, 401, done);
+      });
+    });
     it('should be able to revoke access token', function (done) {
       getAccessToken(this.user, (err, accessToken) => {
         if (err) return done(err);

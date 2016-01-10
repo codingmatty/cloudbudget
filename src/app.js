@@ -5,14 +5,10 @@ import express from 'express';
 import passport from 'passport';
 // import favicon from 'serve-favicon';
 import bodyParser from 'body-parser';
-import session from 'express-session';
 import cookieParser from 'cookie-parser';
-import connectMongo from 'connect-mongo';
 import api from './api';
 import setupPassport from './auth/auth';
-import config from '../config.json';
 
-const MongoStore = connectMongo(session);
 const app = express();
 
 // view engine setup
@@ -27,16 +23,6 @@ if (app.get('env') === 'development') {
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-
-app.use(session({
-  secret: 'this is a big long secret. sshhhh!',
-  resave: false,
-  saveUninitialized: false,
-  store: new MongoStore({
-    url: config[app.get('env')].db,
-    ttl: 7 * 24 * 60 * 60 // 1 week
-  })
-}));
 
 app.use(passport.initialize());
 app.use(passport.session());
