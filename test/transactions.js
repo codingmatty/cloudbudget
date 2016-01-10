@@ -2,8 +2,8 @@ import _ from 'lodash';
 import async from 'async';
 import { Types } from 'mongoose';
 import { assert, factory } from 'chai';
-import { Account, Transaction } from '../src/db';
 import { clearCollections, httpClient, getJwtToken, insertFactoryModel } from './helpers';
+import { Account, Transaction } from '../src/db';
 
 describe('Transactions', function () {
   beforeEach(function (done) {

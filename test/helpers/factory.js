@@ -1,9 +1,9 @@
 import _ from 'lodash';
-import bcrypt from 'bcrypt';
 import chai from 'chai';
+import bcrypt from 'bcrypt';
+import randomKey from 'random-key';
 import chaiJsFactories from 'chai-js-factories';
 import * as dbModels from '../../src/db';
-import randomKey from 'random-key';
 
 chai.use(chaiJsFactories);
 const Factory = chai.factory;

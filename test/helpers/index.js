@@ -1,8 +1,8 @@
 import 'source-map-support/register';
-import app from '../../src/app';
+import request from 'supertest';
 import { insertFactoryModel } from './factory';
 import db, * as dbModels from '../../src/db';
-import request from 'supertest';
+import app from '../../src/app';
 
 function clearDb() {
   const collections = db.connection.collections;
@@ -38,10 +38,13 @@ export function clearCollections(collections = []) {
   });
 }
 
-export function httpClient(method, url, { accessToken, jwtToken, body }, expectedStatus, callback) {
+export function httpClient(method, url, { accessToken, basicToken, jwtToken, body }, expectedStatus, callback) {
   const actualRequest = request(server)[method]('/api/v1/' + url);
   if (accessToken) {
     actualRequest.set('Authorization', `Bearer ${accessToken}`);
+  }
+  if (basicToken) {
+    actualRequest.set('Authorization', `Basic ${basicToken}`);
   }
   if (jwtToken) {
     actualRequest.set('Authorization', `JWT ${jwtToken}`);

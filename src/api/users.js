@@ -6,7 +6,7 @@ import { User, AccessToken } from '../db';
 
 const api = new Router();
 
-api.post('/register', (req, res) => {
+api.post('/register', passport.authenticate(['basic', 'oauth2-client-password'], { session: false }), (req, res) => {
   const newUser = _.merge(req.body, { password: User.hashPassword(req.body.password) });
   User.create(newUser, (createErr, user) => {
     if (createErr) { return handleError(createErr, res, 'create', 'User'); }

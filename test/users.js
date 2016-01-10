@@ -1,11 +1,11 @@
 import _ from 'lodash';
-import { Types } from 'mongoose';
-import { clearCollections, httpClient, getJwtToken, getAccessToken, insertFactoryModel } from './helpers';
-import { assert, factory } from 'chai';
 import bcrypt from 'bcrypt';
-import db, { User, Client, AccessToken } from '../src/db';
-import timekeeper from 'timekeeper';
 import moment from 'moment';
+import timekeeper from 'timekeeper';
+import { Types } from 'mongoose';
+import { assert, factory } from 'chai';
+import { clearCollections, httpClient, getJwtToken, getAccessToken, insertFactoryModel } from './helpers';
+import { User, Client, AccessToken } from '../src/db';
 
 describe('Users', function () {
   beforeEach(function (done) {
@@ -76,8 +76,22 @@ describe('Users', function () {
     });
   });
   describe('Register', function () {
+    beforeEach(function (done) {
+      const newClient = _.merge({
+        name: 'Test Client',
+        permissions: ['password', 'code']
+      }, Client.generateCredentials());
+      Client.create(newClient, (err) => {
+        if (err) return done(err);
+        this.basicToken = new Buffer(`${newClient.clientId}:${newClient.secret}`).toString('base64');
+        done();
+      });
+    });
+    afterEach(function () {
+      clearCollections(['clients']);
+    });
     it('should register a user', function (done) {
-      httpClient('post', 'users/register', { body: factory.create('User') }, 201, (err, res) => {
+      httpClient('post', 'users/register', { basicToken: this.basicToken, body: factory.create('User') }, 201, (err, res) => {
         if (err) return done(err);
         assert.equal(res.body.message, 'Success! User created.');
         assert(Types.ObjectId.isValid(res.body.data.id));
@@ -87,7 +101,7 @@ describe('Users', function () {
       });
     });
     it('should not register a duplicate username', function (done) {
-      httpClient('post', 'users/register', { body: factory.create('User', { username: 'test' }) }, 400, (err, res) => {
+      httpClient('post', 'users/register', { basicToken: this.basicToken, body: factory.create('User', { username: 'test' }) }, 400, (err, res) => {
         if (err) return done(err);
         assert.equal(res.body.message, 'Error! Unable to create User.');
         assert.equal(res.body.error.username, `username 'test' already exists.`);
@@ -95,7 +109,7 @@ describe('Users', function () {
       });
     });
     it('should not register a duplicate email', function (done) {
-      httpClient('post', 'users/register', { body: factory.create('User', { email: 'test@test.com' }) }, 400, (err, res) => {
+      httpClient('post', 'users/register', { basicToken: this.basicToken, body: factory.create('User', { email: 'test@test.com' }) }, 400, (err, res) => {
         if (err) return done(err);
         assert.equal(res.body.message, 'Error! Unable to create User.');
         assert.equal(res.body.error.email, `email 'test@test.com' already exists.`);
@@ -103,7 +117,7 @@ describe('Users', function () {
       });
     });
     it('should not register an invalid email', function (done) {
-      httpClient('post', 'users/register', { body: factory.create('User', { email: 'test' }) }, 400, (err, res) => {
+      httpClient('post', 'users/register', { basicToken: this.basicToken, body: factory.create('User', { email: 'test' }) }, 400, (err, res) => {
         if (err) return done(err);
         assert.equal(res.body.message, 'Error! Unable to create User.');
         assert.equal(res.body.error.email, 'test is not a valid email address.');
