@@ -1,8 +1,8 @@
 import _ from 'lodash';
 import passport from 'passport';
 import { Router } from 'express';
-import { User, AccessToken } from '../db';
 import { handleError } from './index';
+import { User, AccessToken } from '../db';
 
 const api = new Router();
 

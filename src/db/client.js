@@ -1,5 +1,6 @@
-import randomKey from 'random-key';
+import is from 'is_js';
 import bcrypt from 'bcrypt';
+import randomKey from 'random-key';
 import mongoose, { Schema } from 'mongoose';
 import { defaultJSONOptions } from './';
 
@@ -7,7 +8,13 @@ const clientSchema = new Schema({
   name: { type: String, required: true, unique: true },
   clientId: { type: String, required: true, unique: true },
   clientSecret: { type: String, required: true, unique: true },
-  permissions: [{ type: String, enum: ['password', 'code'] }]
+  permissions: [{ type: String, enum: ['password', 'code'] }],
+  redirectUrl: { type: String,
+    validate: {
+      validator: (value) => {return is.url(value);},
+      message: '{VALUE} is not a valid url address.'
+    }
+  }
 }, {
   toJSON: defaultJSONOptions()
 });

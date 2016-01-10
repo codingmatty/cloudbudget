@@ -1,8 +1,8 @@
 import mongoose, { Types } from 'mongoose';
 import User from './user';
 import Client from './client';
-import AccessToken from './accessToken';
 import Account from './account';
+import AccessToken from './accessToken';
 import Transaction from './transaction';
 import config from '../../config.json';
 

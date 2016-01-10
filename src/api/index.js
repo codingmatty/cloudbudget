@@ -1,5 +1,5 @@
-import { Router } from 'express';
 import inflection from 'inflection';
+import { Router } from 'express';
 import users from './users';
 import oauth2 from './oauth2';
 import accounts from './accounts';
@@ -48,38 +48,6 @@ export function handleError(err, res, method, model) {
 export function getInclusions(req) {
   return Array.isArray(req.query.include) ? req.query.include.join(' ') : req.query.include || '';
 }
-
-
-// export function authenticate(req, res, next) {
-//   const token = req.body.token || req.query.token || req.headers['x-access-token'];
-
-//   if (!token) {
-//     return res.status(401).send({
-//       message: 'Unauthorized Action! No Token Provided.'
-//     });
-//   }
-//   function failedToAuthenticate(tokenExpired) {
-//     res.status(401).send({
-//       message: tokenExpired ? 'Token Expired.' : 'Failed to authenticate token.'
-//     });
-//   }
-//   const userId = jwt.decode(token).id;
-//   if (!userId || !Types.ObjectId.isValid(userId)) {
-//     return failedToAuthenticate();
-//   }
-//   User.findById(userId, (queryErr, user) => {
-//     if (queryErr) {
-//       return failedToAuthenticate();
-//     }
-//     jwt.verify(token, user.key, (jwtErr, decodedUser) => {
-//       if (jwtErr || userId !== decodedUser.id) {
-//         return failedToAuthenticate(jwtErr.name === 'TokenExpiredError');
-//       }
-//       req.user = decodedUser;
-//       next();
-//     });
-//   });
-// }
 
 export function buildQuery(Model, req) {
   const query = {};

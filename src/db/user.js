@@ -1,8 +1,8 @@
 import _ from 'lodash';
 import fs from 'fs';
 import is from 'is_js';
-import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 import randomKey from 'random-key';
 import mongoose, { Schema } from 'mongoose';
 import { defaultJSONOptions } from './';

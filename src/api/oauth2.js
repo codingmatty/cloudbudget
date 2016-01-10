@@ -1,7 +1,7 @@
 import passport from 'passport';
 import { Router } from 'express';
-import { Client } from '../db';
 import server from '../auth/oauth2';
+import { Client } from '../db';
 
 const api = new Router();
 
@@ -24,10 +24,7 @@ const api = new Router();
 api.get('/authorization', passport.authenticate('jwt', { session: false }), server.authorization((clientId, redirectURI, done) => {
   Client.findById(clientId, (err, client) => {
     if (err) { return done(err); }
-    // WARNING: For security purposes, it is highly advisable to check that
-    //          redirectURI provided by the client matches one registered with
-    //          the server.  For simplicity, this example does not.  You have
-    //          been warned.
+    if (client.redirectUrl !== redirectURI) { return done(null, client, false); }
     return done(null, client, redirectURI);
   });
 }), (req, res) => {

@@ -3,8 +3,8 @@ import async from 'async';
 import passport from 'passport';
 import { Router } from 'express';
 import resource from './resource';
-import { Transaction } from '../db';
 import { handleError, buildQuery } from './index';
+import { Transaction } from '../db';
 
 const api = new Router();
 api.use(passport.authenticate(['jwt', 'bearer'], { session: false }));

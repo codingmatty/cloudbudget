@@ -1,15 +1,15 @@
 import 'source-map-support/register';
-import express from 'express';
 // import path from 'path';
-// import favicon from 'serve-favicon';
-import passport from 'passport';
-import setupPassport from './auth/auth';
 import logger from 'morgan';
-import cookieParser from 'cookie-parser';
+import express from 'express';
+import passport from 'passport';
+// import favicon from 'serve-favicon';
 import bodyParser from 'body-parser';
 import session from 'express-session';
+import cookieParser from 'cookie-parser';
 import connectMongo from 'connect-mongo';
 import api from './api';
+import setupPassport from './auth/auth';
 import config from '../config.json';
 
 const MongoStore = connectMongo(session);

@@ -1,7 +1,7 @@
 import _ from 'lodash';
+import passport from 'passport';
 import { Router } from 'express';
 import * as db from '../db';
-import passport from 'passport';
 import { handleError, getInclusions, buildQuery } from './index';
 
 export function listMethod(api, model, shouldAuthenticate, callback) {

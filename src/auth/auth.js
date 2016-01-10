@@ -1,9 +1,9 @@
 import fs from 'fs';
 import passport from 'passport';
-import { Strategy as JwtStrategy } from 'passport-jwt';
 import { BasicStrategy } from 'passport-http';
-import { Strategy as ClientPasswordStrategy } from 'passport-oauth2-client-password';
+import { Strategy as JwtStrategy } from 'passport-jwt';
 import { Strategy as BearerStrategy } from 'passport-http-bearer';
+import { Strategy as ClientPasswordStrategy } from 'passport-oauth2-client-password';
 import { User, Client, AccessToken } from '../db';
 
 export default function () {
