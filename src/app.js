@@ -1,5 +1,7 @@
 import 'source-map-support/register';
+import fs from 'fs';
 // import path from 'path';
+import https from 'https';
 import logger from 'morgan';
 import express from 'express';
 import passport from 'passport';
@@ -48,10 +50,23 @@ app.use((err, req, res) => {
 });
 
 const port = process.env.PORT || 8080;
-const server = app.listen(port, () => {
-  const host = server.address().address;
-  /* eslint-disable no-console */
-  console.log('Example app listening at %s:%s', host, port);
-});
+if (app.get('env') === 'production') {
+  const options = {
+    key: fs.readFileSync('private.cloudbudget.pem'),
+    cert: fs.readFileSync('0001_chain.pem')
+  };
+  const server = https.createServer(options, app);
+  server.listen(port, () => {
+    const host = server.address().address;
+    /* eslint-disable no-console */
+    console.log('Example app listening at %s:%s', host, port);
+  });
+} else {
+  const server = app.listen(port, () => {
+    const host = server.address().address;
+    /* eslint-disable no-console */
+    console.log('Example app listening at %s:%s', host, port);
+  });
+}
 
 export default app;

@@ -2,3 +2,8 @@ node_modules
 lib
 report
 public
+
+0000_cert.pem
+0000_chain.pem
+0001_chain.pem
+private.cloudbudget.pem
