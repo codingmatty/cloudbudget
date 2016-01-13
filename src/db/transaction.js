@@ -2,7 +2,7 @@ import mongoose, { Schema, Types } from 'mongoose';
 import { defaultJSONOptions, Account } from './';
 
 const transactionSchema = new Schema({
-  date: { type: Date, default: new Date() },
+  date: { type: Date, default: Date.now },
   state: { type: String, enum: ['none', 'cleared', 'reconciled'], required: true },
   payee: { type: String, required: true },
   amount: { type: Number, required: true },

@@ -16,6 +16,8 @@ export function insertFactoryModel(model, attributes, callback) {
 
 Factory.define('AccessToken', function (attributes = {}) {
   return _.merge({
+    token: randomKey.generate(12),
+    refreshToken: randomKey.generate(12),
     permissions: 'password'
   }, attributes);
 });
@@ -37,7 +39,7 @@ Factory.define('User', function (attributes = {}) {
     username,
     password,
     email,
-    nonce: randomKey.generate(12)
+    nonce: { key: randomKey.generate(12) }
   }, attributes);
 });
 

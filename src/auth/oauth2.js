@@ -88,10 +88,10 @@ server.exchange(oauth2orize.exchange.password((client, username, password, scope
       if (findUserErr) { return done(findUserErr); }
       if (!user) { return done(null, false); }
       if (!user.verifyPassword(password)) { return done(null, false); }
-      AccessToken.create({
+      AccessToken.create(_.merge({
         clientId: client.id,
         userId: user.id
-      }, (err, accessToken) => {
+      }, AccessToken.generateTokens()), (err, accessToken) => {
         if (err) { return done(err); }
         done(null, accessToken.token);
       });
@@ -113,10 +113,10 @@ server.exchange(oauth2orize.exchange.code((client, code, redirectURI, done) => {
   if (!_.includes(client.permissions, 'code')) { return done(null, false); }
   if (redirectURI !== authCode.redirectURI) { return done(null, false); }
   delete authorizationCodes[code];
-  AccessToken.create({
+  AccessToken.create(_.merge({
     userId: authCode.userId,
     clientId: authCode.clientId
-  }, (saveErr, accessToken) => {
+  }, AccessToken.generateTokens()), (saveErr, accessToken) => {
     if (saveErr) { return done(saveErr); }
     done(null, accessToken.token);
   });

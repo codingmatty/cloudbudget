@@ -29,7 +29,7 @@ export default function () {
     User.findOne({ _id: jwtPayload.id }, (err, user) => {
       if (err) { return done(err); }
       if (!user) { return done(null, false); }
-      if (user.nonce !== jwtPayload.jti) { return done(null, false); }
+      if (!user.verifyNonce(jwtPayload.jti)) { return done(null, false); }
       return done(null, user);
     });
   }));

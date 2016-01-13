@@ -13,7 +13,7 @@ describe('Users', function () {
       username: 'test',
       password: bcrypt.hashSync('test', 8),
       email: 'test@test.com',
-      nonce: 'abcdef012345'
+      nonce: { key: 'abcdef012345' }
     }, (err, user) => {
       if (err) return done(err);
       getJwtToken(user, (tokenErr, token) => {
@@ -26,6 +26,7 @@ describe('Users', function () {
   });
   afterEach(function () {
     clearCollections(['users']);
+    timekeeper.reset();
   });
   it('should login a user', function (done) {
     httpClient('post', 'users/login', {
@@ -187,7 +188,7 @@ describe('Users', function () {
       });
     });
     afterEach(function () {
-      clearCollections(['clients']);
+      clearCollections(['clients', 'accesstokens']);
     });
     describe('Password Exchange', function () {
       it('should provide access token', function (done) {
