@@ -3,20 +3,26 @@ import moment from 'moment';
 import passport from 'passport';
 import { BasicStrategy } from 'passport-http';
 import { Strategy as JwtStrategy } from 'passport-jwt';
+import { Strategy as LocalStrategy } from 'passport-local';
 import { Strategy as BearerStrategy } from 'passport-http-bearer';
 import { Strategy as ClientPasswordStrategy } from 'passport-oauth2-client-password';
 import { User, Client, AccessToken } from '../db';
 
 export default function () {
-  passport.serializeUser((user, done) => {
-    done(null, user.id);
-  });
-
-  passport.deserializeUser((id, done) => {
-    User.findById(id, (err, user) => {
-      done(err, user);
+  passport.use(new LocalStrategy({ session: false }, (username, password, done) => {
+    User.findOne({ username }, (err, user) => {
+      if (err) { return done(err); }
+      if (!user) { return done(null, false); }
+      if (!user.verifyPassword(password)) { return done(null, false); }
+      const token = user.generateJwt();
+      user.save((saveErr) => { // Save nonce generated for JWT
+        if (saveErr) { return done(saveErr); }
+        user.token = token;
+        done(null, user);
+      });
     });
-  });
+  }));
+
   const key = fs.readFileSync(__dirname + '//../../public.pem').toString();
   passport.use(new JwtStrategy({
     secretOrKey: key,

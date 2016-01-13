@@ -35,21 +35,11 @@ api.get('/info', passport.authenticate(['jwt', 'bearer'], { session: false }), (
   res.status(200).send({ data: req.user });
 });
 
-api.post('/login', (req, res) => {
-  const username = req.body.username;
-  const password = req.body.password;
-  User.findOne({ username }, (queryErr, user) => {
-    if (queryErr || !user) { return handleError(queryErr, res, 'login', 'User'); }
-    if (!user.verifyPassword(password)) { return handleError(new Error('Authentication Error'), res, 'login', 'User'); }
-    const token = user.generateJwt();
-    user.save((saveErr) => { // Save nonce generated for JWT
-      if (saveErr) { return handleError(saveErr, res, 'login', 'User'); }
-      res.status(200).send({
-        message: 'Login Succeeded!',
-        data: user,
-        token
-      });
-    });
+api.post('/login', passport.authenticate('local', { session: false }), (req, res) => {
+  res.status(200).send({
+    message: 'Login Succeeded!',
+    data: req.user,
+    token: req.user.token
   });
 });
 

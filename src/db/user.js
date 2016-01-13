@@ -37,6 +37,7 @@ const userSchema = new Schema({
   toJSON: defaultJSONOptions((doc, ret) => {
     delete ret.password;
     delete ret.nonce;
+    delete ret.verified;
   })
 });
 

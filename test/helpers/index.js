@@ -60,7 +60,12 @@ export function httpClient(method, url, { accessToken, basicToken, jwtToken, bod
 export function getJwtToken(user, callback) {
   dbModels.User.findOne({ username: user.username }, (findErr, dbUser) => {
     if (findErr) return callback(findErr);
-    callback(null, dbUser.generateJwt({ jwtid: dbUser.nonce.key }));
+    callback(null, dbUser.generateJwt({
+      issuer: 'admin@cloudbudget.io',
+      audience: 'cloudbudget.io',
+      algorithms: ['RS256'],
+      jwtid: dbUser.nonce.key
+    }));
   });
 }
 
