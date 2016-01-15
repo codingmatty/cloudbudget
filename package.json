@@ -13,7 +13,7 @@
     "test": "NODE_ENV=test mocha --compilers js:babel-register",
     "preversion": "npm install && npm test && npm run lint",
     "version": "npm run build && git add -Af dist",
-    "postversion": "git push && git push --tags && git rm -r dist && git commit -m 'Clean Build v%s'"
+    "postversion": "git push && git push --tags && git rm -r dist && git commit -m 'Clean Build' && git push"
   },
   "repository": {
     "type": "git",
