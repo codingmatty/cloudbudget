@@ -1,19 +1,19 @@
 {
   "name": "cloudbudget",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "CloudBudget",
   "main": "index.js",
   "scripts": {
-    "build": "babel src -d lib --source-maps",
-    "watch": "babel src -d lib --source-maps -w",
-    "dev": "concurrent 'npm run watch' 'nodemon -d 1 -w lib ./lib/app'",
-    "lint": "eslint src",
+    "watch": "./node_modules/.bin/babel src -d dist --source-maps -w",
+    "dev": "concurrent 'npm run watch' 'nodemon -d 1 -w dist ./dist/app'",
+    "build": "./node_modules/.bin/babel src -d dist",
     "prestart": "npm run build",
-    "start": "node ./lib/app",
+    "start": "NODE_ENV=production POST=8279 forever start -a -l cloudbudget ./dist/app.js",
+    "lint": "eslint src",
     "test": "NODE_ENV=test mocha --compilers js:babel-register",
-    "preversion": "npm test",
-    "version": "babel src -d dist && git add -A dist",
-    "postversion": "git push --tags && rm -rf dist"
+    "preversion": "npm install && npm test && npm run lint",
+    "version": "npm run build && git add -Af dist",
+    "postversion": "git push && git push --tags && git rm -r dist && git commit -m 'Clean Build v%s'"
   },
   "repository": {
     "type": "git",
