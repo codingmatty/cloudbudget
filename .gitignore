@@ -1,9 +1,11 @@
 node_modules
 dist
 report
-public
 
 0000_cert.pem
 0000_chain.pem
 0001_chain.pem
 private.cloudbudget.pem
+
+.DS_Store
+npm-debug.log
