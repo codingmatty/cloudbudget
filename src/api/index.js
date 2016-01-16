@@ -19,6 +19,10 @@ api.use('/oauth2', oauth2);
 api.use('/accounts', accounts);
 api.use('/transactions', transactions);
 
+api.use((req, res) => {
+  res.status(404).send();
+});
+
 export function handleError(err, res, method, model) {
   let errorObj = err;
   if (err) {

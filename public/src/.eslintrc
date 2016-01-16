@@ -1,0 +1,17 @@
+{
+  // I want to use babel-eslint for parsing!
+  "extends": "airbnb/base",
+  "parser": "babel-eslint",
+  "env": {
+    "browser": true,
+    "node": true,
+    "es6": true
+  },
+  // To give you an idea how to override rule options:
+  "rules": {
+    // disable requiring trailing commas because it might be nice to revert to
+    // being JSON at some point, and I don't want to make big changes now.
+    "comma-dangle": 0,
+    "no-console": 1
+  }
+}

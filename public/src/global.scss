@@ -1,0 +1,13 @@
+@import './lib/bootstrap-4.0.0-alpha.2/scss/bootstrap';
+
+body {
+  overflow: hidden;
+  font-family: Helvetica, sans-serif;
+  background: lightblue;
+}
+
+.v-link-active {
+  @extend .active;
+}
+
+@import './app';
