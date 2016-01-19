@@ -28,6 +28,7 @@
     "karma-phantomjs-launcher": "^0.2.1",
     "karma-spec-reporter": "0.0.23",
     "karma-webpack": "^1.7.0",
+    "lodash": "^4.0.0",
     "node-sass": "^3.4.2",
     "phantomjs": "^1.9.19",
     "rimraf": "^2.5.0",
@@ -37,6 +38,7 @@
     "vue": "^1.0.0",
     "vue-resource": "^0.6.1",
     "vue-router": "^0.7.8",
+    "vuex": "^0.2.0",
     "webpack": "^1.12.2"
   }
 }

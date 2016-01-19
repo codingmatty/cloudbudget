@@ -1,0 +1,24 @@
+nav#navbar {
+  @extend .navbar;
+  @extend .navbar-fixed-top;
+  @extend .navbar-light;
+  @extend .bg-faded;
+  #brand {
+    @extend .navbar-brand;
+  }
+  .links {
+    @extend .nav;
+    @extend .navbar-nav;
+    @extend .pull-xs-right;
+    .link-item {
+      @extend .nav-item;
+      a {
+        @extend .nav-link;
+        &.dropdown-toggle, &.dropdown-item {
+          color: black;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}

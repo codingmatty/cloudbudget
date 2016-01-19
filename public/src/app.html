@@ -1,15 +1,5 @@
 <div id="app">
-  <nav>
-    <a id="brand" href="#">CloudBudget</a>
-    <ul class="links">
-      <li class="link-item">
-        <a v-link="{ name: 'dashboard', exact: true }">Home</a>
-      </li>
-      <li class="link-item">
-        <a v-link="{ name: 'login' }">User</a>
-      </li>
-    </ul>
-  </nav>
+  <navbar></navbar>
   <div class="content">
     <router-view></router-view>
   </div>

@@ -1,3 +1,18 @@
-<div>
-  This is where a <strong>login form</strong> will go...
+<div id="login" class="container">
+  <div class="row">
+    <form class="col-md-4  col-md-push-4 card">
+      <div class="card-block">
+        <div class="form-group">
+          <h5><strong><label for="username" class="card-title">Username:</label></strong></h5>
+          <input type="text" class="form-control" id="username" v-model="username" placeholder="Username">
+        </div>
+        <div class="form-group">
+          <h5><strong><label for="password" class="card-title">Password</label></strong></h5>
+          <input type="password" class="form-control" id="password" v-model="password" placeholder="Password">
+        </div>
+        <div v-if="error">{{error}}</div>
+        <button type="button" class="btn btn-primary center-block" @click="loginUser(username, password)">Login</button>
+      </div>
+    </form>
+  </div>
 </div>

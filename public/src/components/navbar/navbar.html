@@ -1,0 +1,21 @@
+<nav id="navbar">
+  <a id="brand" href="#">CloudBudget</a>
+  <ul class="links">
+    <li class="link-item">
+      <a v-link="{ name: 'dashboard', exact: true }">Home</a>
+    </li>
+    <li class="link-item">
+      <a v-link="{ name: 'login' }" v-if="!user">Login</a>
+      <div class="dropdown" v-else>
+        <a class="dropdown-toggle" data-toggle="dropdown">
+          User
+        </a>
+        <div class="dropdown-menu">
+          <a class="dropdown-item" v-link="{ name: 'user' }">Info</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" @click="logoutUser">Logout</a>
+        </div>
+      </div>
+    </li>
+  </ul>
+</nav>

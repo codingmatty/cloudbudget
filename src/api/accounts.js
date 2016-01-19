@@ -9,7 +9,7 @@ import { Account } from '../db';
 const api = new Router();
 api.use(passport.authenticate(['jwt', 'bearer'], { session: false }));
 
-// GET - List
+// GET - List (with Balance)
 listMethod(api, 'Account', true, (req, res, accounts) => {
   async.map(accounts, (account, callback) => {
     account.getBalance((err, balance) => {
@@ -22,7 +22,7 @@ listMethod(api, 'Account', true, (req, res, accounts) => {
   });
 });
 
-// GET - Show
+// GET - Show (with Balance)
 showMethod(api, 'Account', true, (req, res, account) => {
   account.getBalance((err, balance) => {
     const normalizedAccount = account.toJSON();
@@ -31,6 +31,7 @@ showMethod(api, 'Account', true, (req, res, account) => {
   });
 });
 
+// Update Multiple
 api.put('/', (req, res) => {
   const query = buildQuery(Account, req);
   query.user = req.user.id;

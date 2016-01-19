@@ -1,4 +1,6 @@
+@import '_variables';
 @import './lib/bootstrap-4.0.0-alpha.2/scss/bootstrap';
+
 
 body {
   overflow: hidden;
@@ -11,3 +13,4 @@ body {
 }
 
 @import './app';
+@import './components/login/login';

@@ -1,31 +1,12 @@
-import { Vue, VueRouter } from './global';
-import { login, dashboard } from './components';
-
-Vue.use(VueRouter);
+import router from './router';
+import { navbar } from './components';
 
 const App = {
   template: require('./App.html'),
   components: {
-    login,
-    dashboard
+    navbar
   }
 };
-
-const router = new VueRouter({
-  hashbang: false,
-  history: true
-});
-
-router.map({
-  '/login': {
-    name: 'login',
-    component: login
-  },
-  '/': {
-    name: 'dashboard',
-    component: dashboard
-  }
-});
 
 router.start(App, 'app');
 

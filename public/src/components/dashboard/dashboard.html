@@ -1,3 +1,7 @@
 <div>
-  This is where a <strong>dashboard</strong> view will go...
+  <div v-if="accounts && accounts.length">
+    Number of accounts: {{accounts.length}}
+    <div v-for="account in accounts">{{account.name}}</div>
+  </div>
+  <div v-else>No Accounts</div>
 </div>
