@@ -1,16 +1,10 @@
-import store from '../../store';
-const {
-  getAccounts
-} = store.actions;
+import accounts from './accounts';
+import transactions from './transactions';
 
 export default {
   template: require('./dashboard.html'),
-  ready() {
-    getAccounts();
-  },
-  computed: {
-    accounts() {
-      return store.state.accountsState.accounts;
-    }
+  components: {
+    accounts,
+    transactions
   }
 };

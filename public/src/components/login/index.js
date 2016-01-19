@@ -24,7 +24,7 @@ export default {
           user: response.data.data,
           token: response.data.token
         });
-        router.go('/');
+        router.go('/accounts');
       }).catch((response) => {
         setUser({
           user: null,

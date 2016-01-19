@@ -17,7 +17,7 @@ router.map({
     component: user,
     auth: true
   },
-  '/': {
+  '/accounts': {
     name: 'dashboard',
     component: dashboard,
     auth: true
@@ -28,7 +28,7 @@ router.beforeEach(({ to, next, redirect }) => {
   if (to.auth && !store.state.userState.user) {
     redirect('/login');
   } else if (to.path === '/login' && store.state.userState.user) {
-    redirect('/');
+    redirect('/accounts');
   } else {
     next();
   }

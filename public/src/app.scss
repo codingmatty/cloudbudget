@@ -1,7 +1,14 @@
 #app {
+  height: 100%;
+  width: 100%;
+  position: fixed;
+  top: 54px;
+
   .content {
-    margin-top: 54px;
+    @extend .container-fluid;
+    height: 100%;
+    padding: 0;
   }
 }
 
-@import './components/navbar/navbar';
+@import './components/components';

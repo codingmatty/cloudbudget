@@ -1,7 +1,4 @@
-<div>
-  <div v-if="accounts && accounts.length">
-    Number of accounts: {{accounts.length}}
-    <div v-for="account in accounts">{{account.name}}</div>
-  </div>
-  <div v-else>No Accounts</div>
+<div id="dashboard" class="row">
+  <accounts class="col-lg-3 col-md-4"></accounts>
+  <transactions class="col-lg-9 col-md-8"></transactions>
 </div>

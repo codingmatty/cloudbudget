@@ -1,0 +1,7 @@
+<div id="transactions">
+  <div v-if="transactions && transactions.length">
+    Number of transactions: {{transactions.length}}
+    <div v-for="transaction in transactions">{{transaction.name}}</div>
+  </div>
+  <div v-else>No Transactions</div>
+</div>

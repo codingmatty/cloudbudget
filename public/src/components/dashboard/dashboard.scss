@@ -1,0 +1,11 @@
+@import './accounts/accounts';
+@import './transactions/transactions';
+
+#dashboard {
+  height: 100%;
+  margin: 0;
+  accounts, transactions {
+    padding: 0;
+    display: inherit;
+  }
+}

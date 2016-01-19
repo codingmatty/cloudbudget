@@ -1,0 +1,14 @@
+<div id="accounts">
+  <div class="title">
+    <h3 class="pull-xs-left">Accounts</h3>
+    <button id="add-account" class="pull-xs-right btn btn-info">+</button>
+  </div>
+  <ul class="list-group">
+    <li v-for="(name, group) in groups">
+      <span class="list-group-item">{{name}}</span>
+      <ul class="list-group">
+        <li class="list-group-item" v-for="account in group">{{account.name}}</li>
+      </ul>
+    </li>
+  </ul>
+</div>

@@ -5,6 +5,12 @@ const App = {
   template: require('./App.html'),
   components: {
     navbar
+  },
+  data() {
+    return {
+    };
+  },
+  methods: {
   }
 };
 
