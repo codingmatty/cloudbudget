@@ -11,7 +11,7 @@ import { defaultJSONOptions } from './';
 
 const nonceSchema = new Schema({
   key: { type: String, required: true },
-  date: { type: Date, default: Date.now, expires: '1d' }
+  date: { type: Date, default: Date.now }
 });
 
 const userSchema = new Schema({

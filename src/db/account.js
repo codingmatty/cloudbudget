@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import async from 'async';
-import mongoose, { Schema, Types } from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 import { defaultJSONOptions, Transaction } from './';
 
 const accountSchema = new Schema({
@@ -9,21 +9,26 @@ const accountSchema = new Schema({
   type: { type: String, enum: ['savings', 'checking', 'credit_card', 'loan', 'investment'], required: true },
   budget: { type: Boolean, required: true },
   notes: String,
-  user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-  transactions: [{ type: Schema.Types.ObjectId, ref: 'Transaction' }]
+  user: { type: Schema.Types.ObjectId, ref: 'User', required: true }
 }, {
-  toJSON: defaultJSONOptions((doc, ret) => {
-    ret.transactions = ret.transactions.map(transaction => transaction instanceof Types.ObjectId ? transaction.toString() : transaction);
-  })
+  toJSON: defaultJSONOptions()
 });
 
 accountSchema.static('readonlyProps', () => {
-  return ['transactions', 'user'];
+  return ['user'];
 });
+
+accountSchema.methods.getTransactions = function getTransactions(done) {
+  const account = this;
+  Transaction.find({ account: account.id }, (err, transactions) => {
+    if (err) return done(err);
+    done(null, transactions);
+  });
+};
 
 accountSchema.methods.getBalance = function getBalance(done) {
   const account = this;
-  Transaction.find({ account: account.id }, (err, transactions) => {
+  account.getTransactions((err, transactions) => {
     if (err) return done(err);
     done(null, _.sum(transactions, 'amount'));
   });
@@ -33,7 +38,7 @@ const Account = mongoose.model('Account', accountSchema);
 
 Account.schema.post('remove', (account, next) => {
   // Remove all transactions that are apart of this account
-  Transaction.find({ account: account.id }, (err, transactions) => {
+  account.getTransactions((err, transactions) => {
     if (err) return next(err);
     async.each(transactions, (transaction, done) => {
       transaction.remove(done);

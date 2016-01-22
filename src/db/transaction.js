@@ -18,28 +18,10 @@ const transactionSchema = new Schema({
 });
 
 transactionSchema.static('readonlyProps', () => {
-  return ['user', 'account'];
+  return ['user'];
 });
 
-transactionSchema.pre('save', function addTransactionIdToAccount(next) {
-  const transaction = this;
-  Account.findById(transaction.account, (err, account) => {
-    if (err) return next(err);
-    account.transactions.push(transaction.id);
-    account.save(next);
-  });
-});
-
-transactionSchema.post('remove', (transaction, next) => {
-  Account.findById(transaction.account, (err, account) => {
-    if (!account) return next();
-    const index = account.transactions.indexOf(transaction.id);
-    account.transactions.splice(index, 1);
-    account.save(next);
-  });
-});
-
-transactionSchema.path('account').validate(function validateTransactionAccount(value, next) {
+transactionSchema.path('account').validate(function validateAccount(value, next) {
   const transaction = this;
   Account.findOne({ _id: value, user: transaction.user }, (err, account) => {
     if (!account) {

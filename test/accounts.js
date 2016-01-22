@@ -53,7 +53,6 @@ describe('Accounts', function () {
       this.transactions = _.sortBy(transactions, 'id');
       this.accounts.forEach(account => {
         const accountTransactions = this.transactions.filter(transaction => transaction.account === account.id);
-        account.transactions = _.pluck(accountTransactions, 'id');
         account.balance = _.sum(accountTransactions, 'amount');
       });
       this.account = _.sample(this.accounts);
@@ -65,9 +64,7 @@ describe('Accounts', function () {
   });
   describe('Create', function () {
     it('should create an account', function (done) {
-      const newAccount = factory.create('Account', {
-        transactions: []
-      });
+      const newAccount = factory.create('Account');
       httpClient('post', `accounts`, { jwtToken: this.user.token, body: newAccount }, 201, (err, res) => {
         if (err) return done(err);
         assert.isUndefined(res.body.data._id);
@@ -99,18 +96,16 @@ describe('Accounts', function () {
     it('should return a single account', function (done) {
       httpClient('get', `accounts/${this.account.id}`, { jwtToken: this.user.token }, 200, (err, res) => {
         if (err) return done(err);
-        res.body.data.transactions.sort();
         assert.deepEqual(res.body.data, this.account);
         done();
       });
     });
     it('should include references', function (done) {
-      httpClient('get', `accounts/${this.account.id}?include=transactions`, { jwtToken: this.user.token }, 200, (err, res) => {
+      httpClient('get', `accounts/${this.account.id}?include=user`, { jwtToken: this.user.token }, 200, (err, res) => {
         if (err) return done(err);
         const account = _.merge(this.account, {
-          transactions: _.map(this.account.transactions, transactionId => _.find(this.transactions, 'id', transactionId))
+          user: _.omit(this.user, 'token')
         });
-        res.body.data.transactions = _.sortBy(res.body.data.transactions, 'id');
         assert.deepEqual(res.body.data, account);
         done();
       });
@@ -118,7 +113,6 @@ describe('Accounts', function () {
     it('should return all accounts', function (done) {
       httpClient('get', `accounts`, { jwtToken: this.user.token }, 200, (err, res) => {
         if (err) return done(err);
-        res.body.data.forEach(account => account.transactions.sort());
         assert.deepEqual(_.sortBy(res.body.data, 'id'), this.accounts);
         done();
       });
@@ -128,7 +122,6 @@ describe('Accounts', function () {
         if (err) return done(err);
         const accounts = this.accounts.filter(account => account.type === this.account.type);
         assert.equal(res.body.data.length, accounts.length);
-        res.body.data.forEach(account => account.transactions.sort());
         assert.deepEqual(_.sortBy(res.body.data, 'id'), accounts);
         done();
       });
@@ -145,7 +138,6 @@ describe('Accounts', function () {
       };
       httpClient('put', `accounts/${this.account.id}`, { jwtToken: this.user.token, body: updatedProperties }, 200, (err, res) => {
         if (err) return done(err);
-        res.body.data.transactions.sort();
         assert.deepEqual(res.body.data, _.merge(this.account, updatedProperties));
         done();
       });
@@ -153,12 +145,10 @@ describe('Accounts', function () {
     it('should not update readonly attributes', function (done) {
       const updatedProperties = {
         balance: 100,
-        transactions: [],
         user: new Types.ObjectId() // May be temporary, but for now don't allow.
       };
       httpClient('put', `accounts/${this.account.id}`, { jwtToken: this.user.token, body: updatedProperties }, 200, (err, res) => {
         if (err) return done(err);
-        res.body.data.transactions.sort();
         assert.deepEqual(res.body.data, this.account);
         done();
       });
@@ -170,7 +160,6 @@ describe('Accounts', function () {
       const selectAccounts = _.sortBy(_.sample(this.accounts, 3), 'id');
       httpClient('put', `accounts/?id=${_.pluck(selectAccounts, 'id') }`, { jwtToken: this.user.token, body: updatedProperties }, 200, (err, res) => {
         if (err) return done(err);
-        res.body.data.forEach((account) => { account.transactions.sort(); });
         assert.deepEqual(_.sortBy(res.body.data, 'id'), selectAccounts.map(account => _.omit(_.merge(account, updatedProperties), 'balance')));
         done();
       });
@@ -183,7 +172,6 @@ describe('Accounts', function () {
     it('should delete an account', function (done) {
       httpClient('delete', `accounts/${this.account.id}`, { jwtToken: this.user.token }, 200, (err, res) => {
         if (err) return done(err);
-        res.body.data.transactions.sort();
         assert.deepEqual(res.body.data, this.account);
         Account.findById(this.account.id, (dbErr, account) => {
           if (dbErr) return done(dbErr);
@@ -195,9 +183,8 @@ describe('Accounts', function () {
     it('should delete all transactions in account', function (done) {
       httpClient('delete', `accounts/${this.account.id}`, { jwtToken: this.user.token }, 200, (err, res) => {
         if (err) return done(err);
-        res.body.data.transactions.sort();
         assert.deepEqual(res.body.data, this.account);
-        Transaction.find({ _id: { $in: this.account.transactions } }, (dbErr, transactions) => {
+        Transaction.find({ account: this.account.id }, (dbErr, transactions) => {
           if (dbErr) return done(dbErr);
           assert.equal(transactions.length, 0, transactions);
           done();
