@@ -29,6 +29,7 @@
     "karma-spec-reporter": "0.0.23",
     "karma-webpack": "^1.7.0",
     "lodash": "^4.0.0",
+    "moment": "^2.11.1",
     "node-sass": "^3.4.2",
     "phantomjs": "^1.9.19",
     "rimraf": "^2.5.0",

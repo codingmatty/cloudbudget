@@ -1,0 +1,63 @@
+#accounts {
+  height: 100%;
+  margin: 0;
+
+  #accounts-list {
+    min-height: 100%;
+    padding: 0;
+    width: 100%;
+    .title {
+      height: 3.75rem;
+      padding: 1rem;
+      h3 {
+        @include pull-left;
+      }
+      .add-account {
+        @extend .btn;
+        @extend .btn-info;
+        @include pull-right;
+        margin-top: -0.3rem;
+      }
+    }
+    .groups-list {
+      @extend .list-group;
+      .group {
+        height: 100%;
+        &:not(:last-child) {
+          margin-bottom: 0.6rem;
+        }
+        & > div {
+          @extend .list-group-item;
+          @include clearfix;
+          border-bottom: $brand-info solid 0.15rem;
+          .group-title {
+            @include pull-left;
+          }
+        }
+        .balance { // includes balance for accounts
+          @include pull-right;
+        }
+        .accounts {
+          @extend .list-group;
+          li {
+            margin-top: -1.5rem;
+            .account {
+              @extend .list-group-item;
+              @include clearfix;
+              .name {
+                @include pull-left;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  #transactions {
+    min-height: 100%;
+    padding: 0;
+    width: 100%;
+    background-color: $brand-primary;
+  }
+}

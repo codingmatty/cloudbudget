@@ -1,6 +1,6 @@
 import { VueRouter } from './global';
 import store from './store';
-import { login, user, dashboard } from './components';
+import { login, user, accounts, fourohfour } from './components';
 
 const router = new VueRouter({
   hashbang: false,
@@ -18,9 +18,13 @@ router.map({
     auth: true
   },
   '/accounts': {
-    name: 'dashboard',
-    component: dashboard,
+    name: 'accounts',
+    component: accounts,
     auth: true
+  },
+  '/*any': {
+    name: '404',
+    component: fourohfour
   }
 });
 
@@ -28,6 +32,8 @@ router.beforeEach(({ to, next, redirect }) => {
   if (to.auth && !store.state.userState.user) {
     redirect('/login');
   } else if (to.path === '/login' && store.state.userState.user) {
+    redirect('/accounts');
+  } else if (to.path === '/') {
     redirect('/accounts');
   } else {
     next();

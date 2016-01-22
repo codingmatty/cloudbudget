@@ -1,11 +1,13 @@
 import navbar from './navbar';
-import dashboard from './dashboard';
+import accounts from './accounts';
 import login from './login';
 import user from './user';
+import fourohfour from './fourohfour';
 
 export {
   navbar,
-  dashboard,
+  accounts,
   login,
-  user
+  user,
+  fourohfour
 };

@@ -1,0 +1,15 @@
+<tr id="tr{{transaction.id}}">
+  <td class="column selected" v-if="columns.selected" :style="{ width: columns.selected + '%' }">
+    <input type="checkbox" v-model="transaction.selected" />
+  </td>
+  <td class="column account" v-if="columns.account" :style="{ width: columns.account + '%' }">{{transaction.account | accountName}}</td>
+  <td class="column date" v-if="columns.date" :style="{ width: columns.date + '%' }">{{transaction.date | date 'MM/DD/YYYY'}}</td>
+  <td class="column payee" v-if="columns.payee" :style="{ width: columns.payee + '%' }">{{transaction.payee}}</td>
+  <td class="column tags" v-if="columns.tags" :style="{ width: columns.tags + '%' }">{{transaction.tags}}</td>
+  <td class="column memo" v-if="columns.memo" :style="{ width: columns.memo + '%' }">{{transaction.memo}}</td>
+  <td class="column amount" v-if="columns.amount" :style="{ width: columns.amount + '%' }">{{transaction.amount | currency}}</td>
+  <td class="column balance" v-if="columns.balance" :style="{ width: columns.balanced + '%' }"></td>
+  <td class="column state" v-if="columns.state" :style="{ width: columns.state + '%' }">{{transaction.state}}</td>
+  <td><i class="fa fa-pencil" @click="editTransaction()"></i></td>
+  <td><i class="fa fa-trash" @click="deleteTransaction(transaction)"></i></td>
+</tr>

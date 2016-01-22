@@ -1,3 +1,4 @@
+import './modules';
 import router from './router';
 import { navbar } from './components';
 

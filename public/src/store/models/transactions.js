@@ -31,15 +31,20 @@ function removeTransaction(state, transaction) {
 
 // mutations
 export const transactionsMutations = {
-  [SET_TRANSACTIONS](state, { data: transactions }) {
-    const localTransactions = _.intersectionBy(state.transactionsState.transactions, transactions, 'id');
-    if (localTransactions.length) {
-      localTransactions.forEach(setTransaction.bind(null, state));
+  [SET_TRANSACTIONS](state, transactions) {
+    const remoteTransactions = _.intersectionBy(transactions, state.transactionsState.transactions, 'id');
+    _.forOwn(remoteTransactions, (value, key) => {
+      if (_.isEqual(value, state.transactionsState.transactions[key])) {
+        delete remoteTransactions[key];
+      }
+    });
+    if (remoteTransactions.length) {
+      remoteTransactions.forEach(setTransaction.bind(null, state));
     } else {
       state.transactionsState.transactions.push(...transactions);
     }
   },
-  [REMOVE_TRANSACTIONS](state, { data: transactions }) {
+  [REMOVE_TRANSACTIONS](state, transactions) {
     const localTransactions = _.intersectionBy(state.transactionsState.transactions, transactions, 'id');
     if (localTransactions.length) {
       localTransactions.forEach(removeTransaction.bind(null, state));
@@ -52,38 +57,59 @@ export const transactionsMutations = {
 // actions
 export const transactionsActions = {
   getTransactions({ dispatch }) {
-    Vue.http.get('transactions').then((response) => {
-      dispatch(SET_TRANSACTIONS, response.data);
+    return new Promise((resolve, reject) => {
+      Vue.http.get('transactions').then((response) => {
+        dispatch(SET_TRANSACTIONS, response.data.data);
+        resolve(response.data.data);
+      }).catch(reject);
     });
   },
   updateTransactions({ dispatch }, transactionIds, data) {
-    Vue.http.put(`transactions?ids=[${transactionIds.join(',') }]`, data).then((response) => {
-      dispatch(SET_TRANSACTIONS, response.data);
+    return new Promise((resolve, reject) => {
+      Vue.http.put(`transactions?ids=[${transactionIds.join(',') }]`, data).then((response) => {
+        dispatch(SET_TRANSACTIONS, response.data.data);
+        resolve(response.data.data);
+      }).catch(reject);
     });
   },
   deleteTransactions({ dispatch }, transactionIds) {
-    Vue.http.delete(`transactions?ids=[${transactionIds.join(',') }]`).then((response) => {
-      dispatch(REMOVE_TRANSACTION, response.data);
+    return new Promise((resolve, reject) => {
+      Vue.http.delete(`transactions?ids=[${transactionIds.join(',') }]`).then((response) => {
+        dispatch(REMOVE_TRANSACTION, response.data.data);
+        resolve(response.data.data);
+      }).catch(reject);
     });
   },
   createTransaction({ dispatch }, transactionData) {
-    Vue.http.post('transactions', transactionData).then((response) => {
-      dispatch(SET_TRANSACTION, response.data);
+    return new Promise((resolve, reject) => {
+      Vue.http.post('transactions', transactionData).then((response) => {
+        dispatch(SET_TRANSACTION, response.data.data);
+        resolve(response.data.data);
+      }).catch(reject);
     });
   },
   getTransaction({ dispatch }, transactionId) {
-    Vue.http.get(`transactions/${transactionId}`).then((response) => {
-      dispatch(SET_TRANSACTION, response.data);
+    return new Promise((resolve, reject) => {
+      Vue.http.get(`transactions/${transactionId}`).then((response) => {
+        dispatch(SET_TRANSACTION, response.data.data);
+        resolve(response.data.data);
+      }).catch(reject);
     });
   },
   updateTransaction({ dispatch }, transactionId, data) {
-    Vue.http.put(`transactions/${transactionId}`, data).then((response) => {
-      dispatch(SET_TRANSACTION, response.data);
+    return new Promise((resolve, reject) => {
+      Vue.http.put(`transactions/${transactionId}`, data).then((response) => {
+        dispatch(SET_TRANSACTION, response.data.data);
+        resolve(response.data.data);
+      }).catch(reject);
     });
   },
   deleteTransaction({ dispatch }, transactionId) {
-    Vue.http.delete(`transactions/${transactionId}`).then((response) => {
-      dispatch(REMOVE_TRANSACTION, response.data);
+    return new Promise((resolve, reject) => {
+      Vue.http.delete(`transactions/${transactionId}`).then((response) => {
+        dispatch(REMOVE_TRANSACTION, response.data.data);
+        resolve(response.data.data);
+      }).catch(reject);
     });
   }
 };

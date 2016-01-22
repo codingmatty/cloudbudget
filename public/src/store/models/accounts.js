@@ -23,10 +23,15 @@ function setAccount(state, account) {
 
 // mutations
 export const accountsMutations = {
-  [SET_ACCOUNTS](state, { data: accounts }) {
-    const localAccounts = _.intersectionBy(state.accountsState.accounts, accounts, 'id');
-    if (localAccounts.length) {
-      localAccounts.forEach(setAccount.bind(null, state));
+  [SET_ACCOUNTS](state, accounts) {
+    const remoteAccounts = _.intersectionBy(accounts, state.accountsState.accounts, 'id');
+    _.forOwn(remoteAccounts, (value, key) => {
+      if (_.isEqual(value, state.transactionsState.transactions[key])) {
+        delete remoteAccounts[key];
+      }
+    });
+    if (remoteAccounts.length) {
+      remoteAccounts.forEach(setAccount.bind(null, state));
     } else {
       state.accountsState.accounts.push(...accounts);
     }
@@ -44,33 +49,51 @@ export const accountsMutations = {
 // actions
 export const accountsActions = {
   getAccounts({ dispatch }) {
-    Vue.http.get('accounts').then((response) => {
-      dispatch(SET_ACCOUNTS, response.data);
+    return new Promise((resolve, reject) => {
+      Vue.http.get('accounts').then((response) => {
+        dispatch(SET_ACCOUNTS, response.data.data);
+        resolve(response.data.data);
+      }).catch(reject);
     });
   },
   updateAccounts({ dispatch }, accountIds, data) {
-    Vue.http.put(`accounts?ids=[${accountIds.join(',') }]`, data).then((response) => {
-      dispatch(SET_ACCOUNTS, response.data);
+    return new Promise((resolve, reject) => {
+      Vue.http.put(`accounts?ids=[${accountIds.join(',') }]`, data).then((response) => {
+        dispatch(SET_ACCOUNTS, response.data.data);
+        resolve(response.data.data);
+      }).catch(reject);
     });
   },
   createAccount({ dispatch }, accountData) {
-    Vue.http.post('accounts', accountData).then((response) => {
-      dispatch(SET_ACCOUNT, response.data);
+    return new Promise((resolve, reject) => {
+      Vue.http.post('accounts', accountData).then((response) => {
+        dispatch(SET_ACCOUNT, response.data.data);
+        resolve(response.data.data);
+      }).catch(reject);
     });
   },
   getAccount({ dispatch }, accountId) {
-    Vue.http.get(`accounts/${accountId}`).then((response) => {
-      dispatch(SET_ACCOUNT, response.data);
+    return new Promise((resolve, reject) => {
+      Vue.http.get(`accounts/${accountId}`).then((response) => {
+        dispatch(SET_ACCOUNT, response.data.data);
+        resolve(response.data.data);
+      }).catch(reject);
     });
   },
   updateAccount({ dispatch }, accountId, data) {
-    Vue.http.put(`accounts/${accountId}`, data).then((response) => {
-      dispatch(SET_ACCOUNT, response.data);
+    return new Promise((resolve, reject) => {
+      Vue.http.put(`accounts/${accountId}`, data).then((response) => {
+        dispatch(SET_ACCOUNT, response.data.data);
+        resolve(response.data.data);
+      }).catch(reject);
     });
   },
   deleteAccount({ dispatch }, accountId) {
-    Vue.http.delete(`accounts/${accountId}`).then((response) => {
-      dispatch(REMOVE_ACCOUNT, response.data);
+    return new Promise((resolve, reject) => {
+      Vue.http.delete(`accounts/${accountId}`).then((response) => {
+        dispatch(REMOVE_ACCOUNT, response.data.data);
+        resolve(response.data.data);
+      }).catch(reject);
     });
   }
 };

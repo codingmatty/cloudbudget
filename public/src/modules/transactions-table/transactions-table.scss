@@ -1,0 +1,38 @@
+.transactions-table {
+  @extend .table-responsive;
+  table {
+    @extend .table;
+    @extend .table-striped;
+    td {
+      padding: 0.25rem;
+    }
+    td {
+      @extend .text-xs-center;
+      input {
+        width: 100%;
+      }
+      .input-group {
+        width: 100%;
+        .input-group-addon {
+          padding: 0.375rem;
+        }
+        input {
+          padding: 1px;
+        }
+      }
+      &.column.selected {
+        padding: 0.25rem 0.75rem;
+      }
+      &.column.date {
+        input {
+          text-align: end;
+        }
+      }
+      &.column {
+        input {
+          text-align: center;
+        }
+      }
+    }
+  }
+}

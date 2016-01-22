@@ -1,0 +1,27 @@
+<div id="accounts" class="row">
+  <div id="accounts-list" class="col-lg-2 col-md-3">
+    <div class="title">
+      <h3>Accounts</h3>
+      <button class="add-account">+</button>
+    </div>
+    <ul class="groups-list">
+      <li class="group" v-for="group in groups">
+        <div>
+          <span class="group-title">{{group.name}}</span>
+          <span class="balance">{{group.balance | currency}}</span>
+        </div>
+        <ul class="accounts">
+          <li>
+            <a class="account" v-for="account in group.accounts">
+              <span class="name">{{account.name}}</span>
+              <span class="balance">{{account.balance | currency}}</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+  <div id="transactions" class="col-lg-10 col-md-9">
+    <transactions-table include-form></transactions-table>
+  </div>
+</div>
