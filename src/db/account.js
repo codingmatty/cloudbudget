@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import async from 'async';
-import mongoose, { Schema, Types } from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 import { defaultJSONOptions, Transaction } from './';
 
 const accountSchema = new Schema({
