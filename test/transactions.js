@@ -44,7 +44,6 @@ describe('Transactions', function () {
     ], (err, user, account, transactions) => {
       this.user = user;
       this.transactions = _.sortBy(transactions, 'id');
-      account.transactions = _.pluck(this.transactions, 'id');
       account.balance = _.sum(this.transactions, 'amount');
       this.account = account;
       this.transaction = _.sample(this.transactions);
@@ -72,17 +71,6 @@ describe('Transactions', function () {
           user: this.user.id
         }));
         done();
-      });
-    });
-    it('should create reference in parent account', function (done) {
-      httpClient('post', `transactions`, { jwtToken: this.user.token, body: this.newTransaction }, 201, (err, res) => {
-        if (err) return done(err);
-        assert(res.body.data.account);
-        Account.findById(res.body.data.account, (dbErr, account) => {
-          if (dbErr) return done(dbErr);
-          assert.include(account.transactions, res.body.data.id);
-          done();
-        });
       });
     });
     it('should not create an invalid transaction', function (done) {
@@ -113,13 +101,9 @@ describe('Transactions', function () {
     it('should include references', function (done) {
       httpClient('get', `transactions/${this.transaction.id}?include=account`, { jwtToken: this.user.token }, 200, (err, res) => {
         if (err) return done(err);
-        const account = _.omit(this.account, 'balance');
         const transaction = _.merge(this.transaction, {
-          account: _.merge(account, {
-            transactions: this.account.transactions
-          })
+          account: _.omit(this.account, 'balance')
         });
-        res.body.data.account.transactions.sort();
         assert.deepEqual(res.body.data, transaction);
         done();
       });
@@ -155,7 +139,6 @@ describe('Transactions', function () {
     });
     it('should not update readonly attributes', function (done) {
       const updatedProperties = {
-        account: new Types.ObjectId(),
         user: new Types.ObjectId() // May be temporary, but for now don't allow.
       };
       httpClient('put', `transactions/${this.transaction.id}`, { jwtToken: this.user.token, body: updatedProperties }, 200, (err, res) => {
@@ -196,18 +179,6 @@ describe('Transactions', function () {
         Transaction.find({ _id: { $in: _.pluck(selectTransactions, 'id') } }, (dbErr, transactions) => {
           if (dbErr) return done(dbErr);
           assert.deepEqual(transactions, []);
-          done();
-        });
-      });
-    });
-    it('should delete transactions from account', function (done) {
-      const selectTransactions = _.sortBy(_.sample(this.transactions, 5), 'id');
-      httpClient('delete', `transactions/?id=${_.pluck(selectTransactions, 'id')}`, { jwtToken: this.user.token }, 200, (err, res) => {
-        if (err) return done(err);
-        assert.deepEqual(_.sortBy(res.body.data, 'id'), selectTransactions);
-        Account.find({ _id: { $in: _.pluck(selectTransactions, 'account') } }, (dbErr, accounts) => {
-          if (dbErr) return done(dbErr);
-          accounts.forEach((account) => { assert.notInclude(account.transactions, _.pluck(selectTransactions, 'id')); });
           done();
         });
       });
