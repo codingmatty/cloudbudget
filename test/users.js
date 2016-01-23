@@ -105,7 +105,7 @@ describe('Users', function () {
       httpClient('post', 'users/register', { basicToken: this.basicToken, body: factory.create('User', { username: 'test' }) }, 400, (err, res) => {
         if (err) return done(err);
         assert.equal(res.body.message, 'Error! Unable to create User.');
-        assert.equal(res.body.error.username, `username 'test' already exists.`);
+        assert.equal(res.body.errors.username, `username 'test' already exists.`);
         done();
       });
     });
@@ -113,7 +113,7 @@ describe('Users', function () {
       httpClient('post', 'users/register', { basicToken: this.basicToken, body: factory.create('User', { email: 'test@test.com' }) }, 400, (err, res) => {
         if (err) return done(err);
         assert.equal(res.body.message, 'Error! Unable to create User.');
-        assert.equal(res.body.error.email, `email 'test@test.com' already exists.`);
+        assert.equal(res.body.errors.email, `email 'test@test.com' already exists.`);
         done();
       });
     });
@@ -121,7 +121,7 @@ describe('Users', function () {
       httpClient('post', 'users/register', { basicToken: this.basicToken, body: factory.create('User', { email: 'test' }) }, 400, (err, res) => {
         if (err) return done(err);
         assert.equal(res.body.message, 'Error! Unable to create User.');
-        assert.equal(res.body.error.email, 'test is not a valid email address.');
+        assert.equal(res.body.errors.email, 'test is not a valid email address.');
         done();
       });
     });
@@ -241,7 +241,7 @@ describe('Users', function () {
 
       });
     });
-    it('should not allow expires access token', function (done) {
+    it('should not allow expired access token', function (done) {
       getAccessToken(this.user, (err, accessToken) => {
         if (err) return done(err);
         timekeeper.travel(moment().add(3, 'weeks').toDate());

@@ -53,9 +53,13 @@ export function updateMethod(api, model, shouldAuthenticate, callback) {
     if (shouldAuthenticate) {
       query.user = req.user.id;
     }
-    Model.findOneAndUpdate(query, _.omit(req.body, Model.readonlyProps() || []), { new: true }, (err, doc) => {
-      if (err) { return handleError(err, res, 'update', Model.modelName); }
-      callback(req, res, doc);
+    Model.findOne(query, (findErr, doc) => {
+      if (findErr) { return handleError(findErr, res, 'update', Model.modelName); }
+      const updatedDoc = _.merge(doc, _.omit(req.body, Model.readonlyProps() || []));
+      updatedDoc.save((saveErr, savedDoc) => {
+        if (saveErr) { return handleError(saveErr, res, 'update', Model.modelName); }
+        callback(req, res, savedDoc);
+      });
     });
   });
 }
@@ -67,11 +71,11 @@ export function deleteMethod(api, model, shouldAuthenticate, callback) {
     if (shouldAuthenticate) {
       query.user = req.user.id;
     }
-    Model.findOne(query, (queryErr, queryDoc) => {
-      if (queryErr || !queryDoc) { return handleError(queryErr, res, 'delete', model); }
-      queryDoc.remove(req.query, (removeErr, doc) => {
+    Model.findOne(query, (findErr, doc) => {
+      if (findErr || !doc) { return handleError(findErr, res, 'delete', model); }
+      doc.remove(req.query, (removeErr, removedDoc) => {
         if (removeErr) { return handleError(removeErr, res, 'delete', model); }
-        callback(req, res, doc);
+        callback(req, res, removedDoc);
       });
     });
   });

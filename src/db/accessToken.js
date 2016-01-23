@@ -5,8 +5,8 @@ import { defaultJSONOptions } from './';
 const accessTokenSchema = new Schema({
   userId: { type: Schema.Types.ObjectId, ref: 'User' },
   clientId: { type: Schema.Types.ObjectId, ref: 'Client' },
-  token: { type: String, required: true },
-  refreshToken: { type: String, required: true },
+  token: { type: String, required: true, minlength: 64, maxlength: 64 },
+  refreshToken: { type: String, required: true, minlength: 64, maxlength: 64 },
   date: { type: Date, default: Date.now, expires: '14d' } // AccessToken expires in 14 days.
 }, {
   toJSON: defaultJSONOptions()

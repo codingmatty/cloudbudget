@@ -85,9 +85,9 @@ describe('Accounts', function () {
       }, 400, (err, res) => {
         if (err) return done(err);
         assert.equal(res.body.message, 'Error! Unable to create Account.');
-        assert.equal(res.body.error.budget, 'Path `budget` is required.');
-        assert.equal(res.body.error.type, '`invalid` is not a valid enum value for path `type`.');
-        assert.equal(res.body.error.name, 'Path `name` is required.');
+        assert.equal(res.body.errors.budget, 'Path `budget` is required.');
+        assert.equal(res.body.errors.type, '`invalid` is not a valid enum value for path `type`.');
+        assert.equal(res.body.errors.name, 'Path `name` is required.');
         done();
       });
     });

@@ -82,10 +82,10 @@ describe('Transactions', function () {
       }, 400, (err, res) => {
         if (err) return done(err);
         assert.equal(res.body.message, 'Error! Unable to create Transaction.');
-        assert.equal(res.body.error.state, 'Path `state` is required.');
-        assert.equal(res.body.error.payee, 'Path `payee` is required.');
-        assert.equal(res.body.error.amount, 'Path `amount` is required.');
-        assert.equal(res.body.error.date, 'Cast to Date failed for value "invalid" at path "date"');
+        assert.equal(res.body.errors.state, 'Path `state` is required.');
+        assert.equal(res.body.errors.payee, 'Path `payee` is required.');
+        assert.equal(res.body.errors.amount, 'Path `amount` is required.');
+        assert.equal(res.body.errors.date, 'Cast to Date failed for value "invalid" at path "date"');
         done();
       });
     });

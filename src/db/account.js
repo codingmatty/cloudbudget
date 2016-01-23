@@ -4,8 +4,8 @@ import mongoose, { Schema } from 'mongoose';
 import { defaultJSONOptions, Transaction } from './';
 
 const accountSchema = new Schema({
-  name: { type: String, required: true },
-  group: { type: String, required: true },
+  name: { type: String, required: true, minlength: 1 },
+  group: { type: String, required: true, minlength: 1 },
   type: { type: String, enum: ['savings', 'checking', 'credit_card', 'loan', 'investment'], required: true },
   budget: { type: Boolean, required: true },
   notes: String,

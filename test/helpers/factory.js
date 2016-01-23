@@ -10,14 +10,14 @@ const Factory = chai.factory;
 
 export function insertFactoryModel(model, attributes, callback) {
   dbModels[model].create(Factory.create(model, attributes), (err, doc) => {
-    callback(err, doc.toJSON());
+    callback(err, doc ? doc.toJSON() : null);
   });
 }
 
 Factory.define('AccessToken', function (attributes = {}) {
   return _.merge({
-    token: randomKey.generate(12),
-    refreshToken: randomKey.generate(12),
+    token: randomKey.generate(64),
+    refreshToken: randomKey.generate(64),
     permissions: 'password'
   }, attributes);
 });

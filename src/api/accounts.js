@@ -35,13 +35,16 @@ showMethod(api, 'Account', true, (req, res, account) => {
 api.put('/', (req, res) => {
   const query = buildQuery(Account, req);
   query.user = req.user.id;
-  Account.update(query, _.omit(req.body, Account.readonlyProps() || []), { multi: true }, (updateErr) => {
-    if (updateErr) { return handleError(updateErr, res, 'update', 'Accounts'); }
-    Account.find(query, (findErr, accounts) => {
-      if (findErr) { return handleError(findErr, res, 'update', 'Accounts'); }
+  Account.find(query, (findErr, accounts) => {
+    if (findErr) { return handleError(findErr, res, 'update', 'Accounts'); }
+    const updatedAccounts = accounts.map((transaction) => _.merge(transaction, _.omit(req.body, Account.readonlyProps() || [])));
+    async.map(updatedAccounts, (transaction, callback) => {
+      transaction.save(callback);
+    }, (saveErr, dbAccounts) => {
+      if (saveErr) { return handleError(saveErr, res, 'delete', 'Accounts'); }
       res.status(200).send({
         message: `Success! Accounts updated.`,
-        data: accounts
+        data: dbAccounts
       });
     });
   });

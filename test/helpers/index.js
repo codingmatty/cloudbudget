@@ -71,6 +71,7 @@ export function getJwtToken(user, callback) {
 
 export function getAccessToken(user, callback) {
   insertFactoryModel('Client', {}, (err, client) => {
+    if (err) return callback(err);
     insertFactoryModel('AccessToken', {
       userId: user.id,
       clientId: client.id

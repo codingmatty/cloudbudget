@@ -45,7 +45,7 @@ export function handleError(err, res, method, model) {
   }
   res.status(400).send({
     message: `Error! Unable to ${method} ${method === 'list' ? inflection.pluralize(model) : model}.`,
-    error: errorObj
+    errors: errorObj
   });
 }
 
