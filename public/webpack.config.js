@@ -3,7 +3,7 @@ var path = require('path');
 module.exports = {
   entry: {
     app: "./src/app.js",
-    styles: "./src/global.scss"
+    styles: "./src/main.scss"
   },
   output: {
     path: path.resolve(__dirname, './dist/static'),

@@ -54,14 +54,5 @@ Vue.component('transactions-table', {
     }
   },
   methods: {
-    editTransaction(transaction) {
-      transaction.edit = true;
-      console.log(JSON.stringify(transaction));
-    }
-  },
-  events: {
-    'edit-transaction': () => {
-      console.log('EditTransaction!');
-    }
   }
 });

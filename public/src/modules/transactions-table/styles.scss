@@ -26,13 +26,20 @@
       &.column.date {
         input {
           text-align: end;
+          padding: 1px;
         }
       }
       &.column {
-        input {
+        input, select {
           text-align: center;
+          width: 100%;
+          padding-top: 0.2rem;
+          padding-bottom: 0.2rem;
         }
       }
     }
   }
 }
+
+@import './transaction-row/styles';
+@import './transaction-form-row/styles';

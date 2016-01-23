@@ -36,7 +36,6 @@ export default {
   methods: {
     editTransaction() {
       this.$set('transaction.edit', true);
-      console.log(this.transaction.edit);
       this.$dispatch('edit-transaction');
     },
     deleteTransaction(transaction) {

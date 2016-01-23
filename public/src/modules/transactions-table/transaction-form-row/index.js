@@ -6,6 +6,10 @@ const {
   createTransaction,
   updateTransaction
 } = store.actions;
+const {
+  accountsState,
+  transactionsState
+} = store.state;
 
 Vue.filter('amount', {
   read(value) {
@@ -23,8 +27,8 @@ export default {
     transaction: {
       type: Object,
       default: () => {
-        console.log('test1');
         return _.merge({}, {
+          id: 0,
           date: Date.now(),
           state: 'none',
           default: true
@@ -40,7 +44,6 @@ export default {
     }
   },
   ready() {
-    console.log('test2');
     if (!store.state.accountsState.accounts.length) {
       getAccounts().then((accounts) => {
         if (this.transaction.default) {
@@ -62,7 +65,10 @@ export default {
   },
   computed: {
     accounts() {
-      return store.state.accountsState.accounts;
+      return accountsState.accounts;
+    },
+    errors() {
+      return transactionsState.errors[this.transaction.id] || {};
     }
   },
   methods: {

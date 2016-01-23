@@ -1,7 +1,7 @@
-import router from '../../router';
 import store from '../../store';
+
 const {
-  setUser
+  logoutUser
 } = store.actions;
 
 export default {
@@ -13,11 +13,9 @@ export default {
   },
   methods: {
     logoutUser() {
-      setUser({
-        user: null,
-        token: ''
+      logoutUser().then(() => {
+        this.$router.go('/login');
       });
-      router.go('/login');
     }
   }
 };

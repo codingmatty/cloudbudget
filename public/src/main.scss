@@ -7,14 +7,8 @@ html {
   padding: 0;
 }
 body {
-  min-height: 100%;
   overflow: hidden;
   font-family: Helvetica, sans-serif;
-  background: lightblue;
-}
-
-.v-link-active {
-  @extend .active;
 }
 
 @import './app';

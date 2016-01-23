@@ -1,11 +1,9 @@
 #accounts {
   height: 100%;
-  margin: 0;
+  background-color: lightblue;
 
   #accounts-list {
-    min-height: 100%;
     padding: 0;
-    width: 100%;
     .title {
       height: 3.75rem;
       padding: 1rem;
@@ -22,7 +20,7 @@
     .groups-list {
       @extend .list-group;
       .group {
-        height: 100%;
+        // height: 100%;
         &:not(:last-child) {
           margin-bottom: 0.6rem;
         }
@@ -32,6 +30,7 @@
           border-bottom: $brand-info solid 0.15rem;
           .group-title {
             @include pull-left;
+
           }
         }
         .balance { // includes balance for accounts
@@ -40,10 +39,10 @@
         .accounts {
           @extend .list-group;
           li {
-            margin-top: -1.5rem;
             .account {
               @extend .list-group-item;
               @include clearfix;
+              display: inline-table;
               .name {
                 @include pull-left;
               }
@@ -55,9 +54,7 @@
   }
 
   #transactions {
-    min-height: 100%;
     padding: 0;
-    width: 100%;
     background-color: $brand-primary;
   }
 }

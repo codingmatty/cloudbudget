@@ -1,11 +1,20 @@
 import _ from 'lodash';
+import vueboot from 'vueboot';
 import store from '../../store';
 const {
-  getAccounts
-} = store.actions;
+  actions: {
+    getAccounts
+  },
+  state: {
+    accountsState
+  }
+} = store;
 
 export default {
   template: require('./accounts.html'),
+  components: {
+    modal: vueboot.modal
+  },
   ready() {
     getAccounts();
   },
@@ -15,8 +24,7 @@ export default {
   },
   computed: {
     accounts() {
-      console.log('accounts updated');
-      return store.state.accountsState.accounts;
+      return accountsState.accounts;
     },
     groups() {
       const groups = [];
@@ -30,10 +38,15 @@ export default {
           });
         }
       }
-      console.log('groups updated ' + JSON.stringify(groups, null, 2));
       return groups;
     }
   },
   methods: {
+    showModal(name) {
+      this.$refs[name].showModal();
+    },
+    hideModal(name) {
+      this.$refs[name].hideModal();
+    }
   }
 };
