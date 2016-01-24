@@ -156,9 +156,9 @@ describe('Accounts', function () {
         group: 'New Group'
       };
       const selectAccounts = _.sortBy(_.sample(this.accounts, 3), 'id');
-      httpClient('put', `accounts/?id=${_.pluck(selectAccounts, 'id') }`, { jwtToken: this.user.token, body: updatedProperties }, 200, (err, res) => {
+      httpClient('put', `accounts/?id=[${_.map(selectAccounts, 'id') }]`, { jwtToken: this.user.token, body: updatedProperties }, 200, (err, res) => {
         if (err) return done(err);
-        assert.deepEqual(_.sortBy(res.body.data, 'id'), selectAccounts.map(account => _.omit(_.merge(account, updatedProperties), 'balance')));
+        assert.deepEqual(_.sortBy(res.body.data, 'id'), selectAccounts.map(account => _.merge(account, updatedProperties)));
         done();
       });
     });

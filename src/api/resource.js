@@ -21,7 +21,7 @@ export function listMethod(api, model, shouldAuthenticate, callback) {
           next(null, doc);
         }
       }, (normalizeErr, normalizeDocs) => {
-        if (err) { return handleError(normalizeErr, res, 'list', Model.modelName); }
+        if (normalizeErr) { return handleError(normalizeErr, res, 'list', Model.modelName); }
         callback(req, res, normalizeDocs);
       });
     });

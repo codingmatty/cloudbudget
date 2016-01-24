@@ -1,5 +1,6 @@
 import _ from 'lodash';
-import accountsModal from './accounts-modal';
+import accountFormModal from './account-form-modal';
+import accountGroupFormModal from './account-group-form-modal';
 import { Vue } from '../../global';
 import store from '../../store';
 const {
@@ -14,7 +15,8 @@ const {
 export default {
   template: require('./accounts.html'),
   components: {
-    accountsModal
+    accountFormModal,
+    accountGroupFormModal
   },
   ready() {
     getAccounts();
@@ -44,16 +46,19 @@ export default {
   },
   methods: {
     newAccount() {
-      this.$refs.modal.showModal(null);
+      this.$refs.accountFormModal.showModal(null);
     },
     editAccount(account) {
-      this.$refs.modal.showModal(account);
+      this.$refs.accountFormModal.showModal(account);
     },
-    showEdit(account) {
-      Vue.set(account, 'displayEdit', true);
+    editGroup(group) {
+      this.$refs.groupFormModal.showModal(group);
     },
-    hideEdit(account) {
-      Vue.set(account, 'displayEdit', false);
+    showEdit(accountOrGroup) {
+      Vue.set(accountOrGroup, 'displayEdit', true);
+    },
+    hideEdit(accountOrGroup) {
+      Vue.set(accountOrGroup, 'displayEdit', false);
     }
   }
 };

@@ -1,8 +1,8 @@
 <modal v-ref:modal>
   <div class="modal-header" slot="header">
     <h4 class="modal-title">
-      <!--<span v-if="account.id">New</span>-->
-      <span>Edit</span>
+      <span v-if="account.id">Edit</span>
+      <span v-else>New</span>
       Account
     </h4>
   </div>

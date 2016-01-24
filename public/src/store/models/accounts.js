@@ -76,7 +76,7 @@ export const accountsActions = {
   },
   updateAccounts({ dispatch }, accountIds, data) {
     return new Promise((resolve) => {
-      Vue.http.put(`accounts?ids=[${accountIds.join(',') }]`, data)
+      Vue.http.put(`accounts?id=[${accountIds.join(',') }]`, data)
         .then((response) => {
           dispatch(SET_ACCOUNTS, response.data.data);
           dispatch(SET_ERRORS, {}, accountIds);

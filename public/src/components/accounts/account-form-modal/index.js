@@ -13,7 +13,7 @@ const {
 } = store;
 
 export default {
-  template: require('./accounts-modal.html'),
+  template: require('./account-form-modal.html'),
   components: {
     modal: vueboot.modal
   },

@@ -2,15 +2,17 @@ import _ from 'lodash';
 import { Vue } from '../../../global';
 import store from '../../../store';
 const {
-  resetTransactionsErrors,
-  getAccounts,
-  createTransaction,
-  updateTransaction
-} = store.actions;
-const {
-  accountsState,
-  transactionsState
-} = store.state;
+  actions: {
+    resetTransactionsErrors,
+    getAccounts,
+    createTransaction,
+    updateTransaction
+  },
+  state: {
+    accountsState,
+    transactionsState
+  }
+} = store;
 
 Vue.filter('amount', {
   read(value) {

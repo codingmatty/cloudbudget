@@ -20,9 +20,18 @@ api.put('/', (req, res) => {
       transaction.save(callback);
     }, (saveErr, dbAccounts) => {
       if (saveErr) { return handleError(saveErr, res, 'delete', 'Accounts'); }
-      res.status(200).send({
-        message: `Success! Accounts updated.`,
-        data: dbAccounts
+      async.map(dbAccounts, (dbAccount, next) => {
+        if (dbAccount.normalize) {
+          dbAccount.normalize(next.bind(null, null));
+        } else {
+          next(null, dbAccount);
+        }
+      }, (normalizeErr, normalizeAccounts) => {
+        if (normalizeErr) { return handleError(normalizeErr, res, 'list', Account.modelName); }
+        res.status(200).send({
+          message: `Success! Accounts updated.`,
+          data: normalizeAccounts
+        });
       });
     });
   });

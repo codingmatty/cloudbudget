@@ -85,7 +85,7 @@ export const transactionsActions = {
   },
   updateTransactions({ dispatch }, transactionIds, data) {
     return new Promise((resolve) => {
-      Vue.http.put(`transactions?ids=[${transactionIds.join(',') }]`, data)
+      Vue.http.put(`transactions?id=[${transactionIds.join(',') }]`, data)
         .then((response) => {
           dispatch(SET_TRANSACTIONS, response.data.data);
           dispatch(SET_ERRORS, {}, transactionIds);

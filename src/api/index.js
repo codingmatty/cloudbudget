@@ -69,12 +69,16 @@ export function buildQuery(Model, req) {
   if (req.query.id) {
     if (Array.isArray(req.query.id)) {
       query._id = { $in: req.query.id };
-    } else if (/([\w\d]*,)+[\w\d]*/.test(req.query.id)) {
-      query._id = { $in: req.query.id.split(',') };
     } else {
-      query._id = req.query.id;
+      const match = req.query.id.match(/([\w\d]+(?:,\s?[\w\d]+)*)/);
+      if (match) {
+        query._id = { $in: match[1].split(',') };
+      } else {
+        query._id = req.query.id;
+      }
     }
   }
+  console.log(JSON.stringify(query._id, null, 2));
   return query;
 }
 

@@ -6,14 +6,14 @@
     </div>
     <ul class="groups-list">
       <li class="group" v-for="group in groups">
-        <div><strong>
-          <span class="group-title">{{group.name}}</span>
+        <div @mouseenter="showEdit(group)" @mouseleave="hideEdit(group)"><strong>
+          <span class="group-title">{{group.name}} <i v-show="group.displayEdit" class="fa fa-pencil" @click="editGroup(group)"></i></span>
           <span class="balance">{{group.balance | currency}}</span>
         </strong></div>
         <ul class="accounts">
           <li>
             <strong>
-            <a  @mouseenter="showEdit(account)" @mouseleave="hideEdit(account)" class="account" v-for="account in group.accounts">
+            <a @mouseenter="showEdit(account)" @mouseleave="hideEdit(account)" class="account" v-for="account in group.accounts">
               <span class="name">{{account.name}} <i v-show="account.displayEdit" class="fa fa-pencil" @click="editAccount(account)"></i></span>
               <span class="balance label label-default">{{account.balance | currency}}</span>
             </a>
@@ -28,4 +28,5 @@
   </div>
 </div>
 
-<accounts-modal v-ref:modal></accounts-modal>
+<account-form-modal v-ref:account-form-modal></account-form-modal>
+<account-group-form-modal v-ref:group-form-modal></account-group-form-modal>
