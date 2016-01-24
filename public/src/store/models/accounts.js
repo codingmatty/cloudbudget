@@ -6,7 +6,6 @@ const SET_ACCOUNTS = 'SET_ACCOUNTS';
 const SET_ACCOUNT = 'SET_ACCOUNT';
 const REMOVE_ACCOUNT = 'REMOVE_ACCOUNT';
 const SET_ERRORS = 'SET_ERRORS';
-const SET_ERROR = 'SET_ERROR';
 
 // initial state
 export const accountsState = {
@@ -23,7 +22,7 @@ function setAccount(state, account) {
     state.accountsState.accounts.push(account);
   }
 }
-function setError(state, errors, accountId) {
+function setErrors(state, errors, accountId) {
   Vue.set(state.accountsState.errors, accountId, errors);
 }
 
@@ -51,13 +50,19 @@ export const accountsMutations = {
     }
   },
   [SET_ERRORS](state, errors, accountIds) {
-    accountIds.forEach(setError.bind(null, state, errors));
-  },
-  [SET_ERROR]: setError
+    if (Array.isArray(accountIds)) {
+      accountIds.forEach(setErrors.bind(null, state, errors));
+    } else {
+      setErrors(state, errors, accountIds);
+    }
+  }
 };
 
 // actions
 export const accountsActions = {
+  resetAccountsErrors({ dispatch }, accountId) {
+    dispatch(SET_ERRORS, {}, accountId);
+  },
   getAccounts({ dispatch }) {
     return new Promise((resolve) => {
       Vue.http.get('accounts')
@@ -74,6 +79,7 @@ export const accountsActions = {
       Vue.http.put(`accounts?ids=[${accountIds.join(',') }]`, data)
         .then((response) => {
           dispatch(SET_ACCOUNTS, response.data.data);
+          dispatch(SET_ERRORS, {}, accountIds);
           resolve(response.data.data);
         })
         .catch((response) => {
@@ -87,10 +93,11 @@ export const accountsActions = {
       Vue.http.post('accounts', accountData)
         .then((response) => {
           dispatch(SET_ACCOUNT, response.data.data);
+          dispatch(SET_ERRORS, {}, 0);
           resolve(response.data.data);
         })
         .catch((response) => {
-          dispatch(SET_ERROR, response.data.errors, 0);
+          dispatch(SET_ERRORS, response.data.errors, 0);
           resolve(response.data.errors);
         });
     });
@@ -100,10 +107,11 @@ export const accountsActions = {
       Vue.http.get(`accounts/${accountId}`)
         .then((response) => {
           dispatch(SET_ACCOUNT, response.data.data);
+          dispatch(SET_ERRORS, {}, accountId);
           resolve(response.data.data);
         })
         .catch((response) => {
-          dispatch(SET_ERROR, response.data.errors, accountId);
+          dispatch(SET_ERRORS, response.data.errors, accountId);
           resolve(response.data.errors);
         });
     });
@@ -113,10 +121,11 @@ export const accountsActions = {
       Vue.http.put(`accounts/${accountId}`, data)
         .then((response) => {
           dispatch(SET_ACCOUNT, response.data.data);
+          dispatch(SET_ERRORS, {}, accountId);
           resolve(response.data.data);
         })
         .catch((response) => {
-          dispatch(SET_ERROR, response.data.errors, accountId);
+          dispatch(SET_ERRORS, response.data.errors, accountId);
           resolve(response.data.errors);
         });
     });
@@ -126,10 +135,11 @@ export const accountsActions = {
       Vue.http.delete(`accounts/${accountId}`)
         .then((response) => {
           dispatch(REMOVE_ACCOUNT, response.data.data);
+          dispatch(SET_ERRORS, {}, accountId);
           resolve(response.data.data);
         })
         .catch((response) => {
-          dispatch(SET_ERROR, response.data.errors, accountId);
+          dispatch(SET_ERRORS, response.data.errors, accountId);
           resolve(response.data.errors);
         });
     });

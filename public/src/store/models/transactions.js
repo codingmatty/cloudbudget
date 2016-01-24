@@ -7,7 +7,6 @@ const REMOVE_TRANSACTIONS = 'REMOVE_TRANSACTION';
 const SET_ERRORS = 'SET_ERRORS';
 const SET_TRANSACTION = 'SET_TRANSACTION';
 const REMOVE_TRANSACTION = 'REMOVE_TRANSACTIONS';
-const SET_ERROR = 'SET_ERROR';
 
 // initial state
 export const transactionsState = {
@@ -31,7 +30,7 @@ function removeTransaction(state, transaction) {
     state.transactionsState.transactions.splice(index, 1);
   }
 }
-function setError(state, errors, transactionId) {
+function setErrors(state, errors, transactionId) {
   Vue.set(state.transactionsState.errors, transactionId, errors);
 }
 
@@ -59,13 +58,19 @@ export const transactionsMutations = {
   },
   [REMOVE_TRANSACTION]: removeTransaction,
   [SET_ERRORS](state, errors, transactionIds) {
-    transactionIds.forEach(setError.bind(null, state, errors));
-  },
-  [SET_ERROR]: setError
+    if (Array.isArray(transactionIds)) {
+      transactionIds.forEach(setErrors.bind(null, state, errors));
+    } else {
+      setErrors(state, errors, transactionIds);
+    }
+  }
 };
 
 // actions
 export const transactionsActions = {
+  resetTransactionsErrors({ dispatch }, transactionId) {
+    dispatch(SET_ERRORS, {}, transactionId);
+  },
   getTransactions({ dispatch }) {
     return new Promise((resolve) => {
       Vue.http.get('transactions')
@@ -83,6 +88,7 @@ export const transactionsActions = {
       Vue.http.put(`transactions?ids=[${transactionIds.join(',') }]`, data)
         .then((response) => {
           dispatch(SET_TRANSACTIONS, response.data.data);
+          dispatch(SET_ERRORS, {}, transactionIds);
           resolve(response.data.data);
         })
         .catch((response) => {
@@ -96,6 +102,7 @@ export const transactionsActions = {
       Vue.http.delete(`transactions?ids=[${transactionIds.join(',') }]`)
         .then((response) => {
           dispatch(REMOVE_TRANSACTION, response.data.data);
+          dispatch(SET_ERRORS, {}, transactionIds);
           resolve(response.data.data);
         })
         .catch((response) => {
@@ -109,10 +116,11 @@ export const transactionsActions = {
       Vue.http.post('transactions', transactionData)
         .then((response) => {
           dispatch(SET_TRANSACTION, response.data.data);
+          dispatch(SET_ERRORS, {}, 0);
           resolve(response.data.data);
         })
         .catch((response) => {
-          dispatch(SET_ERROR, response.data.errors, 0);
+          dispatch(SET_ERRORS, response.data.errors, 0);
           resolve(response.data.errors);
         });
     });
@@ -122,10 +130,11 @@ export const transactionsActions = {
       Vue.http.get(`transactions/${transactionId}`)
         .then((response) => {
           dispatch(SET_TRANSACTION, response.data.data);
+          dispatch(SET_ERRORS, {}, transactionId);
           resolve(response.data.data);
         })
         .catch((response) => {
-          dispatch(SET_ERROR, response.data.errors, transactionId);
+          dispatch(SET_ERRORS, response.data.errors, transactionId);
           resolve(response.data.errors);
         });
     });
@@ -135,10 +144,11 @@ export const transactionsActions = {
       Vue.http.put(`transactions/${transactionId}`, data)
         .then((response) => {
           dispatch(SET_TRANSACTION, response.data.data);
+          dispatch(SET_ERRORS, {}, transactionId);
           resolve(response.data.data);
         })
         .catch((response) => {
-          dispatch(SET_ERROR, response.data.errors, transactionId);
+          dispatch(SET_ERRORS, response.data.errors, transactionId);
           resolve(response.data.errors);
         });
     });
@@ -148,10 +158,11 @@ export const transactionsActions = {
       Vue.http.delete(`transactions/${transactionId}`)
         .then((response) => {
           dispatch(REMOVE_TRANSACTION, response.data.data);
+          dispatch(SET_ERRORS, {}, transactionId);
           resolve(response.data.data);
         })
         .catch((response) => {
-          dispatch(SET_ERROR, response.data.errors, transactionId);
+          dispatch(SET_ERRORS, response.data.errors, transactionId);
           resolve(response.data.errors);
         });
     });

@@ -3,6 +3,7 @@ import vueboot from 'vueboot';
 import store from '../../../store';
 const {
   actions: {
+    resetAccountsErrors,
     createAccount,
     updateAccount
   },
@@ -36,10 +37,16 @@ export default {
     showModal(account) {
       if (account) {
         this.account = _.merge({}, account);
+      } else {
+        this.account = _.merge({}, {
+          id: 0,
+          budget: false
+        });
       }
       this.$refs.modal.showModal();
     },
     closeModal() {
+      resetAccountsErrors(this.account.id);
       this.$refs.modal.hideModal();
     },
     saveAccount(account) {

@@ -13,8 +13,8 @@
         <ul class="accounts">
           <li>
             <strong>
-            <a class="account" v-for="account in group.accounts">
-              <span class="name">{{account.name}} <i class="fa fa-pencil" @click="editAccount(account)"></i></span>
+            <a  @mouseenter="showEdit(account)" @mouseleave="hideEdit(account)" class="account" v-for="account in group.accounts">
+              <span class="name">{{account.name}} <i v-show="account.displayEdit" class="fa fa-pencil" @click="editAccount(account)"></i></span>
               <span class="balance label label-default">{{account.balance | currency}}</span>
             </a>
             </strong>

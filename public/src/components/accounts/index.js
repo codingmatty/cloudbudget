@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import accountsModal from './accounts-modal';
+import { Vue } from '../../global';
 import store from '../../store';
 const {
   actions: {
@@ -43,10 +44,16 @@ export default {
   },
   methods: {
     newAccount() {
-      this.$refs.modal.showModal();
+      this.$refs.modal.showModal(null);
     },
     editAccount(account) {
       this.$refs.modal.showModal(account);
+    },
+    showEdit(account) {
+      Vue.set(account, 'displayEdit', true);
+    },
+    hideEdit(account) {
+      Vue.set(account, 'displayEdit', false);
     }
   }
 };

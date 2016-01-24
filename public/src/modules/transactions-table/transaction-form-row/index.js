@@ -2,6 +2,7 @@ import _ from 'lodash';
 import { Vue } from '../../../global';
 import store from '../../../store';
 const {
+  resetTransactionsErrors,
   getAccounts,
   createTransaction,
   updateTransaction
@@ -81,6 +82,7 @@ export default {
       }
     },
     resetTransaction() {
+      resetTransactionsErrors(this.newTransaction.id);
       this.newTransaction = _.merge({}, this.transaction);
       if (this.transaction) {
         this.transaction.edit = false;
