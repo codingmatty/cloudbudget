@@ -4,6 +4,7 @@ import { Vue } from '../../global';
 
 const SET_ACCOUNTS = 'SET_ACCOUNTS';
 const SET_ACCOUNT = 'SET_ACCOUNT';
+const REMOVE_ACCOUNTS = 'REMOVE_ACCOUNTS';
 const REMOVE_ACCOUNT = 'REMOVE_ACCOUNT';
 const SET_ERRORS = 'SET_ERRORS';
 
@@ -16,10 +17,19 @@ export const accountsState = {
 function setAccount(state, account) {
   const localAccount = _.find(state.accountsState.accounts, { id: account.id });
   if (localAccount) {
-    const index = state.accountsState.accounts.indexOf(localAccount);
-    state.accountsState.accounts.splice(index, 1, account);
+    if (!_.isEqual(account, localAccount)) {
+      const index = state.accountsState.accounts.indexOf(localAccount);
+      state.accountsState.accounts.splice(index, 1, account);
+    }
   } else {
     state.accountsState.accounts.push(account);
+  }
+}
+function removeAccount(state, account) {
+  const localAccount = _.find(state.accountsState.accounts, { id: account.id });
+  if (localAccount) {
+    const index = state.accountsState.accounts.indexOf(localAccount);
+    state.accountsState.accounts.splice(index, 1);
   }
 }
 function setErrors(state, errors, accountId) {
@@ -29,26 +39,16 @@ function setErrors(state, errors, accountId) {
 // mutations
 export const accountsMutations = {
   [SET_ACCOUNTS](state, accounts) {
-    const remoteAccounts = _.intersectionBy(accounts, state.accountsState.accounts, 'id');
-    _.forOwn(remoteAccounts, (value, key) => {
-      if (_.isEqual(value, state.transactionsState.transactions[key])) {
-        delete remoteAccounts[key];
-      }
-    });
-    if (remoteAccounts.length) {
-      remoteAccounts.forEach(setAccount.bind(null, state));
-    } else {
-      state.accountsState.accounts.push(...accounts);
-    }
+    accounts.forEach(setAccount.bind(null, state));
   },
   [SET_ACCOUNT]: setAccount,
-  [REMOVE_ACCOUNT](state, account) {
-    const localAccount = _.find(state.accountsState.accounts, { id: account.id });
-    if (localAccount) {
-      const index = state.accountsState.accounts.indexOf(localAccount);
-      state.accountsState.accounts.splice(index, 1);
+  [REMOVE_ACCOUNTS](state, accounts) {
+    const localAccounts = _.intersectionBy(state.accountsState.accounts, accounts, 'id');
+    if (localAccounts.length) {
+      localAccounts.forEach(removeAccount.bind(null, state));
     }
   },
+  [REMOVE_ACCOUNT]: removeAccount,
   [SET_ERRORS](state, errors, accountIds) {
     if (Array.isArray(accountIds)) {
       accountIds.forEach(setErrors.bind(null, state, errors));
@@ -68,6 +68,8 @@ export const accountsActions = {
       Vue.http.get('accounts')
         .then((response) => {
           dispatch(SET_ACCOUNTS, response.data.data);
+          const deadAccounts = _.differenceBy(accountsState.transactions, response.data.data, 'id');
+          dispatch(REMOVE_ACCOUNTS, deadAccounts);
           resolve(response.data.data);
         }).catch((response) => {
           resolve(response.data.errors);

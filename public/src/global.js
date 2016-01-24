@@ -11,6 +11,8 @@ Vue.use(VueResource);
 
 Vue.http.options.root = '/api/v1';
 
+Vue.config.debug = true;
+
 export {
   Vue,
   Vuex,

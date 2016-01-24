@@ -5,6 +5,12 @@
       <button class="add-account" @click="newAccount()">+</button>
     </div>
     <ul class="groups-list">
+      <li class="group">
+        <div><strong>
+          <span class="group-title">All Accounts</span>
+          <span class="balance">{{totalBalance | currency}}</span>
+        </strong></div>
+      </li>
       <li class="group" v-for="group in groups">
         <div @mouseenter="showEdit(group)" @mouseleave="hideEdit(group)"><strong>
           <span class="group-title">{{group.name}} <i v-show="group.displayEdit" class="fa fa-pencil" @click="editGroup(group)"></i></span>

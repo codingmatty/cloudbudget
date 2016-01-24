@@ -1,15 +1,10 @@
 import _ from 'lodash';
-import { Vue } from '../../../global';
 import store from '../../../store';
 const {
   getAccounts,
   getTransactions,
   deleteTransaction
 } = store.actions;
-
-Vue.filter('accountName', (value) => {
-  return (_.find(store.state.accountsState.accounts, { id: value }) || { name: 'Unknown Account' }).name;
-});
 
 export default {
   template: require('./transaction-row.html'),
@@ -21,6 +16,11 @@ export default {
     columns: {
       type: Object,
       required: true
+    }
+  },
+  filters: {
+    accountName(value) {
+      return (_.find(store.state.accountsState.accounts, { id: value }) || { name: 'Unknown Account' }).name;
     }
   },
   ready() {

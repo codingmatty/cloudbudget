@@ -1,4 +1,3 @@
-import { Vue } from '../../global';
 import store from '../../store';
 const {
   actions: {

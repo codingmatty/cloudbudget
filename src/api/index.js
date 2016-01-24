@@ -78,7 +78,6 @@ export function buildQuery(Model, req) {
       }
     }
   }
-  console.log(JSON.stringify(query._id, null, 2));
   return query;
 }
 

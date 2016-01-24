@@ -51,7 +51,8 @@
     </div>
   </div>
   <div class="modal-footer" slot="footer">
+    <button type="button" class="btn btn-danger" @click="deleteAccount(account)">Delete</button>
     <button type="button" class="btn btn-secondary" @click="closeModal()">Close</button>
-    <button type="button" class="btn btn-primary" @click="saveAccount(account)">Save changes</button>
+    <button type="button" class="btn btn-primary" @click="saveAccount(account)">Save</button>
   </div>
 </modal>

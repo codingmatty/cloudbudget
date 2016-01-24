@@ -8,7 +8,7 @@
     "dev": "concurrent 'npm run watch' 'nodemon -d 1 -w dist ./dist/app'",
     "build": "./node_modules/.bin/babel src -d dist",
     "start": "NODE_ENV=production PORT=8279 forever start -a -l cloudbudget ./dist/app.js",
-    "lint": "eslint src",
+    "lint": "./node_modules/.bin/eslint src",
     "test": "NODE_ENV=test mocha --compilers js:babel-register",
     "preversion": "npm install && npm test && npm run lint",
     "version": "npm run build && git add -Af dist",

@@ -23,7 +23,7 @@ export default {
   },
   computed: {
     errors() {
-      return accountsState.errors[this.account.id] || {};
+      return this.group.accounts ? accountsState.errors[_.head(this.group.accounts).id] || {} : {};
     }
   },
   methods: {

@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "webpack --progress --hide-modules --config webpack.config.js -w",
     "build": "rimraf dist/static && webpack --progress --hide-modules --config webpack.config.js",
-    "test": "karma start build/karma.conf.js --single-run"
+    "test": "karma start build/karma.conf.js --single-run",
+    "lint": "./node_modules/.bin/eslint --ignore-pattern src/lib src"
   },
   "devDependencies": {
     "babel-core": "^6.0.0",

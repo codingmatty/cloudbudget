@@ -42,6 +42,9 @@ export default {
         }
       }
       return groups;
+    },
+    totalBalance() {
+      return _.sumBy(this.groups, 'balance');
     }
   },
   methods: {

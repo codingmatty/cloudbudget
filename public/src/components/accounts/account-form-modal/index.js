@@ -3,7 +3,9 @@ import vueboot from 'vueboot';
 import store from '../../../store';
 const {
   actions: {
+    getTransactions,
     resetAccountsErrors,
+    deleteAccount,
     createAccount,
     updateAccount
   },
@@ -44,6 +46,16 @@ export default {
         });
       }
       this.$refs.modal.showModal();
+    },
+    deleteAccount(account) {
+      if (confirm(`Are you sure you would like to delete account ${account.name}?\nAll transactions assoicated with account will be deleted.`)) {
+        deleteAccount(account.id).then((data) => {
+          if (data.id) {
+            getTransactions();
+            this.closeModal();
+          }
+        });
+      }
     },
     closeModal() {
       resetAccountsErrors(this.account.id);

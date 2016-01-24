@@ -9,7 +9,7 @@
       <label for="group-input" class="form-control-label col-sm-2 text-xs-right">Group</label>
       <div class="col-sm-10">
         <input type="text" class="form-control" id="group-input" placeholder="Group Name" v-model="group.name" />
-        <small class="text-muted pull-xs-right form-control-label" v-if="errors">Required</small>
+        <small class="text-muted pull-xs-right form-control-label" v-if="errors.group">Required</small>
       </div>
     </div>
   </div>

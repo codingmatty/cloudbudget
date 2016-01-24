@@ -17,8 +17,10 @@ export const transactionsState = {
 function setTransaction(state, transaction) {
   const localTransaction = _.find(state.transactionsState.transactions, { id: transaction.id });
   if (localTransaction) {
-    const index = state.transactionsState.transactions.indexOf(localTransaction);
-    state.transactionsState.transactions.splice(index, 1, transaction);
+    if (!_.isEqual(transaction, localTransaction)) {
+      const index = state.transactionsState.transactions.indexOf(localTransaction);
+      state.transactionsState.transactions.splice(index, 1, transaction);
+    }
   } else {
     state.transactionsState.transactions.push(transaction);
   }
@@ -37,17 +39,7 @@ function setErrors(state, errors, transactionId) {
 // mutations
 export const transactionsMutations = {
   [SET_TRANSACTIONS](state, transactions) {
-    const remoteTransactions = _.intersectionBy(transactions, state.transactionsState.transactions, 'id');
-    _.forOwn(remoteTransactions, (value, key) => {
-      if (_.isEqual(value, state.transactionsState.transactions[key])) {
-        delete remoteTransactions[key];
-      }
-    });
-    if (remoteTransactions.length) {
-      remoteTransactions.forEach(setTransaction.bind(null, state));
-    } else {
-      state.transactionsState.transactions.push(...transactions);
-    }
+    transactions.forEach(setTransaction.bind(null, state));
   },
   [SET_TRANSACTION]: setTransaction,
   [REMOVE_TRANSACTIONS](state, transactions) {
@@ -76,6 +68,8 @@ export const transactionsActions = {
       Vue.http.get('transactions')
         .then((response) => {
           dispatch(SET_TRANSACTIONS, response.data.data);
+          const deadTransactions = _.differenceBy(transactionsState.transactions, response.data.data, 'id');
+          dispatch(REMOVE_TRANSACTIONS, deadTransactions);
           resolve(response.data.data);
         })
         .catch((response) => {
