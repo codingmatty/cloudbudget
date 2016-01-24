@@ -1,3 +1,5 @@
+import 'jquery';
+import 'jquery-ui';
 import Vue from 'vue';
 import Vuex from 'vuex';
 import VueRouter from 'vue-router';

@@ -1,33 +1,23 @@
 <div id="accounts" class="row">
   <div id="accounts-list" class="col-lg-2 col-md-3">
     <div class="title">
-      <h3>Accounts</h3>
+      <h3><strong>Accounts</strong></h3>
       <button class="add-account" @click="showModal('newAccountModal')">+</button>
-      <modal v-ref:new-account-modal>
-        <div class="modal-header" slot="header">
-          <h4 class="modal-title">Modal title</h4>
-        </div>
-        <div class="modal-body" slot="body">
-          <p>So, this is a thing.</p>
-        </div>
-        <div class="modal-footer" slot="footer">
-          <button type="button" class="btn btn-primary" @click="hideModal('newAccountModal')">Save changes</button>
-          <button type="button" class="btn btn-secondary" @click="hideModal('newAccountModal')">Close</button>
-        </div>
-      </modal>
     </div>
     <ul class="groups-list">
       <li class="group" v-for="group in groups">
-        <div>
+        <div><strong>
           <span class="group-title">{{group.name}}</span>
           <span class="balance">{{group.balance | currency}}</span>
-        </div>
+        </strong></div>
         <ul class="accounts">
           <li>
+            <strong>
             <a class="account" v-for="account in group.accounts">
               <span class="name">{{account.name}}</span>
-              <span class="balance">{{account.balance | currency}}</span>
+              <span class="balance label label-default">{{account.balance | currency}}</span>
             </a>
+            </strong>
           </li>
         </ul>
       </li>
@@ -37,3 +27,5 @@
     <transactions-table include-form></transactions-table>
   </div>
 </div>
+
+<accounts-modal v-ref:modal></accounts-modal>

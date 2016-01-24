@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import vueboot from 'vueboot';
+import accountsModal from './accounts-modal';
 import store from '../../store';
 const {
   actions: {
@@ -13,7 +13,7 @@ const {
 export default {
   template: require('./accounts.html'),
   components: {
-    modal: vueboot.modal
+    accountsModal
   },
   ready() {
     getAccounts();
@@ -42,11 +42,8 @@ export default {
     }
   },
   methods: {
-    showModal(name) {
-      this.$refs[name].showModal();
-    },
-    hideModal(name) {
-      this.$refs[name].hideModal();
+    showModal() {
+      this.$refs.modal.showModal();
     }
   }
 };

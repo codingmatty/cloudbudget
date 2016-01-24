@@ -1,0 +1,57 @@
+<modal v-ref:modal>
+  <div class="modal-header" slot="header">
+    <h4 class="modal-title">
+      <!--<span v-if="account.id">New</span>-->
+      <span>Edit</span>
+      Account
+    </h4>
+  </div>
+  <div class="modal-body" slot="body">
+    <div class="form-group row" :class="{ 'has-danger': errors.name }">
+      <label for="name-input" class="form-control-label col-sm-2 text-xs-right">Name</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" id="name-input" placeholder="Name" v-model="account.name" />
+        <small class="text-muted pull-xs-right form-control-label" v-if="errors.name">Required</small>
+      </div>
+    </div>
+    <div class="form-group row" :class="{ 'has-danger': errors.group }">
+      <label for="group-input" class="form-control-label col-sm-2 text-xs-right">Group</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" id="group-input" placeholder="Group" v-model="account.group" v-autocomplete :source="groups"
+        />
+        <small class="text-muted pull-xs-right form-control-label" v-if="errors.group">Required</small>
+      </div>
+    </div>
+    <div class="form-group row" :class="{ 'has-danger': errors.type }">
+      <label for="type-input" class="form-control-label col-sm-2 text-xs-right">Type</label>
+      <div class="col-sm-10">
+        <select class="form-control c-select" id="type-input" v-model="account.type">
+          <option selected>Please Select a Type...</option>
+          <option value="savings">Savings</option>
+          <option value="checking">Checking</option>
+          <option value="credit_card">Credit Card</option>
+          <option value="loan">Loan</option>
+          <option value="asset">Asset</option>
+          <option value="investment">Investment</option>
+        </select>
+        <small class="text-muted pull-xs-right form-control-label" v-if="errors.type">Required</small>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="budget-input" class="form-control-label col-sm-2 text-xs-right">Budget</label>
+      <div class="col-sm-10">
+        <input type="checkbox" id="budget-input" v-model="account.budget" class="" />
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="notes-input" class="form-control-label col-sm-2 text-xs-right">Notes</label>
+      <div class="col-sm-10">
+        <textarea class="form-control" id="notes-input" rows="3" placeholder="Notes" v-model="account.notes"></textarea>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer" slot="footer">
+    <button type="button" class="btn btn-secondary" @click="closeModal()">Close</button>
+    <button type="button" class="btn btn-primary" @click="saveAccount(account)">Save changes</button>
+  </div>
+</modal>

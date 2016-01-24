@@ -1,4 +1,3 @@
-import vueboot from 'vueboot';
 import './modules';
 import router from './utils/router';
 import { navbar } from './components';
@@ -6,8 +5,7 @@ import { navbar } from './components';
 const App = {
   template: require('./App.html'),
   components: {
-    navbar,
-    modal: vueboot.modal
+    navbar
   },
   data() {
     return {

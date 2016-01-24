@@ -86,7 +86,10 @@ export const accountsActions = {
     return new Promise((resolve) => {
       Vue.http.post('accounts', accountData)
         .then((response) => {
-          dispatch(SET_ACCOUNT, response.data.data);
+          const newAccount = _.merge(response.data.data, {
+            balance: 0
+          });
+          dispatch(SET_ACCOUNT, newAccount);
           resolve(response.data.data);
         })
         .catch((response) => {

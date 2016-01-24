@@ -1,4 +1,4 @@
-// import './directives';
+import './directives';
 import './filters';
 // import './services';
 

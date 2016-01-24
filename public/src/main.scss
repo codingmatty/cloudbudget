@@ -11,4 +11,8 @@ body {
   font-family: Helvetica, sans-serif;
 }
 
+.ui-autocomplete {
+  z-index: 10000;
+}
+
 @import './app';
