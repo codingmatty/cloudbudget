@@ -16,16 +16,13 @@ export default {
   components: {
     modal: vueboot.modal
   },
-  props: {
-    account: {
-      type: Object,
-      default: () => {
-        return _.merge({}, {
-          id: 0,
-          budget: false
-        });
+  data() {
+    return {
+      account: {
+        id: 0,
+        budget: false
       }
-    }
+    };
   },
   computed: {
     groups() {
@@ -36,7 +33,10 @@ export default {
     }
   },
   methods: {
-    showModal() {
+    showModal(account) {
+      if (account) {
+        this.account = _.merge({}, account);
+      }
       this.$refs.modal.showModal();
     },
     closeModal() {

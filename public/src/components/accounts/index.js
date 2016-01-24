@@ -42,8 +42,11 @@ export default {
     }
   },
   methods: {
-    showModal() {
+    newAccount() {
       this.$refs.modal.showModal();
+    },
+    editAccount(account) {
+      this.$refs.modal.showModal(account);
     }
   }
 };

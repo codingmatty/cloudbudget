@@ -18,6 +18,14 @@ accountSchema.static('readonlyProps', () => {
   return ['user'];
 });
 
+accountSchema.methods.normalize = function normalize(done) {
+  const account = this;
+  account.getBalance((err, balance) => {
+    // if (err) return done(err);
+    done(_.merge(account.toJSON(), { balance }));
+  });
+};
+
 accountSchema.methods.getTransactions = function getTransactions(done) {
   const account = this;
   Transaction.find({ account: account.id }, (err, transactions) => {

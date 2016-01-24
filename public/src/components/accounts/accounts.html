@@ -2,7 +2,7 @@
   <div id="accounts-list" class="col-lg-2 col-md-3">
     <div class="title">
       <h3><strong>Accounts</strong></h3>
-      <button class="add-account" @click="showModal('newAccountModal')">+</button>
+      <button class="add-account" @click="newAccount()">+</button>
     </div>
     <ul class="groups-list">
       <li class="group" v-for="group in groups">
@@ -14,7 +14,7 @@
           <li>
             <strong>
             <a class="account" v-for="account in group.accounts">
-              <span class="name">{{account.name}}</span>
+              <span class="name">{{account.name}} <i class="fa fa-pencil" @click="editAccount(account)"></i></span>
               <span class="balance label label-default">{{account.balance | currency}}</span>
             </a>
             </strong>

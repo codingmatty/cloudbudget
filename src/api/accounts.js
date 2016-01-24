@@ -2,34 +2,12 @@ import _ from 'lodash';
 import async from 'async';
 import passport from 'passport';
 import { Router } from 'express';
-import resource, { listMethod, showMethod } from './resource';
+import resource from './resource';
 import { buildQuery, handleError } from './index';
 import { Account } from '../db';
 
 const api = new Router();
 api.use(passport.authenticate(['jwt', 'bearer'], { session: false }));
-
-// GET - List (with Balance)
-listMethod(api, 'Account', true, (req, res, accounts) => {
-  async.map(accounts, (account, callback) => {
-    account.getBalance((err, balance) => {
-      const normalizedAccount = account.toJSON();
-      normalizedAccount.balance = balance;
-      callback(null, normalizedAccount);
-    });
-  }, (err, normalizedAccounts) => {
-    res.status(200).send({ data: normalizedAccounts });
-  });
-});
-
-// GET - Show (with Balance)
-showMethod(api, 'Account', true, (req, res, account) => {
-  account.getBalance((err, balance) => {
-    const normalizedAccount = account.toJSON();
-    normalizedAccount.balance = balance;
-    res.status(200).send({ data: normalizedAccount });
-  });
-});
 
 // Update Multiple
 api.put('/', (req, res) => {
@@ -50,6 +28,6 @@ api.put('/', (req, res) => {
   });
 });
 
-api.use('/', resource('Account', true, ['create', 'update', 'delete']));
+api.use('/', resource('Account', true, ['list', 'create', 'show', 'update', 'delete']));
 
 export default api;

@@ -71,6 +71,7 @@ describe('Accounts', function () {
         assert(Types.ObjectId.isValid(res.body.data.id));
         assert(Types.ObjectId.isValid(res.body.data.user));
         assert.deepEqual(_.omit(res.body.data, 'id'), _.merge(newAccount, {
+          balance: 0,
           user: this.user.id
         }));
         done();
@@ -128,9 +129,6 @@ describe('Accounts', function () {
     });
   });
   describe('Update', function () {
-    beforeEach(function () {
-      delete this.account.balance; // remove balance so it doesn't get tested against..
-    });
     it('should update an account', function (done) {
       const updatedProperties = {
         name: 'New Account Name',
@@ -166,9 +164,6 @@ describe('Accounts', function () {
     });
   });
   describe('Delete', function () {
-    beforeEach(function () {
-      delete this.account.balance; // remove balance so it doesn't get tested against..
-    });
     it('should delete an account', function (done) {
       httpClient('delete', `accounts/${this.account.id}`, { jwtToken: this.user.token }, 200, (err, res) => {
         if (err) return done(err);

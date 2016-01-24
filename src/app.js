@@ -32,7 +32,7 @@ setupPassport();
 app.use('/api/v1', api);
 app.use('/static', express.static(__dirname + '/../public/dist/static'));
 app.get('/*', (req, res) => {
-  res.sendFile('/public/dist/index.html', {root: __dirname + '/../'});
+  res.sendFile('/public/dist/index.html', { root: __dirname + '/../' });
 });
 
 // catch 404 and forwarding to error handler
