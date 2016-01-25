@@ -65,6 +65,12 @@ export default {
     },
     errors() {
       return transactionsState.errors[this.transaction.id] || {};
+    },
+    payees() {
+      return _.uniq(_.map(transactionsState.transactions, 'payee'));
+    },
+    tags() {
+      return _.uniq(_.compact(_.flatten(_.map(transactionsState.transactions, 'tags'))));
     }
   },
   methods: {

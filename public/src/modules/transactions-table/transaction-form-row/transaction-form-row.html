@@ -14,12 +14,12 @@
   </td>
   <td class="column payee" v-if="columns.payee" :style="{ width: columns.payee + '%' }">
     <fieldset class="input-group" :class="{ 'has-danger': errors.payee }">
-      <input name="payee" type="text" v-model="newTransaction.payee" placeholder="payee" class="form-control" />
+      <input name="payee" type="text" v-model="newTransaction.payee" placeholder="payee" class="form-control" v-autocomplete :source="payees" />
     </fieldset>
   </td>
   <td class="column tags" v-if="columns.tags" :style="{ width: columns.tags + '%' }">
     <fieldset class="input-group">
-      <input type="text" v-model="newTransaction.tags" placeholder="tags" class="form-control"/>
+      <input type="text" v-model="newTransaction.tags" placeholder="tags" class="form-control" v-autocomplete :source="tags" />
     </fieldset>
   </td>
   <td class="column memo" v-if="columns.memo" :style="{ width: columns.memo + '%' }">
