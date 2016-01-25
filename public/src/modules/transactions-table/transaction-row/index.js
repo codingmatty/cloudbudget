@@ -1,13 +1,21 @@
 import _ from 'lodash';
-import store from '../../../store';
+import store from 'store';
+
+import transactionRowTemplate from './transaction-row.html';
+
 const {
-  getAccounts,
-  getTransactions,
-  deleteTransaction
-} = store.actions;
+  actions: {
+    getAccounts,
+    getTransactions,
+    deleteTransaction
+  },
+  state: {
+    accountsState
+  }
+} = store;
 
 export default {
-  template: require('./transaction-row.html'),
+  template: transactionRowTemplate,
   props: {
     transaction: {
       type: Object,
@@ -20,7 +28,7 @@ export default {
   },
   filters: {
     accountName(value) {
-      return (_.find(store.state.accountsState.accounts, { id: value }) || { name: 'Unknown Account' }).name;
+      return (_.find(accountsState.accounts, { id: value }) || { name: 'Unknown Account' }).name;
     }
   },
   ready() {

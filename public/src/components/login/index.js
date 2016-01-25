@@ -1,4 +1,7 @@
-import store from '../../store';
+import store from 'store';
+
+import loginTemplate from './login.html';
+
 const {
   actions: {
     loginUser
@@ -9,7 +12,7 @@ const {
 } = store;
 
 export default {
-  template: require('./login.html'),
+  template: loginTemplate,
   data() {
     return {
       username: '',

@@ -1,14 +1,21 @@
-import store from '../../store';
+import store from 'store';
+
+import navbarTemplate from './navbar.html';
 
 const {
-  logoutUser
-} = store.actions;
+  actions: {
+    logoutUser
+  },
+  state: {
+    userState
+  }
+} = store;
 
 export default {
-  template: require('./navbar.html'),
+  template: navbarTemplate,
   computed: {
     user() {
-      return store.state.userState.user;
+      return userState.user;
     }
   },
   methods: {

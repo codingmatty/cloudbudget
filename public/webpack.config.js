@@ -10,8 +10,12 @@ module.exports = {
     publicPath: '/static/',
     filename: '[name]'
   },
-  resolveLoader: {
-    root: path.join(__dirname, 'node_modules'),
+  resolve: {
+    alias: {
+      'global': path.resolve(__dirname, './src/global'),
+      'store': path.resolve(__dirname, './src/store'),
+      'components': path.resolve(__dirname, './src/components')
+    }
   },
   module: {
     loaders: [

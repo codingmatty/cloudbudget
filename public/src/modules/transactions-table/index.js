@@ -1,14 +1,22 @@
 import _ from 'lodash';
+import store from 'store';
+import { Vue } from 'global';
 import transactionRow from './transaction-row';
 import transactionFormRow from './transaction-form-row';
-import { Vue } from '../../global';
-import store from '../../store';
+
+import transactionsTableTemplate from './transactions-table.html';
+
 const {
-  getTransactions
-} = store.actions;
+  actions: {
+    getTransactions
+  },
+  state: {
+    transactionsState
+  }
+} = store;
 
 Vue.component('transactions-table', {
-  template: require('./transactions-table.html'),
+  template: transactionsTableTemplate,
   props: {
     includeForm: {
       type: Boolean,
@@ -63,7 +71,7 @@ Vue.component('transactions-table', {
   },
   computed: {
     transactions() {
-      return store.state.transactionsState.transactions;
+      return transactionsState.transactions;
     },
     iColumns() {
       if (this.accountId && !Array.isArray(this.accountId)) {

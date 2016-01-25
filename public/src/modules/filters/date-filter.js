@@ -1,5 +1,5 @@
-import { Vue } from '../../global';
 import moment from 'moment';
+import { Vue } from 'global';
 
 Vue.filter('date', {
   read(value, format) {

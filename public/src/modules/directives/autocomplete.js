@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import { Vue } from '../../global';
+import { Vue } from 'global';
 
 Vue.directive('autocomplete', {
   params: ['source'],

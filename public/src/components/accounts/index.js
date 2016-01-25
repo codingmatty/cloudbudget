@@ -1,8 +1,11 @@
 import _ from 'lodash';
+import store from 'store';
+import { Vue } from 'global';
 import accountFormModal from './account-form-modal';
 import accountGroupFormModal from './account-group-form-modal';
-import { Vue } from '../../global';
-import store from '../../store';
+
+import accountsTemplate from './accounts.html';
+
 const {
   actions: {
     getAccounts
@@ -13,7 +16,7 @@ const {
 } = store;
 
 export default {
-  template: require('./accounts.html'),
+  template: accountsTemplate,
   components: {
     accountFormModal,
     accountGroupFormModal

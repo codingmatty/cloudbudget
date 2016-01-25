@@ -1,6 +1,9 @@
 import _ from 'lodash';
+import store from 'store';
 import vueboot from 'vueboot';
-import store from '../../../store';
+
+import accountFormModalTemplate from './account-form-modal.html';
+
 const {
   actions: {
     getTransactions,
@@ -15,7 +18,7 @@ const {
 } = store;
 
 export default {
-  template: require('./account-form-modal.html'),
+  template: accountFormModalTemplate,
   components: {
     modal: vueboot.modal
   },

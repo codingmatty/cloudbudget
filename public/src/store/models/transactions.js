@@ -1,6 +1,5 @@
-// import { LOGIN_USER } from '../mutation-types';
 import _ from 'lodash';
-import { Vue } from '../../global';
+import { Vue } from 'global';
 
 const SET_TRANSACTIONS = 'SET_TRANSACTIONS';
 const REMOVE_TRANSACTIONS = 'REMOVE_TRANSACTION';

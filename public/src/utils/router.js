@@ -1,6 +1,6 @@
-import { VueRouter } from '../global';
-import store from '../store';
-import { login, user, accounts, four0four } from '../components';
+import { VueRouter } from 'global';
+import store from 'store';
+import { login, user, accounts, four0four } from 'components';
 
 const {
   userState

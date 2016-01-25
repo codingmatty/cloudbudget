@@ -1,6 +1,5 @@
-// import { LOGIN_USER } from '../mutation-types';
 import _ from 'lodash';
-import { Vue } from '../../global';
+import { Vue } from 'global';
 
 const SET_ACCOUNTS = 'SET_ACCOUNTS';
 const SET_ACCOUNT = 'SET_ACCOUNT';

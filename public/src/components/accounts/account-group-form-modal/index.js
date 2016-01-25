@@ -1,6 +1,9 @@
 import _ from 'lodash';
+import store from 'store';
 import vueboot from 'vueboot';
-import store from '../../../store';
+
+import accountGroupFormModalTemplate from './account-group-form-modal.html';
+
 const {
   actions: {
     resetAccountsErrors,
@@ -12,7 +15,7 @@ const {
 } = store;
 
 export default {
-  template: require('./account-group-form-modal.html'),
+  template: accountGroupFormModalTemplate,
   components: {
     modal: vueboot.modal
   },
