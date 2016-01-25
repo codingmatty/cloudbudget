@@ -14,9 +14,10 @@ Vue.component('transactions-table', {
       type: Boolean,
       default: () => false
     },
+    accountId: {},
     columns: {
       type: Object,
-      default: () => {
+      default() {
         return {
           'selected': '3',
           'account': '13',
@@ -37,6 +38,18 @@ Vue.component('transactions-table', {
       }
     }
   },
+  filters: {
+    filterTransactions(transactions, accountId) {
+      return transactions.filter((transaction) => {
+        if (Array.isArray(accountId)) {
+          return _.includes(accountId, transaction.account);
+        } else if (accountId) {
+          return transaction.account === accountId;
+        }
+        return true;
+      });
+    }
+  },
   components: {
     transactionRow,
     transactionFormRow
@@ -51,6 +64,21 @@ Vue.component('transactions-table', {
   computed: {
     transactions() {
       return store.state.transactionsState.transactions;
+    },
+    iColumns() {
+      if (this.accountId && !Array.isArray(this.accountId)) {
+        return {
+          'selected': '3',
+          'date': '13',
+          'payee': '16',
+          'tags': '19',
+          'memo': '19',
+          'amount': '9',
+          'balance': '8',
+          'state': '7'
+        };
+      }
+      return this.columns;
     }
   },
   methods: {

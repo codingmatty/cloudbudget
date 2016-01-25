@@ -27,6 +27,11 @@ router.map({
     component: accounts,
     auth: true
   },
+  '/accounts/:account_id': {
+    name: 'accounts',
+    component: accounts,
+    auth: true
+  },
   '/*any': {
     name: '404',
     component: four0four

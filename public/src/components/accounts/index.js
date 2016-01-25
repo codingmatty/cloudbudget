@@ -35,6 +35,7 @@ export default {
       for (const groupName in groupsObj) {
         if (groupsObj.hasOwnProperty(groupName)) {
           groups.push({
+            id: groupName.replace(/[^\w\d]/g, '').toLowerCase(),
             name: groupName,
             balance: _.sumBy(groupsObj[groupName], 'balance'),
             accounts: groupsObj[groupName]
@@ -45,6 +46,13 @@ export default {
     },
     totalBalance() {
       return _.sumBy(this.groups, 'balance');
+    },
+    transactionAccountId() {
+      const group = _.find(this.groups, { id: this.$route.params.account_id });
+      if (group) {
+        return _.map(group.accounts, 'id');
+      }
+      return this.$route.params.account_id || '';
     }
   },
   methods: {

@@ -6,20 +6,20 @@
     </div>
     <ul class="groups-list">
       <li class="group">
-        <div><strong>
+        <a v-link="{ path: '/accounts', exact: true }"><strong>
           <span class="group-title">All Accounts</span>
           <span class="balance">{{totalBalance | currency}}</span>
-        </strong></div>
+        </strong></a>
       </li>
       <li class="group" v-for="group in groups">
-        <div @mouseenter="showEdit(group)" @mouseleave="hideEdit(group)"><strong>
+        <a @mouseenter="showEdit(group)" @mouseleave="hideEdit(group)" v-link="{ path: '/accounts/' + group.id }"><strong>
           <span class="group-title">{{group.name}} <i v-show="group.displayEdit" class="fa fa-pencil" @click="editGroup(group)"></i></span>
           <span class="balance">{{group.balance | currency}}</span>
-        </strong></div>
+        </strong></a>
         <ul class="accounts">
           <li>
             <strong>
-            <a @mouseenter="showEdit(account)" @mouseleave="hideEdit(account)" class="account" v-for="account in group.accounts">
+            <a @mouseenter="showEdit(account)" @mouseleave="hideEdit(account)" class="account" v-for="account in group.accounts" v-link="{ path: '/accounts/' + account.id }">
               <span class="name">{{account.name}} <i v-show="account.displayEdit" class="fa fa-pencil" @click="editAccount(account)"></i></span>
               <span class="balance label label-default">{{account.balance | currency}}</span>
             </a>
@@ -30,7 +30,7 @@
     </ul>
   </div>
   <div id="transactions" class="col-lg-10 col-md-9">
-    <transactions-table include-form></transactions-table>
+    <transactions-table include-form :account-id="transactionAccountId"></transactions-table>
   </div>
 </div>
 

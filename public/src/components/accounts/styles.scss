@@ -25,7 +25,7 @@
         &:not(:last-child) {
           margin-bottom: 0.6rem;
         }
-        & > div {
+        & > a {
           @extend .list-group-item;
           @include clearfix;
           border-bottom: $brand-info solid 0.15rem;
