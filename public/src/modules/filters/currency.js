@@ -1,4 +1,3 @@
-import moment from 'moment';
 import { Vue } from 'global';
 
 Vue.filter('customCurrency', (value) => {
