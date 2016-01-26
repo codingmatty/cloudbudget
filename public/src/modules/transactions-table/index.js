@@ -8,7 +8,9 @@ import transactionsTableTemplate from './transactions-table.html';
 
 const {
   actions: {
-    getTransactions
+    getAccounts,
+    getTransactions,
+    deleteTransactions
   },
   state: {
     transactionsState
@@ -71,7 +73,7 @@ Vue.component('transactions-table', {
   },
   computed: {
     transactions() {
-      return transactionsState.transactions;
+      return _.merge(transactionsState.transactions, { selected: false });
     },
     iColumns() {
       if (this.accountId && !Array.isArray(this.accountId)) {
@@ -90,5 +92,11 @@ Vue.component('transactions-table', {
     }
   },
   methods: {
+    deleteTransactions() {
+      deleteTransactions(_.map(_.filter(this.transactions, { 'selected': true }), 'id'))
+        .then(() => {
+          getAccounts();
+        });
+    }
   }
 });

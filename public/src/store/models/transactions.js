@@ -92,9 +92,9 @@ export const transactionsActions = {
   },
   deleteTransactions({ dispatch }, transactionIds) {
     return new Promise((resolve) => {
-      Vue.http.delete(`transactions?ids=[${transactionIds.join(',') }]`)
+      Vue.http.delete(`transactions?id=[${transactionIds.join(',') }]`)
         .then((response) => {
-          dispatch(REMOVE_TRANSACTION, response.data.data);
+          dispatch(REMOVE_TRANSACTIONS, response.data.data);
           dispatch(SET_ERRORS, {}, transactionIds);
           resolve(response.data.data);
         })
