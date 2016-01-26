@@ -2,19 +2,27 @@
   <table>
     <thead class="thead-inverse">
       <tr>
-        <th class="text-xs-center" class="column selected" v-if="iColumns.selected" :style="{ width: iColumns.selected + '%' }">
-          <input type="checkbox" checked="true" disabled />
+        <th class="column selected" v-if="iColumns.selected" :style="{ width: iColumns.selected + '%' }">
+          <div class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown">
+              <input type="checkbox" checked="true" disabled />
+            </a>
+            <div class="dropdown-menu">
+              <!--<div class="dropdown-divider"></div>-->
+              <a class="dropdown-item" @click="">Delete</a>
+            </div>
+          </div>
         </th>
-        <th class="text-xs-center" class="column account" v-if="iColumns.account" :style="{ width: iColumns.account + '%' }">Account</th>
-        <th class="text-xs-center" class="column date" v-if="iColumns.date" :style="{ width: iColumns.date + '%' }">Date</th>
-        <th class="text-xs-center" class="column payee" v-if="iColumns.payee" :style="{ width: iColumns.payee + '%' }">Payee</th>
-        <th class="text-xs-center" class="column tags" v-if="iColumns.tags" :style="{ width: iColumns.tags + '%' }">Tags</th>
-        <th class="text-xs-center" class="column memo" v-if="iColumns.memo" :style="{ width: iColumns.memo + '%' }">Memo</th>
-        <th class="text-xs-center" class="column amount" v-if="iColumns.amount" :style="{ width: iColumns.amount + '%' }">Amount</th>
-        <th class="text-xs-center" class="column balance" v-if="iColumns.balance" :style="{ width: iColumns.balance + '%' }">Balance</th>
-        <th class="text-xs-center" class="column state" v-if="iColumns.state" :style="{ width: iColumns.state + '%' }">State</th>
-        <th class="text-xs-center"></th>
-        <th class="text-xs-center"></th>
+        <th class="column account" v-if="iColumns.account" :style="{ width: iColumns.account + '%' }">Account</th>
+        <th class="column date" v-if="iColumns.date" :style="{ width: iColumns.date + '%' }">Date</th>
+        <th class="column payee" v-if="iColumns.payee" :style="{ width: iColumns.payee + '%' }">Payee</th>
+        <th class="column tags" v-if="iColumns.tags" :style="{ width: iColumns.tags + '%' }">Tags</th>
+        <th class="column memo" v-if="iColumns.memo" :style="{ width: iColumns.memo + '%' }">Memo</th>
+        <th class="column amount" v-if="iColumns.amount" :style="{ width: iColumns.amount + '%' }">Amount</th>
+        <th class="column balance" v-if="iColumns.balance" :style="{ width: iColumns.balance + '%' }">Balance</th>
+        <th class="column state" v-if="iColumns.state" :style="{ width: iColumns.state + '%' }">State</th>
+        <th></th>
+        <th></th>
       </tr>
     </thead>
     <tbody>

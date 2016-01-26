@@ -27,10 +27,10 @@ Vue.component('transactions-table', {
       type: Object,
       default() {
         return {
-          'selected': '3',
-          'account': '13',
+          'selected': '5',
+          'account': '12',
           'date': '10',
-          'payee': '13',
+          'payee': '12',
           'tags': '16',
           'memo': '16',
           'amount': '8',
@@ -76,11 +76,11 @@ Vue.component('transactions-table', {
     iColumns() {
       if (this.accountId && !Array.isArray(this.accountId)) {
         return {
-          'selected': '3',
+          'selected': '5',
           'date': '13',
           'payee': '16',
-          'tags': '19',
-          'memo': '19',
+          'tags': '18',
+          'memo': '18',
           'amount': '9',
           'balance': '8',
           'state': '7'

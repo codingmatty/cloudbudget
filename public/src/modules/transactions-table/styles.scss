@@ -3,6 +3,20 @@
   table {
     @extend .table;
     @extend .table-striped;
+    thead {
+      th {
+        @extend text-xs-center;
+        &.column.selected .dropdown {
+          a.dropdown-toggle {
+            color: white;
+            cursor: pointer;
+          }
+          a.dropdown-item {
+            cursor: pointer;
+          }
+        }
+      }
+    }
   }
 
   @import './transaction-row/styles';
