@@ -1,19 +1,19 @@
-<div id="login" class="container">
+<div id="login">
   <div class="row">
-    <form class="col-md-4  col-md-push-4 card">
+    <form>
       <div class="card-block">
-        <fieldset class="form-group" :class="{ 'has-danger': errors.username }">
-          <h5><strong><label for="username" class="card-title">Username:</label></strong></h5>
-          <input type="text" class="form-control" id="username" v-model="username" placeholder="Username">
-          <small class="text-muted pull-xs-right form-control-label" v-if="errors.username">Required</small>
+        <fieldset :class="{ 'has-danger': errors.username }">
+          <label for="username">Username:</label>
+          <input type="text" id="username" class="form-control" v-model="username" placeholder="Username">
+          <small class="error-text" v-if="errors.username">Required</small>
         </fieldset>
-        <fieldset class="form-group" :class="{ 'has-danger': errors.password }">
-          <h5><strong><label for="password" class="card-title">Password</label></strong></h5>
-          <input type="password" class="form-control" id="password" v-model="password" placeholder="Password">
-          <small class="text-muted pull-xs-right form-control-label" v-if="errors.password">Required</small>
+        <fieldset :class="{ 'has-danger': errors.password }">
+          <label for="password">Password</label>
+          <input type="password" id="password" class="form-control" v-model="password" placeholder="Password">
+          <small class="error-text" v-if="errors.password">Required</small>
         </fieldset>
         <div v-if="errors.message">{{errors.message}}</div>
-        <button type="button" class="btn btn-primary center-block" @click="loginUser(username, password)">Login</button>
+        <button type="button" @click="loginUser(username, password)">Login</button>
       </div>
     </form>
   </div>

@@ -5,14 +5,13 @@ html {
   height: 100%;
   margin: 0;
   padding: 0;
-}
-body {
-  overflow: hidden;
-  font-family: Helvetica, sans-serif;
+  body {
+    overflow: hidden;
+    font-family: Helvetica, sans-serif;
+    @import './app';
+  }
 }
 
 .ui-autocomplete {
   z-index: 10000;
 }
-
-@import './app';

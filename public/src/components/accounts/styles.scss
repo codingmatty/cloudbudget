@@ -1,8 +1,10 @@
 #accounts {
+  @extend .row;
   height: 100%;
   background-color: lightblue;
-
   #accounts-list {
+    @extend .col-lg-2;
+    @extend .col-md-3;
     padding: 0;
     overflow-y: auto;
     .title {
@@ -10,6 +12,7 @@
       padding: 1rem;
       h3 {
         @include pull-left;
+        font-weight: bold;
       }
       .add-account {
         @extend .btn;
@@ -21,13 +24,13 @@
     .groups-list {
       @extend .list-group;
       .group {
-        // height: 100%;
         &:not(:last-child) {
           margin-bottom: 0.6rem;
         }
         & > a {
           @extend .list-group-item;
           @include clearfix;
+          font-weight: bold;
           border-bottom: $brand-info solid 0.15rem;
           .group-title {
             @include pull-left;
@@ -36,16 +39,25 @@
         }
         .balance { // includes balance for accounts
           @include pull-right;
+          color: $brand-danger;
         }
         .accounts {
           @extend .list-group;
-          li {
-            .account {
+          .account {
+            & > a {
               @extend .list-group-item;
               @include clearfix;
               display: inline-table;
+              font-weight: bold;
               .name {
                 @include pull-left;
+              }
+              .balance {
+                @extend .label;
+                @extend .label-default;
+                &.negative {
+                  @extend .label-danger;
+                }
               }
             }
           }
@@ -55,11 +67,12 @@
   }
 
   #transactions {
+    @extend .col-lg-10;
+    @extend .col-md-9;
     padding: 0;
     overflow-y: auto;
-    background-color: $brand-primary;
   }
-}
 
-@import './account-form-modal/styles';
-@import './account-group-form-modal/styles';
+  @import './account-form-modal/styles';
+  @import './account-group-form-modal/styles';
+}

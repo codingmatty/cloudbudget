@@ -1,0 +1,12 @@
+#fourohfour {
+  padding-top: 10%;
+  h1, .path {
+    @extend .text-xs-center;
+  }
+  h1 {
+    font-size: 10rem;
+  }
+  .path {
+    font-size: 2rem;
+  }
+}

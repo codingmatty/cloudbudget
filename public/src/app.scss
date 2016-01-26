@@ -6,10 +6,10 @@
     @extend .container-fluid;
     position: absolute;
     top: 54px;
-    height: 100%;
+    height: calc(100% - 54px);
     width: 100%;
   }
-}
 
-@import './components/styles';
-@import './modules/styles';
+  @import './components/styles';
+  @import './modules/styles';
+}

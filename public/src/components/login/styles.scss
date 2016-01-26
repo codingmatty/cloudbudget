@@ -1,3 +1,28 @@
 #login {
+  @extend .container;
   padding-top: 12rem;
+  form {
+    @extend .card;
+    @extend .col-md-4;
+    @extend .col-md-push-4;
+    fieldset {
+      @extend .form-group;
+      label {
+        @extend .h5;
+        @extend .card-title;
+        font-weight: bold;
+      }
+      .error-text {
+        @extend .text-muted;
+        @extend .pull-xs-right;
+        @extend .form-control-label;
+        color: $brand-danger;
+      }
+    }
+    button {
+      @extend .btn;
+      @extend .btn-primary;
+      @extend .center-block;
+    }
+  }
 }

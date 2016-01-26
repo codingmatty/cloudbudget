@@ -44,7 +44,7 @@ export default {
         return value ? value.toFixed(2) : '';
       },
       write(val) {
-        const number = +val.replace(/[^\d.]/g, '');
+        const number = +val.replace(/[^\d.-]/g, '');
         return isNaN(number) ? 0 : parseFloat(number.toFixed(2));
       }
     }

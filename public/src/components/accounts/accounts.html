@@ -1,35 +1,38 @@
-<div id="accounts" class="row">
-  <div id="accounts-list" class="col-lg-2 col-md-3">
+<div id="accounts">
+  <div id="accounts-list">
     <div class="title">
-      <h3><strong>Accounts</strong></h3>
+      <h3>Accounts</h3>
       <button class="add-account" @click="newAccount()">+</button>
     </div>
     <ul class="groups-list">
       <li class="group">
-        <a v-link="{ path: '/accounts', exact: true }"><strong>
+        <a v-link="{ path: '/accounts', exact: true }">
           <span class="group-title">All Accounts</span>
-          <span class="balance">{{totalBalance | currency}}</span>
-        </strong></a>
+          <span class="balance" :class="{ 'negative': totalBalance < 0 }">{{totalBalance | customCurrency}}</span>
+        </a>
       </li>
       <li class="group" v-for="group in groups">
-        <a @mouseenter="showEdit(group)" @mouseleave="hideEdit(group)" v-link="{ path: '/accounts/' + group.id }"><strong>
+        <a v-link="{ path: '/accounts/' + group.id }"
+           @mouseenter="showEdit(group)"
+           @mouseleave="hideEdit(group)" >
           <span class="group-title">{{group.name}} <i v-show="group.displayEdit" class="fa fa-pencil" @click="editGroup(group)"></i></span>
-          <span class="balance">{{group.balance | currency}}</span>
-        </strong></a>
+          <span class="balance" :class="{ 'negative': group.balance < 0 }">{{group.balance | customCurrency}}</span>
+        </a>
         <ul class="accounts">
-          <li>
-            <strong>
-            <a @mouseenter="showEdit(account)" @mouseleave="hideEdit(account)" class="account" v-for="account in group.accounts" v-link="{ path: '/accounts/' + account.id }">
+          <li class="account">
+            <a v-for="account in group.accounts"
+               v-link="{ path: '/accounts/' + account.id }"
+               @mouseenter="showEdit(account)"
+               @mouseleave="hideEdit(account)" >
               <span class="name">{{account.name}} <i v-show="account.displayEdit" class="fa fa-pencil" @click="editAccount(account)"></i></span>
-              <span class="balance label label-default">{{account.balance | currency}}</span>
+              <span class="balance" :class="{ 'negative': account.balance < 0 }">{{account.balance | customCurrency}}</span>
             </a>
-            </strong>
           </li>
         </ul>
       </li>
     </ul>
   </div>
-  <div id="transactions" class="col-lg-10 col-md-9">
+  <div id="transactions">
     <transactions-table include-form :account-id="transactionAccountId"></transactions-table>
   </div>
 </div>
