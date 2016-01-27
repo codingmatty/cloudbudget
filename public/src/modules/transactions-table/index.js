@@ -10,6 +10,7 @@ const {
   actions: {
     getAccounts,
     getTransactions,
+    updateTransactions,
     deleteTransactions
   },
   state: {
@@ -25,6 +26,9 @@ Vue.component('transactions-table', {
       default: () => false
     },
     accountId: {},
+    balance: {
+      type: Number
+    },
     columns: {
       type: Object,
       default() {
@@ -48,18 +52,6 @@ Vue.component('transactions-table', {
       }
     }
   },
-  filters: {
-    filterTransactions(transactions, accountId) {
-      return transactions.filter((transaction) => {
-        if (Array.isArray(accountId)) {
-          return _.includes(accountId, transaction.account);
-        } else if (accountId) {
-          return transaction.account === accountId;
-        }
-        return true;
-      });
-    }
-  },
   components: {
     transactionRow,
     transactionFormRow
@@ -73,7 +65,25 @@ Vue.component('transactions-table', {
   },
   computed: {
     transactions() {
-      return _.merge(transactionsState.transactions, { selected: false });
+      const transactions = transactionsState.transactions.filter((transaction) => {
+        if (Array.isArray(this.accountId)) {
+          return _.includes(this.accountId, transaction.account);
+        } else if (this.accountId) {
+          return transaction.account === this.accountId;
+        }
+        return true;
+      });
+
+      return _.orderBy(transactions, ['date', 'amount'], ['desc', 'desc']);
+    },
+    transactionBalances() {
+      const balances = {};
+      let currentBalance = this.balance;
+      this.transactions.forEach((transaction) => {
+        balances[transaction.id] = currentBalance;
+        currentBalance -= transaction.amount;
+      });
+      return balances;
     },
     iColumns() {
       if (this.accountId && !Array.isArray(this.accountId)) {
@@ -92,11 +102,21 @@ Vue.component('transactions-table', {
     }
   },
   methods: {
-    deleteTransactions() {
-      deleteTransactions(_.map(_.filter(this.transactions, { 'selected': true }), 'id'))
+    clearTransactions() {
+      const transactionsToUpdate = _.filter(this.transactions, { 'selected': true });
+      updateTransactions(_.map(transactionsToUpdate, 'id'), { state: 'cleared' })
         .then(() => {
           getAccounts();
         });
+    },
+    deleteTransactions() {
+      const transactionsToDelete = _.filter(this.transactions, { 'selected': true });
+      if (confirm(`Are you sure you would like to delete ${transactionsToDelete.length} transactions?`)) {
+        deleteTransactions(_.map(transactionsToDelete, 'id'))
+          .then(() => {
+            getAccounts();
+          });
+      }
     }
   }
 });

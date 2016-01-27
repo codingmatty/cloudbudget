@@ -1,11 +1,14 @@
 .transactions-table {
   @extend .table-responsive;
+  height: 100%;
+  background-color: #e5eaf0;
   table {
     @extend .table;
     @extend .table-striped;
+    margin: -1px 0;
     thead {
       th {
-        @extend text-xs-center;
+        @extend .text-xs-center;
         &.column.selected .dropdown {
           a.dropdown-toggle {
             color: white;
@@ -14,6 +17,16 @@
           a.dropdown-item {
             cursor: pointer;
           }
+        }
+      }
+    }
+    tbody {
+      tr {
+        &:hover {
+          background-color: lightgray;
+        }
+        &.selected {
+          background-color: #dcdcdc;
         }
       }
     }

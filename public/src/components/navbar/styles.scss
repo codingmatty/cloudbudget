@@ -1,8 +1,8 @@
 nav#navbar {
   @extend .navbar;
   @extend .navbar-fixed-top;
-  @extend .navbar-light;
-  @extend .bg-faded;
+  @extend .navbar-dark;
+  @extend .bg-primary;
   #brand {
     @extend .navbar-brand;
   }

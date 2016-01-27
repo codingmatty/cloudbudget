@@ -13,15 +13,19 @@ export const accountsState = {
   errors: {}
 };
 
+function normalizeAccount(account) {
+  return _.merge(account, {});
+}
+
 function setAccount(state, account) {
   const localAccount = _.find(state.accountsState.accounts, { id: account.id });
   if (localAccount) {
-    if (!_.isEqual(account, localAccount)) {
+    if (!_.isEqual(normalizeAccount(account), localAccount)) {
       const index = state.accountsState.accounts.indexOf(localAccount);
-      state.accountsState.accounts.splice(index, 1, account);
+      state.accountsState.accounts.splice(index, 1, normalizeAccount(account));
     }
   } else {
-    state.accountsState.accounts.push(account);
+    state.accountsState.accounts.push(normalizeAccount(account));
   }
 }
 function removeAccount(state, account) {

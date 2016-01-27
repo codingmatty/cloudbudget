@@ -19,9 +19,10 @@ const {
 export default {
   template: transactionFormRowTemplate,
   props: {
+    defaultAccountId: {},
     transaction: {
       type: Object,
-      default: () => {
+      default() {
         return _.merge({}, {
           id: 0,
           date: Date.now(),
@@ -50,12 +51,23 @@ export default {
     }
   },
   ready() {
-    getAccounts().then((accounts) => {
+    getAccounts();
+  },
+  watch: {
+    ['defaultAccountId'](value) {
       if (this.transaction.default) {
-        this.transaction.account = _.head(accounts).id;
+        if (!value) {
+          this.transaction.account = _.head(this.accounts).id;
+        } else {
+          if (Array.isArray(value)) {
+            this.transaction.account = _.head(value);
+          } else {
+            this.transaction.account = value;
+          }
+        }
         this.newTransaction.account = this.transaction.account;
       }
-    });
+    }
   },
   data() {
     return {
@@ -64,7 +76,12 @@ export default {
   },
   computed: {
     accounts() {
-      return accountsState.accounts;
+      const accounts = accountsState.accounts;
+      if (this.transaction.default && accounts && accounts.length) {
+        this.transaction.account = _.head(accounts).id;
+        this.newTransaction.account = this.transaction.account;
+      }
+      return accounts;
     },
     errors() {
       return transactionsState.errors[this.transaction.id] || {};

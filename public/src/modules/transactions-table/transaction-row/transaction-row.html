@@ -8,7 +8,7 @@
   <td class="column tags" v-if="columns.tags" :style="{ width: columns.tags + '%' }">{{transaction.tags}}</td>
   <td class="column memo" v-if="columns.memo" :style="{ width: columns.memo + '%' }">{{transaction.memo}}</td>
   <td class="column amount" v-if="columns.amount" :style="{ width: columns.amount + '%' }">{{transaction.amount | customCurrency}}</td>
-  <td class="column balance" v-if="columns.balance" :style="{ width: columns.balanced + '%' }"></td>
+  <td class="column balance" v-if="columns.balance" :style="{ width: columns.balanced + '%' }">{{balance | customCurrency}}</td>
   <td class="column state" v-if="columns.state" :style="{ width: columns.state + '%' }">{{transaction.state}}</td>
   <td class="column edit" style="width: 3%;"><i class="fa fa-pencil" @click="editTransaction()"></i></td>
   <td class="column delete" style="width: 3%;"><i class="fa fa-trash" @click="deleteTransaction(transaction)"></i></td>

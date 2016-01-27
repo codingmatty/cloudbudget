@@ -24,6 +24,9 @@ export default {
     columns: {
       type: Object,
       required: true
+    },
+    balance: {
+      type: Number
     }
   },
   filters: {
@@ -48,7 +51,9 @@ export default {
     },
     deleteTransaction(transaction) {
       if (confirm('Are you sure you would like to delete this transaction?')) {
-        deleteTransaction(transaction.id);
+        deleteTransaction(transaction.id).then(() => {
+          getAccounts();
+        });
       }
     }
   }

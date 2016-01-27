@@ -24,6 +24,12 @@
         }
       }
 
+      &.payee, &.tags {
+        input {
+          font-size: initial;
+        }
+      }
+
       input, select {
         width: 100%;
         text-align: center;

@@ -39,7 +39,9 @@
         }
         .balance { // includes balance for accounts
           @include pull-right;
-          color: $brand-danger;
+          &.negative {
+            color: $brand-danger;
+          }
         }
         .accounts {
           @extend .list-group;
@@ -70,6 +72,7 @@
     @extend .col-lg-10;
     @extend .col-md-9;
     padding: 0;
+    height: 100%;
     overflow-y: auto;
   }
 

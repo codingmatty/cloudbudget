@@ -1,3 +1,4 @@
+import moment from 'moment';
 import mongoose, { Schema, Types } from 'mongoose';
 import { defaultJSONOptions, Account } from './';
 
@@ -32,4 +33,11 @@ transactionSchema.path('account').validate(function validateAccount(value, next)
 });
 
 const Transaction = mongoose.model('Transaction', transactionSchema);
+
+Transaction.schema.pre('save', function normalizeTransaction(next) {
+  const transaction = this;
+  transaction.date = moment(new Date(transaction.date).toISOString()).startOf('day');
+  next();
+});
+
 export default Transaction;

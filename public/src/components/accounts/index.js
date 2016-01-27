@@ -56,6 +56,17 @@ export default {
         return _.map(group.accounts, 'id');
       }
       return this.$route.params.account_id || '';
+    },
+    transactionBalance() {
+      const group = _.find(this.groups, { id: this.$route.params.account_id });
+      if (group) {
+        return group.balance;
+      }
+      const account = _.find(this.accounts, { id: this.$route.params.account_id });
+      if (account) {
+        return account.balance;
+      }
+      return this.totalBalance || 0;
     }
   },
   methods: {

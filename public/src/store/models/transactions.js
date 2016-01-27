@@ -13,15 +13,21 @@ export const transactionsState = {
   errors: {}
 };
 
+function normalizeTransaction(transaction) {
+  return _.merge(transaction, {
+    date: new Date(transaction.date)
+  });
+}
+
 function setTransaction(state, transaction) {
   const localTransaction = _.find(state.transactionsState.transactions, { id: transaction.id });
   if (localTransaction) {
-    if (!_.isEqual(transaction, localTransaction)) {
+    if (!_.isEqual(normalizeTransaction(transaction), localTransaction)) {
       const index = state.transactionsState.transactions.indexOf(localTransaction);
-      state.transactionsState.transactions.splice(index, 1, transaction);
+      state.transactionsState.transactions.splice(index, 1, normalizeTransaction(transaction));
     }
   } else {
-    state.transactionsState.transactions.push(transaction);
+    state.transactionsState.transactions.push(normalizeTransaction(transaction));
   }
 }
 function removeTransaction(state, transaction) {

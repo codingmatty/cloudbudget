@@ -8,7 +8,8 @@
               <input type="checkbox" checked="true" disabled />
             </a>
             <div class="dropdown-menu">
-              <!--<div class="dropdown-divider"></div>-->
+              <a class="dropdown-item" @click="clearTransactions()">Mark as Cleared</a>
+              <div class="dropdown-divider"></div>
               <a class="dropdown-item" @click="deleteTransactions()">Delete</a>
             </div>
           </div>
@@ -26,13 +27,13 @@
       </tr>
     </thead>
     <tbody>
-      <tr is="transaction-form-row" v-if="includeForm" :columns="iColumns"></tr>
+      <tr is="transaction-form-row" v-if="includeForm" :columns="iColumns" :default-account-id="accountId"></tr>
       <tr v-if="!transactions || !transactions.length">
         <td colspan="11" class="text-xs-center">No Transactions to Display</td>
       </tr>
-      <template v-if="transactions && transactions.length" v-for="transaction in transactions | filterTransactions accountId">
+      <template v-if="transactions && transactions.length" v-for="transaction in transactions">
         <tr v-if="transaction.edit" is="transaction-form-row" :transaction.sync="transaction" :columns="iColumns"></tr>
-        <tr v-if="!transaction.edit" is="transaction-row" :transaction.sync="transaction" :columns="iColumns"></tr>
+        <tr v-if="!transaction.edit" is="transaction-row" :transaction.sync="transaction" :columns="iColumns" :class="{ 'selected': transaction.selected }" :balance="transactionBalances[transaction.id]"></tr>
       </template>
     </tbody>
   </table>
