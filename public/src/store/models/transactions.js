@@ -44,19 +44,19 @@ function setErrors(state, errors, transactionId) {
 // mutations
 export const transactionsMutations = {
   [SET_TRANSACTIONS](state, transactions) {
-    transactions.forEach(setTransaction.bind(null, state));
+    transactions.forEach(_.partial(setTransaction, state));
   },
   [SET_TRANSACTION]: setTransaction,
   [REMOVE_TRANSACTIONS](state, transactions) {
     const localTransactions = _.intersectionBy(state.transactionsState.transactions, transactions, 'id');
     if (localTransactions.length) {
-      localTransactions.forEach(removeTransaction.bind(null, state));
+      localTransactions.forEach(_.partial(removeTransaction, state));
     }
   },
   [REMOVE_TRANSACTION]: removeTransaction,
   [SET_ERRORS](state, errors, transactionIds) {
     if (Array.isArray(transactionIds)) {
-      transactionIds.forEach(setErrors.bind(null, state, errors));
+      transactionIds.forEach(_.partial(setErrors, state, errors));
     } else {
       setErrors(state, errors, transactionIds);
     }

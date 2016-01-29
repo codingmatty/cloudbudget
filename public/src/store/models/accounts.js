@@ -42,19 +42,19 @@ function setErrors(state, errors, accountId) {
 // mutations
 export const accountsMutations = {
   [SET_ACCOUNTS](state, accounts) {
-    accounts.forEach(setAccount.bind(null, state));
+    accounts.forEach(_.partial(setAccount, state));
   },
   [SET_ACCOUNT]: setAccount,
   [REMOVE_ACCOUNTS](state, accounts) {
     const localAccounts = _.intersectionBy(state.accountsState.accounts, accounts, 'id');
     if (localAccounts.length) {
-      localAccounts.forEach(removeAccount.bind(null, state));
+      localAccounts.forEach(_.partial(removeAccount, state));
     }
   },
   [REMOVE_ACCOUNT]: removeAccount,
   [SET_ERRORS](state, errors, accountIds) {
     if (Array.isArray(accountIds)) {
-      accountIds.forEach(setErrors.bind(null, state, errors));
+      accountIds.forEach(_.partial(setErrors, state, errors));
     } else {
       setErrors(state, errors, accountIds);
     }

@@ -41,12 +41,12 @@ export default {
   methods: {
     showModal(account) {
       if (account) {
-        this.account = _.merge({}, account);
+        this.account = _.merge(account);
       } else {
-        this.account = _.merge({}, {
+        this.account = {
           id: 0,
           budget: false
-        });
+        };
       }
       this.$refs.modal.showModal();
     },

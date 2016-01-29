@@ -24,12 +24,12 @@ export default {
     transaction: {
       type: Object,
       default() {
-        return _.merge({}, {
+        return {
           id: 0,
           date: moment().format('YYYY-MM-DD'),
           state: 'none',
           default: true
-        });
+        };
       }
     },
     columns: {
@@ -72,7 +72,7 @@ export default {
   },
   data() {
     return {
-      newTransaction: _.merge({}, this.transaction)
+      newTransaction: _.merge(this.transaction)
     };
   },
   computed: {
@@ -100,12 +100,12 @@ export default {
         updateTransaction(newTransaction.id, newTransaction);
       } else {
         createTransaction(newTransaction);
-        this.newTransaction = _.merge({}, this.transaction);
+        this.newTransaction = _.merge(this.transaction);
       }
     },
     resetTransaction() {
       resetTransactionsErrors(this.newTransaction.id);
-      this.newTransaction = _.merge({}, this.transaction);
+      this.newTransaction = _.merge(this.transaction);
       if (this.transaction) {
         this.transaction.edit = false;
       }

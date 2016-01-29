@@ -22,7 +22,7 @@ api.put('/', (req, res) => {
       if (saveErr) { return handleError(saveErr, res, 'delete', 'Accounts'); }
       async.map(dbAccounts, (dbAccount, next) => {
         if (dbAccount.normalize) {
-          dbAccount.normalize(next.bind(null, null));
+          dbAccount.normalize(_.partial(next, null));
         } else {
           next(null, dbAccount);
         }

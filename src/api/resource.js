@@ -16,7 +16,7 @@ export function listMethod(api, model, shouldAuthenticate, callback) {
       if (err) { return handleError(err, res, 'list', Model.modelName); }
       async.map(docs, (doc, next) => {
         if (doc.normalize) {
-          doc.normalize(next.bind(null, null));
+          doc.normalize(_.partial(next, null));
         } else {
           next(null, doc);
         }
@@ -38,7 +38,7 @@ export function createMethod(api, model, shouldAuthenticate, callback) {
     Model.create(entity, (err, doc) => {
       if (err) { return handleError(err, res, 'create', Model.modelName); }
       if (doc.normalize) {
-        doc.normalize(callback.bind(null, req, res));
+        doc.normalize(_.partial(callback, req, res));
       } else {
         callback(req, res, doc);
       }
@@ -56,7 +56,7 @@ export function showMethod(api, model, shouldAuthenticate, callback) {
     Model.findOne(query).populate(getInclusions(req)).exec((err, doc) => {
       if (err || !doc) { return handleError(err, res, 'show', Model.modelName); }
       if (doc.normalize) {
-        doc.normalize(callback.bind(null, req, res));
+        doc.normalize(_.partial(callback, req, res));
       } else {
         callback(req, res, doc);
       }
@@ -77,7 +77,7 @@ export function updateMethod(api, model, shouldAuthenticate, callback) {
       updatedDoc.save((saveErr, savedDoc) => {
         if (saveErr) { return handleError(saveErr, res, 'update', Model.modelName); }
         if (savedDoc.normalize) {
-          savedDoc.normalize(callback.bind(null, req, res));
+          savedDoc.normalize(_.partial(callback, req, res));
         } else {
           callback(req, res, savedDoc);
         }
@@ -98,7 +98,7 @@ export function deleteMethod(api, model, shouldAuthenticate, callback) {
       doc.remove(req.query, (removeErr, removedDoc) => {
         if (removeErr) { return handleError(removeErr, res, 'delete', model); }
         if (removedDoc.normalize) {
-          removedDoc.normalize(callback.bind(null, req, res));
+          removedDoc.normalize(_.partial(callback, req, res));
         } else {
           callback(req, res, removedDoc);
         }
