@@ -1,11 +1,9 @@
 .transactions-table {
   @extend .table-responsive;
-  height: 100%;
   background-color: #e5eaf0;
   table {
     @extend .table;
     @extend .table-striped;
-    margin: -1px 0;
     thead {
       th {
         @extend .text-xs-center;

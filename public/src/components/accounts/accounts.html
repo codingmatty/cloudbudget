@@ -8,32 +8,33 @@
       <li class="group">
         <a v-link="{ path: '/accounts', exact: true }">
           <span class="group-title">All Accounts</span>
-          <span class="balance" :class="{ 'negative': totalBalance < 0 }">{{totalBalance | customCurrency}}</span>
+          <span class="balance" :class="{ 'negative': totalBalance < 0 }">{{totalBalance | cbCurrency}}</span>
         </a>
       </li>
       <li class="group" v-for="group in groups">
-        <a v-link="{ path: '/accounts/' + group.id }"
-           @mouseenter="showEdit(group)"
-           @mouseleave="hideEdit(group)" >
+        <a v-link="{ path: '/accounts/' + group.id }" @mouseenter="showEdit(group)" @mouseleave="hideEdit(group)">
           <span class="group-title">{{group.name}} <i v-show="group.displayEdit" class="fa fa-pencil" @click="editGroup(group)"></i></span>
-          <span class="balance" :class="{ 'negative': group.balance < 0 }">{{group.balance | customCurrency}}</span>
+          <span class="balance" :class="{ 'negative': group.balance < 0 }">{{group.balance | cbCurrency}}</span>
         </a>
         <ul class="accounts">
           <li class="account">
-            <a v-for="account in group.accounts"
-               v-link="{ path: '/accounts/' + account.id }"
-               @mouseenter="showEdit(account)"
-               @mouseleave="hideEdit(account)" >
+            <a v-for="account in group.accounts" v-link="{ path: '/accounts/' + account.id }" @mouseenter="showEdit(account)" @mouseleave="hideEdit(account)">
               <span class="name">{{account.name}} <i v-show="account.displayEdit" class="fa fa-pencil" @click="editAccount(account)"></i></span>
-              <span class="balance" :class="{ 'negative': account.balance < 0 }">{{account.balance | customCurrency}}</span>
+              <span class="balance" :class="{ 'negative': account.balance < 0 }">{{account.balance | cbCurrency}}</span>
             </a>
           </li>
         </ul>
       </li>
     </ul>
   </div>
-  <div id="transactions">
-    <transactions-table include-form :account-id="transactionAccountId" :balance="transactionBalance"></transactions-table>
+  <div id="account-details">
+    <div id="chart">
+      <div class="text-xs-center">Running Balance</div>
+      <chart type="Line" :data="chartData" :options="chartOptions"></chart>
+    </div>
+    <div id="transactions">
+      <transactions-table include-form :account-id="transactionAccountId" :balance="transactionBalance"></transactions-table>
+    </div>
   </div>
 </div>
 

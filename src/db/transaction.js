@@ -36,7 +36,7 @@ const Transaction = mongoose.model('Transaction', transactionSchema);
 
 Transaction.schema.pre('save', function normalizeTransaction(next) {
   const transaction = this;
-  transaction.date = moment(new Date(transaction.date).toISOString()).startOf('day');
+  transaction.date = moment(new Date(transaction.date).toISOString()).utc().startOf('day');
   next();
 });
 

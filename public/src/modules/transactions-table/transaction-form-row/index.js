@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import moment from 'moment';
 import store from 'store';
 
 import transactionFormRowTemplate from './transaction-form-row.html';
@@ -25,7 +26,7 @@ export default {
       default() {
         return _.merge({}, {
           id: 0,
-          date: Date.now(),
+          date: moment().format('YYYY-MM-DD'),
           state: 'none',
           default: true
         });
