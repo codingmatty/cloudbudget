@@ -30,10 +30,17 @@ app.use(passport.session());
 setupPassport();
 
 app.use('/api/v1', api);
-app.use('/static', express.static(__dirname + '/../public/dist/static'));
-app.get('/*', (req, res) => {
-  res.sendFile('/public/dist/index.html', { root: __dirname + '/../' });
-});
+if (app.get('env') === 'production') {
+  app.use('/static', express.static(__dirname + '/public/static'));
+  app.get('/*', (req, res) => {
+    res.sendFile('/public/index.html', { root: __dirname + '/' });
+  });
+} else {
+  app.use('/static', express.static(__dirname + '/../public/dist/static'));
+  app.get('/*', (req, res) => {
+    res.sendFile('/public/dist/index.html', { root: __dirname + '/../' });
+  });
+}
 
 // catch 404 and forwarding to error handler
 app.use((req, res, next) => {

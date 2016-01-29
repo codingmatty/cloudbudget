@@ -1,5 +1,5 @@
 var _ = require('lodash');
-var Client = require('../lib/db').Client;
+var Client = require('../dist/db').Client;
 
 var newClient = _.merge({
   name: 'Test Client',
