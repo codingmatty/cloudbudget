@@ -1,0 +1,7 @@
+.transactions-chart {
+  .title {
+    @extend .text-xs-center;
+    @extend .h2;
+    font-weight: bold;
+  }
+}

@@ -2,5 +2,6 @@ import './directives';
 import './filters';
 // import './services';
 
-import './transactions-table';
 import './chart';
+import './transactions-table';
+import './transactions-chart';

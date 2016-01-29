@@ -27,14 +27,20 @@
         &:not(:last-child) {
           margin-bottom: 0.6rem;
         }
-        & > a {
+        a {
           @extend .list-group-item;
           @include clearfix;
+          display: inline-table;
           font-weight: bold;
+          &.active, &.active:hover, &.active:focus {
+            background-color: #747d7d;
+            border-color: #747d7d;
+          }
+        }
+        & > a {
           border-bottom: $brand-info solid 0.15rem;
           .group-title {
             @include pull-left;
-
           }
         }
         .balance { // includes balance for accounts
@@ -47,10 +53,6 @@
           @extend .list-group;
           .account {
             & > a {
-              @extend .list-group-item;
-              @include clearfix;
-              display: inline-table;
-              font-weight: bold;
               .name {
                 @include pull-left;
               }

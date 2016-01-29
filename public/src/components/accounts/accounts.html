@@ -29,8 +29,7 @@
   </div>
   <div id="account-details">
     <div id="chart">
-      <div class="text-xs-center">Running Balance</div>
-      <chart type="Line" :data="chartData" :options="chartOptions"></chart>
+      <transactions-chart :account-id="transactionAccountId" :balance="transactionBalance"></transactions-chart>
     </div>
     <div id="transactions">
       <transactions-table include-form :account-id="transactionAccountId" :balance="transactionBalance"></transactions-table>
