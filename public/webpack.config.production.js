@@ -1,3 +1,4 @@
+var webpack = require('webpack');
 var path = require('path');
 
 module.exports = {
@@ -24,12 +25,12 @@ module.exports = {
       },
       {
         test: /\.scss/,
-        loaders: ["style", "css?sourceMap", "sass?sourceMap"]
+        loaders: ["style", "css", "sass"]
       },
       {
         test: /\.js$/,
-        loader: 'babel!eslint',
-        exclude: /node_modules|src\/lib/
+        loader: 'babel',
+        exclude: /node_modules/
       },
       {
         test: /\.json$/,
@@ -44,9 +45,5 @@ module.exports = {
         }
       }
     ]
-  },
-  eslint: {
-    formatter: require('eslint-friendly-formatter')
-  },
-  devtool: 'eval-source-map'
+  }
 };

@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { Vuex } from 'global';
+import { Vuex } from 'config/Vue';
 import { userState, userMutations, userActions } from './models/user';
 import { accountsState, accountsMutations, accountsActions } from './models/accounts';
 import { transactionsState, transactionsMutations, transactionsActions } from './models/transactions';

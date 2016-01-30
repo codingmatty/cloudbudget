@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { Vue } from 'global';
+import Vue from 'config/Vue';
 
 const SET_USER = 'SET_USER';
 const SET_ERRORS = 'SET_ERROR';

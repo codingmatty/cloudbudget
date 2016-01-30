@@ -1,5 +1,5 @@
-import { VueRouter } from 'global';
-import store from 'store';
+import { VueRouter } from '../Vue';
+import store from 'config/store';
 import { login, user, accounts, four0four } from 'components';
 
 const {

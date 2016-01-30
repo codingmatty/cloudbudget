@@ -1,5 +1,3 @@
-import 'jquery';
-import 'jquery-ui';
 import Vue from 'vue';
 import Vuex from 'vuex';
 import VueRouter from 'vue-router';
@@ -13,8 +11,8 @@ Vue.http.options.root = '/api/v1';
 
 Vue.config.debug = true;
 
+export default Vue;
 export {
-  Vue,
   Vuex,
   VueRouter,
   VueResource

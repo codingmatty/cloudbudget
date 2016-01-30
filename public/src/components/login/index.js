@@ -1,4 +1,4 @@
-import store from 'store';
+import store from 'config/store';
 
 import loginTemplate from './login.html';
 

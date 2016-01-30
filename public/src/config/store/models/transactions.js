@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { Vue } from 'global';
+import Vue from 'config/Vue';
 
 const SET_TRANSACTIONS = 'SET_TRANSACTIONS';
 const REMOVE_TRANSACTIONS = 'REMOVE_TRANSACTION';

@@ -1,6 +1,6 @@
 import _ from 'lodash';
-import store from 'store';
-import { Vue } from 'global';
+import Vue from 'config';
+import store from 'config/store';
 import transactionRow from './transaction-row';
 import transactionFormRow from './transaction-form-row';
 

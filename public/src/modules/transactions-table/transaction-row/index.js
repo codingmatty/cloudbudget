@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import store from 'store';
+import store from 'config/store';
 
 import transactionRowTemplate from './transaction-row.html';
 

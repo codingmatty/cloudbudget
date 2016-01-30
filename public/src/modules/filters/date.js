@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { Vue } from 'global';
+import Vue from 'config';
 
 // Add a day to accomodate that the value of 2016-01-01 actually refers to the 2nd day of the month..
 Vue.filter('date', {

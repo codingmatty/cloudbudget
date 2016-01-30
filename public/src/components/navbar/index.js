@@ -1,5 +1,4 @@
-import store from 'store';
-
+import store from 'config/store';
 import navbarTemplate from './navbar.html';
 
 const {

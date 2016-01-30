@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import moment from 'moment';
-import store from 'store';
+import store from 'config/store';
 
 import transactionFormRowTemplate from './transaction-form-row.html';
 

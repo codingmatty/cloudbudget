@@ -1,4 +1,4 @@
-import store from 'store';
+import store from 'config/store';
 
 import userTemplate from './user.html';
 

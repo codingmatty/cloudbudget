@@ -12,6 +12,10 @@ nav#navbar {
     @extend .pull-xs-right;
     .link-item {
       @extend .nav-item;
+      .dropdown-menu {
+        left: initial;
+        right: 0;
+      }
       a {
         @extend .nav-link;
         &.dropdown-toggle, &.dropdown-item {

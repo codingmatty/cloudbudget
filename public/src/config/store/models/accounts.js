@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { Vue } from 'global';
+import Vue from 'config/Vue';
 
 const SET_ACCOUNTS = 'SET_ACCOUNTS';
 const SET_ACCOUNT = 'SET_ACCOUNT';

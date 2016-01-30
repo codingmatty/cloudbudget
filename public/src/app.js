@@ -1,7 +1,7 @@
+import 'config';
 import './modules';
-import router from './utils/router';
-import { navbar } from './components';
-
+import router from 'config/router';
+import { navbar } from 'components';
 import appTemplate from './App.html';
 
 const App = {

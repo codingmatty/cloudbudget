@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import c3 from 'c3';
 import d3 from 'd3';
-import { Vue } from 'global';
+import Vue from 'config';
 
 Vue.component('chart', {
   template: '<div></div>',
@@ -27,7 +27,6 @@ Vue.component('chart', {
         }
         this.chart.load(loadData);
       }
-
     }
   }
 });

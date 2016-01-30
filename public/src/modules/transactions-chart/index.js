@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import moment from 'moment';
-import store from 'store';
-import { Vue } from 'global';
+import Vue from 'config';
+import store from 'config/store';
 
 import transactionsChartTemplate from './transactions-chart.html';
 
