@@ -15,9 +15,9 @@ api.put('/', (req, res) => {
   query.user = req.user.id;
   Account.find(query, (findErr, accounts) => {
     if (findErr) { return handleError(findErr, res, 'update', 'Accounts'); }
-    const updatedAccounts = accounts.map((transaction) => _.merge(transaction, _.omit(req.body, Account.readonlyProps() || [])));
-    async.map(updatedAccounts, (transaction, callback) => {
-      transaction.save(callback);
+    const updatedAccounts = accounts.map((account) => _.merge(account, _.omit(req.body, Account.readonlyProps() || [])));
+    async.map(updatedAccounts, (account, callback) => {
+      account.save(callback);
     }, (saveErr, dbAccounts) => {
       if (saveErr) { return handleError(saveErr, res, 'delete', 'Accounts'); }
       async.map(dbAccounts, (dbAccount, next) => {
