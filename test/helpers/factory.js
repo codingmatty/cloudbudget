@@ -63,7 +63,7 @@ Factory.define('Transaction', function (attributes = {}) {
   } = attributes;
   return _.merge({
     payee,
-    state: this.sample('none', 'cleared', 'reconciled'),
+    state: this.sample('unapproved', 'pending', 'cleared', 'reconciled'),
     amount: 0,
     memo: 'This memo applies to a Transaction',
     tags: ['Tag 1', 'Tag 2', 'Tag 3']

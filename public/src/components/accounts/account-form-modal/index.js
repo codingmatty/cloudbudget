@@ -41,7 +41,7 @@ export default {
   methods: {
     showModal(account) {
       if (account) {
-        this.account = _.merge(account);
+        this.account = _.cloneDeep(account);
       } else {
         this.account = {
           id: 0,

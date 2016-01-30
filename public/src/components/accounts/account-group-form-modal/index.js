@@ -32,7 +32,7 @@ export default {
   methods: {
     showModal(group) {
       if (group) {
-        this.group = _.merge(group);
+        this.group = _.cloneDeep(group);
         this.$refs.modal.showModal();
       }
     },

@@ -27,7 +27,7 @@ export default {
         return {
           id: 0,
           date: moment().format('YYYY-MM-DD'),
-          state: 'none',
+          state: 'pending',
           default: true
         };
       }
@@ -66,13 +66,13 @@ export default {
             this.transaction.account = value;
           }
         }
-        this.newTransaction.account = this.transaction.account;
+        this.formTransaction.account = this.transaction.account;
       }
     }
   },
   data() {
     return {
-      newTransaction: _.merge(this.transaction)
+      formTransaction: _.cloneDeep(this.transaction)
     };
   },
   computed: {
@@ -80,7 +80,7 @@ export default {
       const accounts = accountsState.accounts;
       if (this.transaction.default && accounts && accounts.length) {
         this.transaction.account = _.head(accounts).id;
-        this.newTransaction.account = this.transaction.account;
+        this.formTransaction.account = this.transaction.account;
       }
       return accounts;
     },
@@ -95,17 +95,17 @@ export default {
     }
   },
   methods: {
-    saveTransaction(newTransaction) {
-      if (newTransaction.id) {
-        updateTransaction(newTransaction.id, newTransaction);
+    saveTransaction(formTransaction) {
+      if (formTransaction.id) {
+        updateTransaction(formTransaction.id, formTransaction);
       } else {
-        createTransaction(newTransaction);
-        this.newTransaction = _.merge(this.transaction);
+        createTransaction(formTransaction);
+        this.formTransaction = _.cloneDeep(this.transaction);
       }
     },
     resetTransaction() {
-      resetTransactionsErrors(this.newTransaction.id);
-      this.newTransaction = _.merge(this.transaction);
+      resetTransactionsErrors(this.formTransaction.id);
+      this.formTransaction = _.cloneDeep(this.transaction);
       if (this.transaction) {
         this.transaction.edit = false;
       }

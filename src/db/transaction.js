@@ -4,7 +4,7 @@ import { defaultJSONOptions, Account } from './';
 
 const transactionSchema = new Schema({
   date: { type: Date, default: Date.now },
-  state: { type: String, enum: ['none', 'cleared', 'reconciled'], required: true },
+  state: { type: String, enum: ['unapproved', 'pending', 'cleared', 'reconciled'], required: true },
   payee: { type: String, required: true, minlength: 1 },
   amount: { type: Number, required: true },
   memo: { type: String, default: '' },
