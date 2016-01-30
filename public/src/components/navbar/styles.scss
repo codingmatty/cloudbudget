@@ -1,0 +1,28 @@
+nav#navbar {
+  @extend .navbar;
+  @extend .navbar-fixed-top;
+  @extend .navbar-dark;
+  @extend .bg-primary;
+  #brand {
+    @extend .navbar-brand;
+  }
+  .links {
+    @extend .nav;
+    @extend .navbar-nav;
+    @extend .pull-xs-right;
+    .link-item {
+      @extend .nav-item;
+      .dropdown-menu {
+        left: initial;
+        right: 0;
+      }
+      a {
+        @extend .nav-link;
+        &.dropdown-toggle, &.dropdown-item {
+          color: black;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}

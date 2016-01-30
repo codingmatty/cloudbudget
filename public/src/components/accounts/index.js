@@ -1,11 +1,26 @@
 import _ from 'lodash';
-import store from '../../store';
+import Vue from 'config';
+import store from 'config/store';
+import accountFormModal from './account-form-modal';
+import accountGroupFormModal from './account-group-form-modal';
+
+import accountsTemplate from './accounts.html';
+
 const {
-  getAccounts
-} = store.actions;
+  actions: {
+    getAccounts
+  },
+  state: {
+    accountsState
+  }
+} = store;
 
 export default {
-  template: require('./accounts.html'),
+  template: accountsTemplate,
+  components: {
+    accountFormModal,
+    accountGroupFormModal
+  },
   ready() {
     getAccounts();
   },
@@ -15,8 +30,7 @@ export default {
   },
   computed: {
     accounts() {
-      console.log('accounts updated');
-      return store.state.accountsState.accounts;
+      return accountsState.accounts;
     },
     groups() {
       const groups = [];
@@ -24,16 +38,52 @@ export default {
       for (const groupName in groupsObj) {
         if (groupsObj.hasOwnProperty(groupName)) {
           groups.push({
+            id: groupName.replace(/[^\w\d]/g, '').toLowerCase(),
             name: groupName,
             balance: _.sumBy(groupsObj[groupName], 'balance'),
             accounts: groupsObj[groupName]
           });
         }
       }
-      console.log('groups updated ' + JSON.stringify(groups, null, 2));
       return groups;
+    },
+    totalBalance() {
+      return _.sumBy(this.groups, 'balance');
+    },
+    transactionAccountId() {
+      const group = _.find(this.groups, { id: this.$route.params.account_id });
+      if (group) {
+        return _.map(group.accounts, 'id');
+      }
+      return this.$route.params.account_id || '';
+    },
+    transactionBalance() {
+      const group = _.find(this.groups, { id: this.$route.params.account_id });
+      if (group) {
+        return group.balance;
+      }
+      const account = _.find(this.accounts, { id: this.$route.params.account_id });
+      if (account) {
+        return account.balance;
+      }
+      return this.totalBalance || 0;
     }
   },
   methods: {
+    newAccount() {
+      this.$refs.accountFormModal.showModal(null);
+    },
+    editAccount(account) {
+      this.$refs.accountFormModal.showModal(account);
+    },
+    editGroup(group) {
+      this.$refs.groupFormModal.showModal(group);
+    },
+    showEdit(accountOrGroup) {
+      Vue.set(accountOrGroup, 'displayEdit', true);
+    },
+    hideEdit(accountOrGroup) {
+      Vue.set(accountOrGroup, 'displayEdit', false);
+    }
   }
 };

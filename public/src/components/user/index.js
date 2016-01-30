@@ -1,10 +1,18 @@
-import store from '../../store';
+import store from 'config/store';
+
+import userTemplate from './user.html';
+
+const {
+  state: {
+    userState
+  }
+} = store;
 
 export default {
-  template: require('./user.html'),
+  template: userTemplate,
   computed: {
     user() {
-      return store.state.userState.user;
+      return userState.user;
     }
   }
 };

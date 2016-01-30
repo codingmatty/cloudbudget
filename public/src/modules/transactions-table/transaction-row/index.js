@@ -1,18 +1,21 @@
 import _ from 'lodash';
-import { Vue } from '../../../global';
-import store from '../../../store';
-const {
-  getAccounts,
-  getTransactions,
-  deleteTransaction
-} = store.actions;
+import store from 'config/store';
 
-Vue.filter('accountName', (value) => {
-  return (_.find(store.state.accountsState.accounts, { id: value }) || { name: 'Unknown Account' }).name;
-});
+import transactionRowTemplate from './transaction-row.html';
+
+const {
+  actions: {
+    getAccounts,
+    getTransactions,
+    deleteTransaction
+  },
+  state: {
+    accountsState
+  }
+} = store;
 
 export default {
-  template: require('./transaction-row.html'),
+  template: transactionRowTemplate,
   props: {
     transaction: {
       type: Object,
@@ -21,6 +24,14 @@ export default {
     columns: {
       type: Object,
       required: true
+    },
+    balance: {
+      type: Number
+    }
+  },
+  filters: {
+    accountName(value) {
+      return (_.find(accountsState.accounts, { id: value }) || { name: 'Unknown Account' }).name;
     }
   },
   ready() {
@@ -36,12 +47,13 @@ export default {
   methods: {
     editTransaction() {
       this.$set('transaction.edit', true);
-      console.log(this.transaction.edit);
       this.$dispatch('edit-transaction');
     },
     deleteTransaction(transaction) {
       if (confirm('Are you sure you would like to delete this transaction?')) {
-        deleteTransaction(transaction.id);
+        deleteTransaction(transaction.id).then(() => {
+          getAccounts();
+        });
       }
     }
   }

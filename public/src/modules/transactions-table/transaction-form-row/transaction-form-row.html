@@ -1,35 +1,47 @@
-<tr class="form">
+<tr class="transaction-form-row">
   <td class="column selected" v-if="columns.selected" :style="{ width: columns.selected + '%' }"></td>
   <td class="column account" v-if="columns.account" :style="{ width: columns.account + '%' }">
-    <select v-model="newTransaction.account">
-      <option v-for="account in accounts" :value="account.id">{{account.name}}</option>
-    </select>
+    <fieldset class="input-group">
+      <select v-model="newTransaction.account" class="c-select">
+        <option v-for="account in accounts" :value="account.id">{{account.name}}</option>
+      </select>
+    </fieldset>
   </td>
   <td class="column date" v-if="columns.date" :style="{ width: columns.date + '%' }">
-    <input type="date" v-model="newTransaction.date | date 'YYYY-MM-DD'" />
+    <fieldset class="input-group">
+      <input type="date" v-model="newTransaction.date | date 'YYYY-MM-DD'"/>
+    </fieldset>
   </td>
   <td class="column payee" v-if="columns.payee" :style="{ width: columns.payee + '%' }">
-    <input type="text" v-model="newTransaction.payee" placeholder="payee" />
+    <fieldset class="input-group" :class="{ 'has-danger': errors.payee }">
+      <input name="payee" type="text" v-model="newTransaction.payee" placeholder="payee" class="form-control" v-autocomplete :source="payees" />
+    </fieldset>
   </td>
   <td class="column tags" v-if="columns.tags" :style="{ width: columns.tags + '%' }">
-    <input type="text" v-model="newTransaction.tags" placeholder="tags" />
+    <fieldset class="input-group">
+      <input type="text" v-model="newTransaction.tags" placeholder="tags" class="form-control" v-autocomplete :source="tags" />
+    </fieldset>
   </td>
   <td class="column memo" v-if="columns.memo" :style="{ width: columns.memo + '%' }">
-    <input type="text" v-model="newTransaction.memo" placeholder="memo" />
+    <fieldset class="input-group">
+      <input type="text" v-model="newTransaction.memo" placeholder="memo" class="form-control"/>
+    </fieldset>
   </td>
   <td class="column amount" v-if="columns.amount" :style="{ width: columns.amount + '%' }">
-    <div class="input-group">
+    <div class="input-group" :class="{ 'has-danger': errors.amount }">
       <span class="input-group-addon">$</span>
-      <input type="number" class="form-control" v-model="newTransaction.amount | amount" placeholder="0.00">
+      <input name="amount" type="number" v-model="newTransaction.amount | amount" placeholder="0.00" class="form-control" />
     </div>
   </td>
   <td class="column balance" v-if="columns.balance" :style="{ width: columns.balance + '%' }"></td>
   <td class="column state" v-if="columns.state" :style="{ width: columns.state + '%' }">
-    <select v-model="newTransaction.state">
-      <option value="none">none</option>
-      <option value="cleared">cleared</option>
-    </select>
+    <fieldset class="input-group">
+      <select v-model="newTransaction.state" class="c-select">
+        <option value="none">none</option>
+        <option value="cleared">cleared</option>
+      </select>
+    </fieldset>
   </td>
-  <td><i class="fa fa-ban" @click="resetTransaction()"></i></td>
-  <td><i class="fa fa-floppy-o" @click="saveTransaction(newTransaction)"></i></td>
+  <td class="column reset" style="width: 3%;"><i class="fa fa-ban" @click="resetTransaction()"></i></td>
+  <td class="column save" style="width: 3%;"><i class="fa fa-floppy-o" @click="saveTransaction(newTransaction)"></i></td>
 </tr>

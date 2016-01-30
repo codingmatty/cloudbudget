@@ -6,12 +6,15 @@
   "scripts": {
     "watch": "./node_modules/.bin/babel src -d dist --source-maps -w",
     "dev": "concurrent 'npm run watch' 'nodemon -d 1 -w dist ./dist/app'",
+    "prebuild": "rm -rf dist",
     "build": "./node_modules/.bin/babel src -d dist",
     "start": "NODE_ENV=production PORT=8279 forever start -a -l cloudbudget ./dist/app.js",
-    "lint": "eslint src",
+    "lint": "./node_modules/.bin/eslint src",
     "test": "NODE_ENV=test mocha --compilers js:babel-register",
+    "buildassets": "cd public && npm run prepare && cd ..",
+    "postbuildassets": "rm -rf dist/public && cp -R public/dist dist/public",
     "preversion": "npm install && npm test && npm run lint",
-    "version": "npm run build && git add -Af dist",
+    "version": "npm run build && npm run buildassets && git add -Af dist",
     "postversion": "git push && git push --tags && git rm -r dist && git commit -m 'Clean Build' && git push"
   },
   "repository": {

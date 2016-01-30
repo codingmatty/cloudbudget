@@ -1,15 +1,15 @@
 #app {
   height: 100%;
   width: 100%;
-  position: fixed;
-  top: 54px;
 
   .content {
     @extend .container-fluid;
-    height: 100%;
-    padding: 0;
+    position: absolute;
+    top: 54px;
+    height: calc(100% - 54px);
+    width: 100%;
   }
-}
 
-@import './components/components';
-@import './modules/modules';
+  @import './components/styles';
+  @import './modules/styles';
+}

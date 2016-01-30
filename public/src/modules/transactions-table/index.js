@@ -1,27 +1,42 @@
 import _ from 'lodash';
+import Vue from 'config';
+import store from 'config/store';
 import transactionRow from './transaction-row';
 import transactionFormRow from './transaction-form-row';
-import { Vue } from '../../global';
-import store from '../../store';
+
+import transactionsTableTemplate from './transactions-table.html';
+
 const {
-  getTransactions
-} = store.actions;
+  actions: {
+    getAccounts,
+    getTransactions,
+    updateTransactions,
+    deleteTransactions
+  },
+  state: {
+    transactionsState
+  }
+} = store;
 
 Vue.component('transactions-table', {
-  template: require('./transactions-table.html'),
+  template: transactionsTableTemplate,
   props: {
     includeForm: {
       type: Boolean,
       default: () => false
     },
+    accountId: {},
+    balance: {
+      type: Number
+    },
     columns: {
       type: Object,
-      default: () => {
+      default() {
         return {
-          'selected': '3',
-          'account': '13',
+          'selected': '5',
+          'account': '12',
           'date': '10',
-          'payee': '13',
+          'payee': '12',
           'tags': '16',
           'memo': '16',
           'amount': '8',
@@ -50,18 +65,58 @@ Vue.component('transactions-table', {
   },
   computed: {
     transactions() {
-      return store.state.transactionsState.transactions;
+      const transactions = transactionsState.transactions.filter((transaction) => {
+        if (Array.isArray(this.accountId)) {
+          return _.includes(this.accountId, transaction.account);
+        } else if (this.accountId) {
+          return transaction.account === this.accountId;
+        }
+        return true;
+      });
+
+      return _.orderBy(transactions, ['date', 'amount'], ['desc', 'desc']);
+    },
+    transactionBalances() {
+      const balances = {};
+      let currentBalance = this.balance;
+      this.transactions.forEach((transaction) => {
+        balances[transaction.id] = currentBalance;
+        currentBalance -= transaction.amount;
+      });
+      return balances;
+    },
+    iColumns() {
+      if (this.accountId && !Array.isArray(this.accountId)) {
+        return {
+          'selected': '5',
+          'date': '13',
+          'payee': '16',
+          'tags': '18',
+          'memo': '18',
+          'amount': '9',
+          'balance': '8',
+          'state': '7'
+        };
+      }
+      return this.columns;
     }
   },
   methods: {
-    editTransaction(transaction) {
-      transaction.edit = true;
-      console.log(JSON.stringify(transaction));
-    }
-  },
-  events: {
-    'edit-transaction': () => {
-      console.log('EditTransaction!');
+    clearTransactions() {
+      const transactionsToUpdate = _.filter(this.transactions, { 'selected': true });
+      updateTransactions(_.map(transactionsToUpdate, 'id'), { state: 'cleared' })
+        .then(() => {
+          getAccounts();
+        });
+    },
+    deleteTransactions() {
+      const transactionsToDelete = _.filter(this.transactions, { 'selected': true });
+      if (confirm(`Are you sure you would like to delete ${transactionsToDelete.length} transactions?`)) {
+        deleteTransactions(_.map(transactionsToDelete, 'id'))
+          .then(() => {
+            getAccounts();
+          });
+      }
     }
   }
 });

@@ -1,40 +1,36 @@
-import { Vue } from '../../global';
-import router from '../../router';
-import store from '../../store';
+import store from 'config/store';
+
+import loginTemplate from './login.html';
+
 const {
-  setUser
-} = store.actions;
+  actions: {
+    loginUser
+  },
+  state: {
+    userState
+  }
+} = store;
 
 export default {
-  template: require('./login.html'),
+  template: loginTemplate,
   data() {
     return {
       username: '',
-      password: '',
-      error: null
+      password: ''
     };
+  },
+  computed: {
+    errors() {
+      return userState.errors;
+    }
   },
   methods: {
     loginUser(username, password) {
-      return Vue.http.post('users/login', {
+      loginUser(
         username,
         password
-      }).then((response) => {
-        setUser({
-          user: response.data.data,
-          token: response.data.token
-        });
-        router.go('/accounts');
-      }).catch((response) => {
-        setUser({
-          user: null,
-          token: ''
-        });
-        if (response.status === 401) {
-          this.error = 'Invalid Username or Password.';
-        } else {
-          this.error = 'Unknown Error.';
-        }
+      ).then(() => {
+        this.$router.go('/accounts');
       });
     }
   }

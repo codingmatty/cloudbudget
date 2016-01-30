@@ -2,29 +2,38 @@
   <table>
     <thead class="thead-inverse">
       <tr>
-        <th class="text-xs-center" class="column selected" v-if="columns.selected" :style="{ width: columns.selected + '%' }">
-          <input type="checkbox" checked="true" disabled />
+        <th class="column selected" v-if="iColumns.selected" :style="{ width: iColumns.selected + '%' }">
+          <div class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown">
+              <input type="checkbox" checked="true" disabled />
+            </a>
+            <div class="dropdown-menu">
+              <a class="dropdown-item" @click="clearTransactions()">Mark as Cleared</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" @click="deleteTransactions()">Delete</a>
+            </div>
+          </div>
         </th>
-        <th class="text-xs-center" class="column account" v-if="columns.account" :style="{ width: columns.account + '%' }">Account</th>
-        <th class="text-xs-center" class="column date" v-if="columns.date" :style="{ width: columns.date + '%' }">Date</th>
-        <th class="text-xs-center" class="column payee" v-if="columns.payee" :style="{ width: columns.payee + '%' }">Payee</th>
-        <th class="text-xs-center" class="column tags" v-if="columns.tags" :style="{ width: columns.tags + '%' }">Tags</th>
-        <th class="text-xs-center" class="column memo" v-if="columns.memo" :style="{ width: columns.memo + '%' }">Memo</th>
-        <th class="text-xs-center" class="column amount" v-if="columns.amount" :style="{ width: columns.amount + '%' }">Amount</th>
-        <th class="text-xs-center" class="column balance" v-if="columns.balance" :style="{ width: columns.balance + '%' }">Balance</th>
-        <th class="text-xs-center" class="column state" v-if="columns.state" :style="{ width: columns.state + '%' }">State</th>
-        <th class="text-xs-center"></th>
-        <th class="text-xs-center"></th>
+        <th class="column account" v-if="iColumns.account" :style="{ width: iColumns.account + '%' }">Account</th>
+        <th class="column date" v-if="iColumns.date" :style="{ width: iColumns.date + '%' }">Date</th>
+        <th class="column payee" v-if="iColumns.payee" :style="{ width: iColumns.payee + '%' }">Payee</th>
+        <th class="column tags" v-if="iColumns.tags" :style="{ width: iColumns.tags + '%' }">Tags</th>
+        <th class="column memo" v-if="iColumns.memo" :style="{ width: iColumns.memo + '%' }">Memo</th>
+        <th class="column amount" v-if="iColumns.amount" :style="{ width: iColumns.amount + '%' }">Amount</th>
+        <th class="column balance" v-if="iColumns.balance" :style="{ width: iColumns.balance + '%' }">Balance</th>
+        <th class="column state" v-if="iColumns.state" :style="{ width: iColumns.state + '%' }">State</th>
+        <th></th>
+        <th></th>
       </tr>
     </thead>
     <tbody>
-      <tr is="transaction-form-row" v-if="includeForm" :columns="columns"></tr>
+      <tr is="transaction-form-row" v-if="includeForm" :columns="iColumns" :default-account-id="accountId"></tr>
       <tr v-if="!transactions || !transactions.length">
         <td colspan="11" class="text-xs-center">No Transactions to Display</td>
       </tr>
       <template v-if="transactions && transactions.length" v-for="transaction in transactions">
-        <tr v-if="transaction.edit" is="transaction-form-row" :transaction.sync="transaction" :columns="columns"></tr>
-        <tr v-if="!transaction.edit" is="transaction-row" :transaction.sync="transaction" :columns="columns"></tr>
+        <tr v-if="transaction.edit" is="transaction-form-row" :transaction.sync="transaction" :columns="iColumns"></tr>
+        <tr v-if="!transaction.edit" is="transaction-row" :transaction.sync="transaction" :columns="iColumns" :class="{ 'selected': transaction.selected }" :balance="transactionBalances[transaction.id]"></tr>
       </template>
     </tbody>
   </table>

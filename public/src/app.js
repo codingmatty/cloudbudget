@@ -1,17 +1,23 @@
+import 'config';
 import './modules';
-import router from './router';
-import { navbar } from './components';
+import router from 'config/router';
+import { navbar } from 'components';
+import appTemplate from './App.html';
 
 const App = {
-  template: require('./App.html'),
+  template: appTemplate,
   components: {
     navbar
   },
   data() {
     return {
+      modalComponent: 'modal'
     };
   },
   methods: {
+    setModalComponent(modalComponent) {
+      this.modalComponent = modalComponent;
+    }
   }
 };
 

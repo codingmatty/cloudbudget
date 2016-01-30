@@ -1,1 +1,2 @@
-import './date-filter';
+import './currency';
+import './date';

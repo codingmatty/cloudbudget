@@ -3,15 +3,18 @@ var path = require('path');
 module.exports = {
   entry: {
     app: "./src/app.js",
-    styles: "./src/global.scss"
+    styles: "./src/main.scss"
   },
   output: {
     path: path.resolve(__dirname, './dist/static'),
     publicPath: '/static/',
     filename: '[name]'
   },
-  resolveLoader: {
-    root: path.join(__dirname, 'node_modules'),
+  resolve: {
+    alias: {
+      'config': path.resolve(__dirname, './src/config'),
+      'components': path.resolve(__dirname, './src/components')
+    }
   },
   module: {
     loaders: [
@@ -26,7 +29,7 @@ module.exports = {
       {
         test: /\.js$/,
         loader: 'babel!eslint',
-        exclude: /node_modules/
+        exclude: /node_modules|src\/lib/
       },
       {
         test: /\.json$/,

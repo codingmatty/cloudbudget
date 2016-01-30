@@ -1,34 +1,35 @@
 import _ from 'lodash';
-import { Vue } from '../../../global';
-import store from '../../../store';
-const {
-  getAccounts,
-  createTransaction,
-  updateTransaction
-} = store.actions;
+import moment from 'moment';
+import store from 'config/store';
 
-Vue.filter('amount', {
-  read(value) {
-    return value ? value.toFixed(2) : '';
+import transactionFormRowTemplate from './transaction-form-row.html';
+
+const {
+  actions: {
+    resetTransactionsErrors,
+    getAccounts,
+    createTransaction,
+    updateTransaction
   },
-  write(val) {
-    const number = +val.replace(/[^\d.]/g, '');
-    return isNaN(number) ? 0 : parseFloat(number.toFixed(2));
+  state: {
+    accountsState,
+    transactionsState
   }
-});
+} = store;
 
 export default {
-  template: require('./transaction-form-row.html'),
+  template: transactionFormRowTemplate,
   props: {
+    defaultAccountId: {},
     transaction: {
       type: Object,
-      default: () => {
-        console.log('test1');
-        return _.merge({}, {
-          date: Date.now(),
+      default() {
+        return {
+          id: 0,
+          date: moment().format('YYYY-MM-DD'),
           state: 'none',
           default: true
-        });
+        };
       }
     },
     columns: {
@@ -39,30 +40,58 @@ export default {
       type: Function
     }
   },
+  filters: {
+    amount: {
+      read(value) {
+        return value ? value.toFixed(2) : '';
+      },
+      write(val) {
+        const number = +val.replace(/[^\d.-]/g, '');
+        return isNaN(number) ? 0 : parseFloat(number.toFixed(2));
+      }
+    }
+  },
   ready() {
-    console.log('test2');
-    if (!store.state.accountsState.accounts.length) {
-      getAccounts().then((accounts) => {
-        if (this.transaction.default) {
-          this.transaction.account = accounts[0].id;
-          this.newTransaction.account = this.transaction.account;
-        }
-      });
-    } else {
+    getAccounts();
+  },
+  watch: {
+    ['defaultAccountId'](value) {
       if (this.transaction.default) {
-        this.transaction.account = store.state.accountsState.accounts[0].id;
+        if (!value) {
+          this.transaction.account = _.head(this.accounts).id;
+        } else {
+          if (Array.isArray(value)) {
+            this.transaction.account = _.head(value);
+          } else {
+            this.transaction.account = value;
+          }
+        }
         this.newTransaction.account = this.transaction.account;
       }
     }
   },
   data() {
     return {
-      newTransaction: _.merge({}, this.transaction)
+      newTransaction: _.merge(this.transaction)
     };
   },
   computed: {
     accounts() {
-      return store.state.accountsState.accounts;
+      const accounts = accountsState.accounts;
+      if (this.transaction.default && accounts && accounts.length) {
+        this.transaction.account = _.head(accounts).id;
+        this.newTransaction.account = this.transaction.account;
+      }
+      return accounts;
+    },
+    errors() {
+      return transactionsState.errors[this.transaction.id] || {};
+    },
+    payees() {
+      return _.uniq(_.map(transactionsState.transactions, 'payee'));
+    },
+    tags() {
+      return _.uniq(_.compact(_.flatten(_.map(transactionsState.transactions, 'tags'))));
     }
   },
   methods: {
@@ -71,11 +100,12 @@ export default {
         updateTransaction(newTransaction.id, newTransaction);
       } else {
         createTransaction(newTransaction);
-        this.newTransaction = _.merge({}, this.transaction);
+        this.newTransaction = _.merge(this.transaction);
       }
     },
     resetTransaction() {
-      this.newTransaction = _.merge({}, this.transaction);
+      resetTransactionsErrors(this.newTransaction.id);
+      this.newTransaction = _.merge(this.transaction);
       if (this.transaction) {
         this.transaction.edit = false;
       }

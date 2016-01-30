@@ -2,12 +2,12 @@ import navbar from './navbar';
 import accounts from './accounts';
 import login from './login';
 import user from './user';
-import fourohfour from './fourohfour';
+import four0four from './404';
 
 export {
   navbar,
   accounts,
   login,
   user,
-  fourohfour
+  four0four
 };

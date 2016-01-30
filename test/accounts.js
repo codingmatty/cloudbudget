@@ -71,6 +71,7 @@ describe('Accounts', function () {
         assert(Types.ObjectId.isValid(res.body.data.id));
         assert(Types.ObjectId.isValid(res.body.data.user));
         assert.deepEqual(_.omit(res.body.data, 'id'), _.merge(newAccount, {
+          balance: 0,
           user: this.user.id
         }));
         done();
@@ -128,9 +129,6 @@ describe('Accounts', function () {
     });
   });
   describe('Update', function () {
-    beforeEach(function () {
-      delete this.account.balance; // remove balance so it doesn't get tested against..
-    });
     it('should update an account', function (done) {
       const updatedProperties = {
         name: 'New Account Name',
@@ -158,17 +156,14 @@ describe('Accounts', function () {
         group: 'New Group'
       };
       const selectAccounts = _.sortBy(_.sample(this.accounts, 3), 'id');
-      httpClient('put', `accounts/?id=${_.pluck(selectAccounts, 'id') }`, { jwtToken: this.user.token, body: updatedProperties }, 200, (err, res) => {
+      httpClient('put', `accounts/?id=[${_.map(selectAccounts, 'id') }]`, { jwtToken: this.user.token, body: updatedProperties }, 200, (err, res) => {
         if (err) return done(err);
-        assert.deepEqual(_.sortBy(res.body.data, 'id'), selectAccounts.map(account => _.omit(_.merge(account, updatedProperties), 'balance')));
+        assert.deepEqual(_.sortBy(res.body.data, 'id'), selectAccounts.map(account => _.merge(account, updatedProperties)));
         done();
       });
     });
   });
   describe('Delete', function () {
-    beforeEach(function () {
-      delete this.account.balance; // remove balance so it doesn't get tested against..
-    });
     it('should delete an account', function (done) {
       httpClient('delete', `accounts/${this.account.id}`, { jwtToken: this.user.token }, 200, (err, res) => {
         if (err) return done(err);

@@ -6,7 +6,7 @@ import { defaultJSONOptions, Transaction } from './';
 const accountSchema = new Schema({
   name: { type: String, required: true, minlength: 1 },
   group: { type: String, required: true, minlength: 1 },
-  type: { type: String, enum: ['savings', 'checking', 'credit_card', 'loan', 'investment'], required: true },
+  type: { type: String, enum: ['savings', 'checking', 'credit_card', 'loan', 'asset', 'investment'], required: true },
   budget: { type: Boolean, required: true },
   notes: String,
   user: { type: Schema.Types.ObjectId, ref: 'User', required: true }
@@ -17,6 +17,14 @@ const accountSchema = new Schema({
 accountSchema.static('readonlyProps', () => {
   return ['user'];
 });
+
+accountSchema.methods.normalize = function normalize(done) {
+  const account = this;
+  account.getBalance((err, balance) => {
+    // if (err) return done(err);
+    done(_.merge(account.toJSON(), { balance }));
+  });
+};
 
 accountSchema.methods.getTransactions = function getTransactions(done) {
   const account = this;

@@ -1,0 +1,99 @@
+#accounts {
+  @include make-row();
+  height: 100%;
+  background-color: lightblue;
+  #accounts-list {
+    @extend .col-lg-2;
+    @extend .col-md-3;
+    padding: 0;
+    overflow-y: auto;
+    .title {
+      height: 3.75rem;
+      padding: 1rem;
+      h3 {
+        @include pull-left;
+        font-weight: bold;
+      }
+      .add-account {
+        @extend .btn;
+        @extend .btn-info;
+        @include pull-right;
+        margin-top: -0.3rem;
+      }
+    }
+    .groups-list {
+      @extend .list-group;
+      .group {
+        &:not(:last-child) {
+          margin-bottom: 0.6rem;
+        }
+        a {
+          @extend .list-group-item;
+          @include clearfix;
+          display: inline-table;
+          font-weight: bold;
+          &.active, &.active:hover, &.active:focus {
+            background-color: #747d7d;
+            border-color: #747d7d;
+          }
+        }
+        & > a {
+          border-bottom: $brand-info solid 0.15rem;
+          .group-title {
+            @include pull-left;
+          }
+        }
+        .balance { // includes balance for accounts
+          @include pull-right;
+          &.negative {
+            color: $brand-danger;
+          }
+        }
+        .accounts {
+          @extend .list-group;
+          .account {
+            & > a {
+              .name {
+                @include pull-left;
+              }
+              .balance {
+                @extend .label;
+                @extend .label-default;
+                &.negative {
+                  @extend .label-danger;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  #account-details {
+    @extend .col-lg-10;
+    @extend .col-md-9;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+
+    #chart {
+      background-color: #f9f9f9;
+      flex: 0 0 auto;
+      padding: 0.5rem;
+      & > * {
+
+      }
+    }
+
+    #transactions {
+      overflow-y: auto;
+      flex: 1 1 auto;
+      & > * {
+        display: flex;
+      }
+    }
+  }
+
+  @import './account-form-modal/styles';
+  @import './account-group-form-modal/styles';
+}

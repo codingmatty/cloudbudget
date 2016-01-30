@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import async from 'async';
 import passport from 'passport';
 import { Router } from 'express';
 import * as db from '../db';
@@ -13,7 +14,16 @@ export function listMethod(api, model, shouldAuthenticate, callback) {
     }
     Model.find(query).populate(getInclusions(req)).exec((err, docs) => {
       if (err) { return handleError(err, res, 'list', Model.modelName); }
-      callback(req, res, docs);
+      async.map(docs, (doc, next) => {
+        if (doc.normalize) {
+          doc.normalize(_.partial(next, null));
+        } else {
+          next(null, doc);
+        }
+      }, (normalizeErr, normalizeDocs) => {
+        if (normalizeErr) { return handleError(normalizeErr, res, 'list', Model.modelName); }
+        callback(req, res, normalizeDocs);
+      });
     });
   });
 }
@@ -27,7 +37,11 @@ export function createMethod(api, model, shouldAuthenticate, callback) {
     }
     Model.create(entity, (err, doc) => {
       if (err) { return handleError(err, res, 'create', Model.modelName); }
-      callback(req, res, doc);
+      if (doc.normalize) {
+        doc.normalize(_.partial(callback, req, res));
+      } else {
+        callback(req, res, doc);
+      }
     });
   });
 }
@@ -41,7 +55,11 @@ export function showMethod(api, model, shouldAuthenticate, callback) {
     }
     Model.findOne(query).populate(getInclusions(req)).exec((err, doc) => {
       if (err || !doc) { return handleError(err, res, 'show', Model.modelName); }
-      callback(req, res, doc);
+      if (doc.normalize) {
+        doc.normalize(_.partial(callback, req, res));
+      } else {
+        callback(req, res, doc);
+      }
     });
   });
 }
@@ -58,7 +76,11 @@ export function updateMethod(api, model, shouldAuthenticate, callback) {
       const updatedDoc = _.merge(doc, _.omit(req.body, Model.readonlyProps() || []));
       updatedDoc.save((saveErr, savedDoc) => {
         if (saveErr) { return handleError(saveErr, res, 'update', Model.modelName); }
-        callback(req, res, savedDoc);
+        if (savedDoc.normalize) {
+          savedDoc.normalize(_.partial(callback, req, res));
+        } else {
+          callback(req, res, savedDoc);
+        }
       });
     });
   });
@@ -75,7 +97,11 @@ export function deleteMethod(api, model, shouldAuthenticate, callback) {
       if (findErr || !doc) { return handleError(findErr, res, 'delete', model); }
       doc.remove(req.query, (removeErr, removedDoc) => {
         if (removeErr) { return handleError(removeErr, res, 'delete', model); }
-        callback(req, res, removedDoc);
+        if (removedDoc.normalize) {
+          removedDoc.normalize(_.partial(callback, req, res));
+        } else {
+          callback(req, res, removedDoc);
+        }
       });
     });
   });
