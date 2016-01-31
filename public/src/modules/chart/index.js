@@ -15,8 +15,8 @@ Vue.component('chart', {
   },
   watch: {
     ['data'](value, oldValue) {
-      const oldColumns = _.merge(oldValue).columns;
-      const newColumns = _.merge(value).columns;
+      const oldColumns = _.cloneDeep(oldValue).columns;
+      const newColumns = _.cloneDeep(value).columns;
       if (!_.isEqual(oldColumns, newColumns)) {
         const loadData = {
           columns: newColumns
