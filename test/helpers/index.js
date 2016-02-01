@@ -58,7 +58,7 @@ export function httpClient(method, url, { accessToken, basicToken, jwtToken, bod
 }
 
 export function getJwtToken(user, callback) {
-  dbModels.User.findOne({ username: user.username }, (findErr, dbUser) => {
+  dbModels.User.findOne({ username: user.username.toLowerCase() }, (findErr, dbUser) => {
     if (findErr) return callback(findErr);
     callback(null, dbUser.generateJwt({
       issuer: 'admin@cloudbudget.io',

@@ -10,7 +10,7 @@ import { User, Client, AccessToken } from '../db';
 
 export default function () {
   passport.use(new LocalStrategy({ session: false }, (username, password, done) => {
-    User.findOne({ username }, (err, user) => {
+    User.findOne({ username: username.toLowerCase() }, (err, user) => {
       if (err) { return done(err); }
       if (!user) { return done(null, false); }
       if (!user.verifyPassword(password)) { return done(null, false); }

@@ -15,9 +15,9 @@ const nonceSchema = new Schema({
 });
 
 const userSchema = new Schema({
-  username: { type: String, required: true, unique: true, minlength: 4 },
+  username: { type: String, required: true, unique: true, lowercase: true, minlength: 4 },
   password: { type: String, required: true, minlength: 4 },
-  email: { type: String, required: true, unique: true,
+  email: { type: String, required: true, unique: true, lowercase: true,
     validate: {
       validator: (value) => {return is.email(value);},
       message: '{VALUE} is not a valid email address.'

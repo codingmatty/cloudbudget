@@ -5,7 +5,7 @@ import mongoose, { Schema } from 'mongoose';
 import { defaultJSONOptions } from './';
 
 const clientSchema = new Schema({
-  name: { type: String, required: true, unique: true, minlength: 1 },
+  name: { type: String, required: true, unique: true, lowercase: true, minlength: 1 },
   clientId: { type: String, required: true, unique: true, minlength: 32, maxlength: 32 },
   clientSecret: { type: String, required: true, unique: true, minlength: 1 },
   permissions: [{ type: String, enum: ['password', 'code'] }],

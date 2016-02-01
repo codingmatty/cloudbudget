@@ -84,7 +84,7 @@ server.exchange(oauth2orize.exchange.password((client, username, password, scope
     if (dbClient.clientSecret !== client.clientSecret) { return done(null, false); }
     if (!_.includes(dbClient.permissions, 'password')) { return done(null, false); }
     if (!username) { return done(null, false); }
-    User.findOne({ username }, (findUserErr, user) => {
+    User.findOne({ username: username.toLowerCase() }, (findUserErr, user) => {
       if (findUserErr) { return done(findUserErr); }
       if (!user) { return done(null, false); }
       if (!user.verifyPassword(password)) { return done(null, false); }
