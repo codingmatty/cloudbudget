@@ -2,7 +2,7 @@ import moment from 'moment';
 import mongoose, { Schema, Types } from 'mongoose';
 import { defaultJSONOptions, Account } from './';
 
-const transactionSchema = new Schema({
+const schema = new Schema({
   date: { type: Date, default: Date.now },
   state: { type: String, enum: ['unapproved', 'pending', 'cleared', 'reconciled'], required: true },
   payee: { type: String, required: true, minlength: 1 },
@@ -18,21 +18,21 @@ const transactionSchema = new Schema({
   })
 });
 
-transactionSchema.static('readonlyProps', () => {
+schema.static('readonlyProps', () => {
   return ['user'];
 });
 
-transactionSchema.path('account').validate(function validateAccount(value, next) {
+schema.path('account').validate(function validateAccount(value, next) {
   const transaction = this;
   Account.findOne({ _id: value, user: transaction.user }, (err, account) => {
     if (!account) {
       return next(false, 'Account does not exist.');
     }
-    return next(true);
+    next(true);
   });
 });
 
-const Transaction = mongoose.model('Transaction', transactionSchema);
+const Transaction = mongoose.model('Transaction', schema);
 
 Transaction.schema.pre('save', function normalizeTransaction(next) {
   const transaction = this;

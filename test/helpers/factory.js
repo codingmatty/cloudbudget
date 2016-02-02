@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import chai from 'chai';
 import bcrypt from 'bcrypt';
+import moment from 'moment';
 import randomKey from 'random-key';
 import chaiJsFactories from 'chai-js-factories';
 import * as dbModels from '../../src/db';
@@ -67,6 +68,23 @@ Factory.define('Transaction', function (attributes = {}) {
     amount: 0,
     memo: 'This memo applies to a Transaction',
     tags: ['Tag 1', 'Tag 2', 'Tag 3']
+  }, attributes);
+});
+
+Factory.define('Schedule', function (attributes = {}) {
+  const {
+    transaction: {
+      date,
+      account
+    }
+  } = attributes;
+  const transaction = Factory.create('Transaction', {
+    date: date || moment().add(1, 'd').utc().startOf('day'),
+    account
+  });
+  return _.merge({
+    frequency: this.sample('once', 'daily', 'weekly', 'biweekly', 'semimonthly', 'monthly', 'bimonthly', 'quarterly', 'semiannually', 'annually', 'biannually', 'custom'),
+    transaction
   }, attributes);
 });
 

@@ -35,16 +35,14 @@ export default {
     groups() {
       const groups = [];
       const groupsObj = _.groupBy(this.accounts, 'group');
-      for (const groupName in groupsObj) {
-        if (groupsObj.hasOwnProperty(groupName)) {
-          groups.push({
-            id: groupName.replace(/[^\w\d]/g, '').toLowerCase(),
-            name: groupName,
-            balance: _.sumBy(groupsObj[groupName], 'balance'),
-            accounts: groupsObj[groupName]
-          });
-        }
-      }
+      _.forOwn(groupsObj, (group, groupName) => {
+        groups.push({
+          id: groupName.replace(/[^\w\d]/g, '').toLowerCase(),
+          name: groupName,
+          balance: _.sumBy(groupsObj[groupName], 'balance'),
+          accounts: groupsObj[groupName]
+        });
+      });
       return groups;
     },
     totalBalance() {

@@ -1,9 +1,11 @@
+import _ from 'lodash';
 import inflection from 'inflection';
 import { Router } from 'express';
 import users from './users';
 import oauth2 from './oauth2';
 import accounts from './accounts';
 import transactions from './transactions';
+import schedules from './schedules';
 
 const api = new Router();
 
@@ -18,6 +20,7 @@ api.use('/users', users);
 api.use('/oauth2', oauth2);
 api.use('/accounts', accounts);
 api.use('/transactions', transactions);
+api.use('/schedules', schedules);
 
 api.use((req, res) => {
   res.status(404).send();
@@ -28,11 +31,9 @@ export function handleError(err, res, method, model) {
   if (err) {
     if (err.errors) {
       errorObj = {};
-      for (const singleErrKey in err.errors) {
-        if (err.errors.hasOwnProperty(singleErrKey)) {
-          errorObj[singleErrKey] = err.errors[singleErrKey].message;
-        }
-      }
+      _.forOwn(err.errors, (singleErr, singleErrKey) => {
+        _.set(errorObj, singleErrKey, singleErr.message);
+      });
     } else if (err.code === 11000) {
       const errmsgRegex = /index: (\S+\$)?([\w\d]+)_.* dup key: { : \\?\"(\S+)\\?\" }$/;
       if (errmsgRegex.test(err.errmsg)) {
@@ -53,19 +54,31 @@ export function getInclusions(req) {
   return Array.isArray(req.query.include) ? req.query.include.join(' ') : req.query.include || '';
 }
 
-export function buildQuery(Model, req) {
-  const query = {};
-  Model.schema.eachPath((path) => {
-    if (req.query[path]) {
-      if (Array.isArray(req.query[path])) {
-        query[path] = { $in: req.query[path] };
-      } else if (/([\w\d]*,)+[\w\d]*/.test(req.query[path])) {
-        query[path] = { $in: req.query[path].split(',') };
-      } else {
-        query[path] = req.query[path];
-      }
+function addQuery(reqQuery, query, path) {
+  if (reqQuery[path]) {
+    if (Array.isArray(reqQuery[path])) {
+      query[path] = { $in: reqQuery[path] };
+    } else if (/([\w\d]*,)+[\w\d]*/.test(reqQuery[path])) {
+      query[path] = { $in: reqQuery[path].split(',') };
+    } else {
+      query[path] = reqQuery[path];
+    }
+  }
+}
+
+function traverseSchema(schema, reqQuery, query, superPath) {
+  schema.eachPath((path) => {
+    if (schema.path(path).schema) {
+      traverseSchema(schema.path(path).schema, reqQuery, query, superPath ? `${superPath}.${path}` : path);
+    } else {
+      addQuery(reqQuery, query, superPath ? `${superPath}.${path}` : path);
     }
   });
+}
+
+export function buildQuery(Model, req) {
+  const query = {};
+  traverseSchema(Model.schema, req.query, query);
   if (req.query.id) {
     if (Array.isArray(req.query.id)) {
       query._id = { $in: req.query.id };

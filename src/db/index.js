@@ -4,6 +4,7 @@ import Client from './client';
 import Account from './account';
 import AccessToken from './accessToken';
 import Transaction from './transaction';
+import Schedule from './schedule';
 import config from '../../config.json';
 
 const db = mongoose.connect(config[process.env.NODE_ENV].db);
@@ -17,7 +18,11 @@ export function defaultJSONOptions(specificTransformFunction) {
     transform: (doc, ret) => {
       delete ret._id;
       delete ret.__v;
-      ret.id = ret.id.toString();
+      if (ret.id) {
+        ret.id = ret.id.toString();
+      } else {
+        delete ret.id;
+      }
       if (ret.user) {
         ret.user = ret.user instanceof Types.ObjectId ? ret.user.toString() : ret.user;
       }
@@ -31,5 +36,6 @@ export {
   Client,
   AccessToken,
   Account,
-  Transaction
+  Transaction,
+  Schedule
 };

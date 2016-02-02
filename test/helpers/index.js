@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import 'source-map-support/register';
 import request from 'supertest';
 import { insertFactoryModel } from './factory';
@@ -6,11 +7,9 @@ import app from '../../src/app';
 
 function clearDb() {
   const collections = db.connection.collections;
-  for (const key in collections) {
-    if (collections.hasOwnProperty(key)) {
-      collections[key].remove({});
-    }
-  }
+  _.forOwn(collections, (collection) => {
+    collection.remove({});
+  });
   db.connection.db.collection('sessions').remove({});
 }
 

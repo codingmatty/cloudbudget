@@ -38,7 +38,7 @@ accountSchema.methods.getBalance = function getBalance(done) {
   const account = this;
   account.getTransactions((err, transactions) => {
     if (err) return done(err);
-    done(null, _.sum(transactions, 'amount'));
+    done(null, _.sumBy(transactions, 'amount'));
   });
 };
 

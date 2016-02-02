@@ -3,7 +3,7 @@ import async from 'async';
 import { Types } from 'mongoose';
 import { assert, factory } from 'chai';
 import { clearCollections, httpClient, getJwtToken, insertFactoryModel } from './helpers';
-import { Account, Transaction } from '../src/db';
+import { Transaction } from '../src/db';
 
 describe('Transactions', function () {
   beforeEach(function (done) {
@@ -151,8 +151,8 @@ describe('Transactions', function () {
       const updatedProperties = {
         state: 'reconciled'
       };
-      const selectTransactions = _.sortBy(_.sample(this.transactions, 5), 'id');
-      httpClient('put', `transactions/?id=${_.pluck(selectTransactions, 'id')}`, { jwtToken: this.user.token, body: updatedProperties }, 200, (err, res) => {
+      const selectTransactions = _.sortBy(_.sampleSize(this.transactions, 5), 'id');
+      httpClient('put', `transactions/?id=${_.map(selectTransactions, 'id')}`, { jwtToken: this.user.token, body: updatedProperties }, 200, (err, res) => {
         if (err) return done(err);
         assert.deepEqual(_.sortBy(res.body.data, 'id'), selectTransactions.map(transaction => _.merge(transaction, updatedProperties)));
         done();
@@ -172,11 +172,11 @@ describe('Transactions', function () {
       });
     });
     it('should delete multiple transactions', function (done) {
-      const selectTransactions = _.sortBy(_.sample(this.transactions, 5), 'id');
-      httpClient('delete', `transactions/?id=${_.pluck(selectTransactions, 'id')}`, { jwtToken: this.user.token }, 200, (err, res) => {
+      const selectTransactions = _.sortBy(_.sampleSize(this.transactions, 5), 'id');
+      httpClient('delete', `transactions/?id=${_.map(selectTransactions, 'id')}`, { jwtToken: this.user.token }, 200, (err, res) => {
         if (err) return done(err);
         assert.deepEqual(_.sortBy(res.body.data, 'id'), selectTransactions);
-        Transaction.find({ _id: { $in: _.pluck(selectTransactions, 'id') } }, (dbErr, transactions) => {
+        Transaction.find({ _id: { $in: _.map(selectTransactions, 'id') } }, (dbErr, transactions) => {
           if (dbErr) return done(dbErr);
           assert.deepEqual(transactions, []);
           done();

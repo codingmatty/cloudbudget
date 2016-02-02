@@ -53,7 +53,7 @@ describe('Accounts', function () {
       this.transactions = _.sortBy(transactions, 'id');
       this.accounts.forEach(account => {
         const accountTransactions = this.transactions.filter(transaction => transaction.account === account.id);
-        account.balance = _.sum(accountTransactions, 'amount');
+        account.balance = _.sumBy(accountTransactions, 'amount');
       });
       this.account = _.sample(this.accounts);
       done();
@@ -155,7 +155,7 @@ describe('Accounts', function () {
       const updatedProperties = {
         group: 'New Group'
       };
-      const selectAccounts = _.sortBy(_.sample(this.accounts, 3), 'id');
+      const selectAccounts = _.sortBy(_.sampleSize(this.accounts, 3), 'id');
       httpClient('put', `accounts/?id=[${_.map(selectAccounts, 'id') }]`, { jwtToken: this.user.token, body: updatedProperties }, 200, (err, res) => {
         if (err) return done(err);
         assert.deepEqual(_.sortBy(res.body.data, 'id'), selectAccounts.map(account => _.merge(account, updatedProperties)));

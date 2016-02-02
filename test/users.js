@@ -96,7 +96,7 @@ describe('Users', function () {
         if (err) return done(err);
         assert.equal(res.body.message, 'Success! User created.');
         assert(Types.ObjectId.isValid(res.body.data.id));
-        assert.match(res.body.data.username, /User \d+/);
+        assert.match(res.body.data.username, /user \d+/);
         assert.match(res.body.data.email, /user\d+@test.com/);
         done();
       });
