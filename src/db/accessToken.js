@@ -2,7 +2,7 @@ import randomKey from 'random-key';
 import mongoose, { Schema } from 'mongoose';
 import { defaultJSONOptions } from './';
 
-const accessTokenSchema = new Schema({
+const schema = new Schema({
   userId: { type: Schema.Types.ObjectId, ref: 'User' },
   clientId: { type: Schema.Types.ObjectId, ref: 'Client' },
   token: { type: String, required: true, minlength: 64, maxlength: 64 },
@@ -12,13 +12,13 @@ const accessTokenSchema = new Schema({
   toJSON: defaultJSONOptions()
 });
 
-accessTokenSchema.statics.generateTokens = () => {
+schema.statics.generateTokens = () => {
   return {
     token: randomKey.generate(64),
     refreshToken: randomKey.generate(64)
   };
 };
 
-const AccessToken = mongoose.model('AccessToken', accessTokenSchema);
+const AccessToken = mongoose.model('AccessToken', schema);
 
 export default AccessToken;

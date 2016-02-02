@@ -4,7 +4,7 @@ import moment from 'moment';
 import { Types } from 'mongoose';
 import { assert, factory } from 'chai';
 import { clearCollections, httpClient, getJwtToken, insertFactoryModel } from './helpers';
-import { Schedule } from '../src/db';
+import { Schedule, Transaction } from '../src/db';
 
 describe('Schedules', function () {
   beforeEach(function (done) {
@@ -171,7 +171,10 @@ describe('Schedules', function () {
     });
     it('should not update readonly attributes', function (done) {
       const updatedProperties = {
-        user: new Types.ObjectId() // May be temporary, but for now don't allow.
+        user: new Types.ObjectId(), // May be temporary, but for now don't allow.
+        transaction: {
+          user: new Types.ObjectId()
+        }
       };
       httpClient('put', `schedules/${this.schedule.id}`, { jwtToken: this.user.token, body: updatedProperties }, 200, (err, res) => {
         if (err) return done(err);
@@ -188,6 +191,39 @@ describe('Schedules', function () {
         Schedule.findById(this.schedule.id, (dbErr, schedule) => {
           if (dbErr) return done(dbErr);
           assert.isNull(schedule);
+          done();
+        });
+      });
+    });
+  });
+  describe('Submit', function () {
+    beforeEach(function (done) {
+      Schedule.findOne({ _id: this.schedule.id }, (err, schedule) => {
+        if (err) return done(err);
+        this.dbSchedule = schedule;
+        schedule.frequency = 'weekly';
+        schedule.save(done);
+      });
+    });
+    it('should create a transaction from the sub-transaction', function (done) {
+      this.dbSchedule.submitTransaction((err) => {
+        if (err) return done(err);
+        Transaction.findOne({ payee: this.schedule.transaction.payee }, (findErr, transaction) => {
+          if (findErr) return done(findErr);
+          assert(Types.ObjectId.isValid(transaction.id));
+          assert.deepEqual(_.omit(transaction.toJSON(), 'id'), this.schedule.transaction);
+          done();
+        });
+      });
+    });
+    it('should update the date on the scheduled transaction', function (done) {
+      this.dbSchedule.submitTransaction((err) => {
+        if (err) return done(err);
+        Schedule.findOne({ _id: this.dbSchedule.id }, (findErr, schedule) => {
+          if (findErr) return done(findErr);
+          const expectedNewDate = moment(new Date(this.schedule.transaction.date)).add(1, 'w').toString();
+          const actualNewDate = moment(new Date(schedule.transaction.date)).toString();
+          assert.equal(actualNewDate, expectedNewDate);
           done();
         });
       });

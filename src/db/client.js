@@ -4,7 +4,7 @@ import randomKey from 'random-key';
 import mongoose, { Schema } from 'mongoose';
 import { defaultJSONOptions } from './';
 
-const clientSchema = new Schema({
+const schema = new Schema({
   name: { type: String, required: true, unique: true, lowercase: true, minlength: 1 },
   clientId: { type: String, required: true, unique: true, minlength: 32, maxlength: 32 },
   clientSecret: { type: String, required: true, unique: true, minlength: 1 },
@@ -19,7 +19,7 @@ const clientSchema = new Schema({
   toJSON: defaultJSONOptions()
 });
 
-clientSchema.statics.generateCredentials = () => {
+schema.statics.generateCredentials = () => {
   const secret = randomKey.generate(32);
   return {
     clientId: randomKey.generate(32),
@@ -28,10 +28,10 @@ clientSchema.statics.generateCredentials = () => {
   };
 };
 
-clientSchema.methods.verifySecret = function verifyClientSecret(secret) {
+schema.methods.verifySecret = function verifyClientSecret(secret) {
   return bcrypt.compareSync(secret, this.clientSecret);
 };
 
-const Client = mongoose.model('Client', clientSchema);
+const Client = mongoose.model('Client', schema);
 
 export default Client;

@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import mongoose, { Types } from 'mongoose';
 import User from './user';
 import Client from './client';
@@ -29,6 +30,16 @@ export function defaultJSONOptions(specificTransformFunction) {
       if (specificTransformFunction) specificTransformFunction(doc, ret);
     }
   };
+}
+
+export function pruneReadOnlyProps(originalObj, readOnlyProps) {
+  let prunedObject = _.cloneDeep(originalObj);
+  _.forEach(readOnlyProps, (readonlyProp) => {
+    if (_.has(originalObj, readonlyProp)) {
+      prunedObject = _.unset(originalObj, readonlyProp);
+    }
+  });
+  return prunedObject;
 }
 
 export {

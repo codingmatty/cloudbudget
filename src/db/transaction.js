@@ -1,6 +1,6 @@
 import moment from 'moment';
 import mongoose, { Schema, Types } from 'mongoose';
-import { defaultJSONOptions, Account } from './';
+import { defaultJSONOptions, pruneReadOnlyProps, Account } from './';
 
 const schema = new Schema({
   date: { type: Date, default: Date.now },
@@ -18,9 +18,10 @@ const schema = new Schema({
   })
 });
 
-schema.static('readonlyProps', () => {
-  return ['user'];
-});
+schema.statics.pruneReadOnlyProps = (objToPrune) => {
+  const readOnlyProps = ['user'];
+  return pruneReadOnlyProps(objToPrune, readOnlyProps);
+};
 
 schema.path('account').validate(function validateAccount(value, next) {
   const transaction = this;

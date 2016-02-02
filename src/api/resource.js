@@ -73,7 +73,7 @@ export function updateMethod(api, model, shouldAuthenticate, callback) {
     }
     Model.findOne(query, (findErr, doc) => {
       if (findErr) { return handleError(findErr, res, 'update', Model.modelName); }
-      const updatedDoc = _.merge(doc, _.omit(req.body, Model.readonlyProps() || []));
+      const updatedDoc = _.merge(doc, Model.pruneReadOnlyProps(req.body));
       updatedDoc.save((saveErr, savedDoc) => {
         if (saveErr) { return handleError(saveErr, res, 'update', Model.modelName); }
         if (savedDoc.normalize) {

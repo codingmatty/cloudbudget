@@ -14,7 +14,7 @@ api.put('/', (req, res) => {
   query.user = req.user.id;
   Transaction.find(query, (findErr, transactions) => {
     if (findErr) { return handleError(findErr, res, 'update', 'Transactions'); }
-    const updatedTransactions = transactions.map((transaction) => _.merge(transaction, _.omit(req.body, Transaction.readonlyProps() || [])));
+    const updatedTransactions = transactions.map((transaction) => _.merge(transaction, Transaction.pruneReadOnlyProps(req.body)));
     async.map(updatedTransactions, (transaction, callback) => {
       transaction.save(callback);
     }, (saveErr, dbTransactions) => {

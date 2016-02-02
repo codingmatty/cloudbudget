@@ -15,7 +15,7 @@ api.put('/', (req, res) => {
   query.user = req.user.id;
   Account.find(query, (findErr, accounts) => {
     if (findErr) { return handleError(findErr, res, 'update', 'Accounts'); }
-    const updatedAccounts = accounts.map((account) => _.merge(account, _.omit(req.body, Account.readonlyProps() || [])));
+    const updatedAccounts = accounts.map((account) => _.merge(account, Account.pruneReadOnlyProps(req.body)));
     async.map(updatedAccounts, (account, callback) => {
       account.save(callback);
     }, (saveErr, dbAccounts) => {

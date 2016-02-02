@@ -14,7 +14,7 @@ const nonceSchema = new Schema({
   date: { type: Date, default: Date.now }
 });
 
-const userSchema = new Schema({
+const schema = new Schema({
   username: { type: String, required: true, unique: true, lowercase: true, minlength: 4 },
   password: { type: String, required: true, minlength: 4 },
   email: { type: String, required: true, unique: true, lowercase: true,
@@ -41,18 +41,18 @@ const userSchema = new Schema({
   })
 });
 
-userSchema.statics.hashPassword = (password) => {
+schema.statics.hashPassword = (password) => {
   return bcrypt.hashSync(password, 8);
 };
 
-userSchema.methods.verifyUser = function verifyUser(nonce, callback) {
+schema.methods.verifyUser = function verifyUser(nonce, callback) {
   const user = this;
   if (user.nonce && nonce.key === user.nonce.key) {
     user.update({ verified: true }, callback);
   }
 };
 
-userSchema.methods.generateJwt = function generateJwt(options = {}) {
+schema.methods.generateJwt = function generateJwt(options = {}) {
   const user = this;
   user.nonce = { key: randomKey.generate(64) };
   const key = fs.readFileSync(__dirname + '/../../private.pem').toString();
@@ -65,16 +65,16 @@ userSchema.methods.generateJwt = function generateJwt(options = {}) {
   }, options));
 };
 
-userSchema.methods.verifyPassword = function verifyPassword(password) {
+schema.methods.verifyPassword = function verifyPassword(password) {
   const user = this;
   return user.verified && bcrypt.compareSync(password, user.password);
 };
 
-userSchema.methods.verifyNonce = function verifyNonce(nonceKey) {
+schema.methods.verifyNonce = function verifyNonce(nonceKey) {
   const user = this;
   return user.nonce && moment(user.nonce.date).add(1, 'days') >= moment() && user.nonce.key === nonceKey;
 };
 
-const User = mongoose.model('User', userSchema);
+const User = mongoose.model('User', schema);
 
 export default User;

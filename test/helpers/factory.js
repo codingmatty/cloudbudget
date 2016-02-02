@@ -83,7 +83,7 @@ Factory.define('Schedule', function (attributes = {}) {
     account
   });
   return _.merge({
-    frequency: this.sample('once', 'daily', 'weekly', 'biweekly', 'semimonthly', 'monthly', 'bimonthly', 'quarterly', 'semiannually', 'annually', 'biannually', 'custom'),
+    frequency: this.sample('once', 'daily', 'weekly', 'biweekly', 'semimonthly', 'monthly', 'bimonthly', 'quarterly', 'semiannually', 'annually', 'custom'),
     transaction
   }, attributes);
 });
