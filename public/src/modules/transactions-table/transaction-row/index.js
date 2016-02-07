@@ -6,7 +6,6 @@ import transactionRowTemplate from './transaction-row.html';
 const {
   actions: {
     getAccounts,
-    getTransactions,
     deleteTransaction
   },
   state: {
@@ -36,7 +35,6 @@ export default {
   },
   ready() {
     getAccounts();
-    getTransactions();
   },
   data() {
     return {
