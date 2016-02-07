@@ -27,11 +27,11 @@
       </li>
     </ul>
   </div>
-  <div id="account-details">
-    <div id="chart">
+  <div id="account-details" v-if="showAccountDetails">
+    <div id="account-chart">
       <transactions-chart :account-id="transactionAccountId" :balance="transactionBalance"></transactions-chart>
     </div>
-    <div id="transactions">
+    <div id="account-transactions">
       <transactions-table include-form :account-id="transactionAccountId" :balance="transactionBalance"></transactions-table>
     </div>
   </div>

@@ -1,6 +1,6 @@
 import { VueRouter } from '../Vue';
 import store from 'config/store';
-import { login, user, accounts, four0four } from 'components';
+import * as components from 'components';
 
 const {
   userState
@@ -15,26 +15,31 @@ const router = new VueRouter({
 router.map({
   '/login': {
     name: 'login',
-    component: login,
+    component: components.login,
   },
   '/user': {
     name: 'user',
-    component: user,
+    component: components.user,
     auth: true
   },
   '/accounts': {
     name: 'accounts',
-    component: accounts,
+    component: components.accounts,
     auth: true
   },
   '/accounts/:account_id': {
     name: 'accounts',
-    component: accounts,
+    component: components.accounts,
+    auth: true
+  },
+  '/transactions': {
+    name: 'transactions',
+    component: components.transactions,
     auth: true
   },
   '/*any': {
     name: '404',
-    component: four0four
+    component: components.four0four
   }
 });
 

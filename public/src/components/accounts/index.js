@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import Vue from 'config';
 import store from 'config/store';
+import { screenSize } from 'modules/services';
 import accountFormModal from './account-form-modal';
 import accountGroupFormModal from './account-group-form-modal';
 
@@ -65,6 +66,9 @@ export default {
         return account.balance;
       }
       return this.totalBalance || 0;
+    },
+    showAccountDetails() {
+      return screenSize.testSize('md', 'up');
     }
   },
   methods: {

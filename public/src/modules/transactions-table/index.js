@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import Vue from 'config';
 import store from 'config/store';
+import { screenSize } from 'modules/services';
 import transactionRow from './transaction-row';
 import transactionFormRow from './transaction-form-row';
 
@@ -23,9 +24,15 @@ Vue.component('transactions-table', {
   props: {
     includeForm: {
       type: Boolean,
-      default: () => false
+      default: () => false,
+      coerce(val) {
+        return val && screenSize.testSize('md', 'up');
+      }
     },
-    accountId: {},
+    accountId: {
+      type: String,
+      default() { return this.$route.query.account_id; }
+    },
     balance: {
       type: Number
     },
