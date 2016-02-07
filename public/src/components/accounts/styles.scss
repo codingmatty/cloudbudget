@@ -73,24 +73,19 @@
     @extend .col-lg-10;
     @extend .col-md-9;
     padding: 0;
-    display: flex;
+    height: 100%;
+    max-width: 100%;
     flex-direction: column;
-
-    #chart {
+    #account-chart {
+      width: 100%;
       background-color: #f9f9f9;
-      flex: 0 0 auto;
       padding: 0.5rem;
-      & > * {
-
-      }
+      display: table;
     }
 
-    #transactions {
+    #account-transactions {
+      height: 100%;
       overflow-y: auto;
-      flex: 1 1 auto;
-      & > * {
-        display: flex;
-      }
     }
   }
 
