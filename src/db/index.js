@@ -33,13 +33,12 @@ export function defaultJSONOptions(specificTransformFunction) {
 }
 
 export function pruneReadOnlyProps(originalObj, readOnlyProps) {
-  let prunedObject = _.cloneDeep(originalObj);
   _.forEach(readOnlyProps, (readonlyProp) => {
     if (_.has(originalObj, readonlyProp)) {
-      prunedObject = _.unset(originalObj, readonlyProp);
+      _.unset(originalObj, readonlyProp);
     }
   });
-  return prunedObject;
+  return originalObj;
 }
 
 export {
