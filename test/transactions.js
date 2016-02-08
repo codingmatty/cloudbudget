@@ -139,11 +139,12 @@ describe('Transactions', function () {
     });
     it('should not update readonly attributes', function (done) {
       const updatedProperties = {
+        payee: 'New Payee',
         user: new Types.ObjectId() // May be temporary, but for now don't allow.
       };
       httpClient('put', `transactions/${this.transaction.id}`, { jwtToken: this.user.token, body: updatedProperties }, 200, (err, res) => {
         if (err) return done(err);
-        assert.deepEqual(res.body.data, this.transaction);
+        assert.deepEqual(res.body.data, _.merge(this.transaction, { payee: 'New Payee' }));
         done();
       });
     });

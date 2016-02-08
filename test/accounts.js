@@ -142,12 +142,13 @@ describe('Accounts', function () {
     });
     it('should not update readonly attributes', function (done) {
       const updatedProperties = {
+        name: 'New Name',
         balance: 100,
         user: new Types.ObjectId() // May be temporary, but for now don't allow.
       };
       httpClient('put', `accounts/${this.account.id}`, { jwtToken: this.user.token, body: updatedProperties }, 200, (err, res) => {
         if (err) return done(err);
-        assert.deepEqual(res.body.data, this.account);
+        assert.deepEqual(res.body.data, _.merge(this.account, { name: 'New Name' }));
         done();
       });
     });

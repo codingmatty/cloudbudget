@@ -171,6 +171,7 @@ describe('Schedules', function () {
     });
     it('should not update readonly attributes', function (done) {
       const updatedProperties = {
+        frequency: 'daily',
         user: new Types.ObjectId(), // May be temporary, but for now don't allow.
         transaction: {
           user: new Types.ObjectId()
@@ -178,7 +179,7 @@ describe('Schedules', function () {
       };
       httpClient('put', `schedules/${this.schedule.id}`, { jwtToken: this.user.token, body: updatedProperties }, 200, (err, res) => {
         if (err) return done(err);
-        assert.deepEqual(res.body.data, this.schedule);
+        assert.deepEqual(res.body.data, _.merge(this.schedule, { frequency: 'daily' }));
         done();
       });
     });
