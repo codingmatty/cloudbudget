@@ -13,7 +13,10 @@ api.use(passport.authenticate(['jwt', 'bearer'], { session: false }));
 api.put('/', (req, res) => {
   const query = buildQuery(Account, req);
   query.user = req.user.id;
-  Account.find(query, (findErr, accounts) => {
+  const limit = req.query.limit;
+  const skip = req.query.skip;
+  const sort = req.query.sort;
+  Account.find(query).sort(sort).skip(skip).limit(limit).then((findErr, accounts) => {
     if (findErr) { return handleError(findErr, res, 'update', 'Accounts'); }
     const updatedAccounts = accounts.map((account) => _.merge(account, Account.pruneReadOnlyProps(req.body)));
     async.map(updatedAccounts, (account, callback) => {

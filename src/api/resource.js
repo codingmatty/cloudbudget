@@ -12,7 +12,10 @@ export function listMethod(api, model, shouldAuthenticate, callback) {
     if (shouldAuthenticate) {
       query.user = req.user.id;
     }
-    Model.find(query).populate(getInclusions(req)).exec((err, docs) => {
+    const limit = req.query.limit;
+    const skip = req.query.skip;
+    const sort = req.query.sort;
+    Model.find(query).sort(sort).skip(skip).limit(limit).populate(getInclusions(req)).exec((err, docs) => {
       if (err) { return handleError(err, res, 'list', Model.modelName); }
       async.map(docs, (doc, next) => {
         if (doc.normalize) {

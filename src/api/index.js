@@ -1,6 +1,8 @@
 import _ from 'lodash';
+import moment from 'moment';
 import inflection from 'inflection';
 import { Router } from 'express';
+import { Types } from 'mongoose';
 import users from './users';
 import oauth2 from './oauth2';
 import accounts from './accounts';
@@ -80,7 +82,48 @@ function traverseSchema(schema, reqQuery, query, superPath) {
 
 export function buildQuery(Model, req) {
   const query = {};
+  // query based on given properties that match schema props
   traverseSchema(Model.schema, req.query, query);
+  // now add range query options
+  if (req.query.before_id || req.query.end) {
+    let beforeId;
+    let endId;
+    if (req.query.before_id && Types.ObjectId.isValid(req.query.before_id)) {
+      beforeId = new Types.ObjectId(req.query.before_id);
+    }
+    if (req.query.end) {
+      if (moment(req.query.end).isValid()) {
+        endId = Types.ObjectId.createFromTime(moment(req.query.end).format('X'));
+      } else if (Types.ObjectId.isValid(req.query.end)) {
+        endId = new Types.ObjectId(req.query.end);
+      }
+    }
+    if (beforeId && (!endId || moment(beforeId.getTimestamp()) < moment(endId.getTimestamp()))) {
+      _.set(query, '_id.$lt', beforeId);
+    } else if (endId) {
+      _.set(query, '_id.$lte', endId);
+    }
+  }
+  if (req.query.after_id || req.query.start) {
+    let afterId;
+    let startId;
+    if (req.query.after_id && Types.ObjectId.isValid(req.query.after_id)) {
+      afterId = new Types.ObjectId(req.query.after_id);
+    }
+    if (req.query.start) {
+      if (moment(req.query.start).isValid()) {
+        startId = Types.ObjectId.createFromTime(moment(req.query.start).format('X'));
+      } else if (Types.ObjectId.isValid(req.query.start)) {
+        startId = new Types.ObjectId(req.query.start);
+      }
+    }
+    if (afterId && (!startId || moment(afterId.getTimestamp()) > moment(startId.getTimestamp()))) {
+      _.set(query, '_id.$gt', afterId);
+    } else if (startId) {
+      _.set(query, '_id.$gte', startId);
+    }
+  }
+  // now add id query options, which is higher precedence than range queries, so may overwrite the range queres
   if (req.query.id) {
     if (Array.isArray(req.query.id)) {
       query._id = { $in: req.query.id };

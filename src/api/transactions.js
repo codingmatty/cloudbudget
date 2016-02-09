@@ -12,7 +12,10 @@ api.use(passport.authenticate(['jwt', 'bearer'], { session: false }));
 api.put('/', (req, res) => {
   const query = buildQuery(Transaction, req);
   query.user = req.user.id;
-  Transaction.find(query, (findErr, transactions) => {
+  const limit = req.query.limit;
+  const skip = req.query.skip;
+  const sort = req.query.sort;
+  Transaction.find(query).sort(sort).skip(skip).limit(limit).then((findErr, transactions) => {
     if (findErr) { return handleError(findErr, res, 'update', 'Transactions'); }
     const updatedTransactions = transactions.map((transaction) => _.merge(transaction, Transaction.pruneReadOnlyProps(req.body)));
     async.map(updatedTransactions, (transaction, callback) => {
@@ -30,7 +33,10 @@ api.put('/', (req, res) => {
 api.delete('/', (req, res) => {
   const query = buildQuery(Transaction, req);
   query.user = req.user.id;
-  Transaction.find(query, (findErr, transactions) => {
+  const limit = req.query.limit;
+  const skip = req.query.skip;
+  const sort = req.query.sort;
+  Transaction.find(query).sort(sort).skip(skip).limit(limit).then((findErr, transactions) => {
     if (findErr) { return handleError(findErr, res, 'delete', 'Transactions'); }
     async.map(transactions, (transaction, callback) => {
       transaction.remove(callback);
