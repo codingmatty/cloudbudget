@@ -1,6 +1,7 @@
 import _ from 'lodash';
+import Vue from 'config';
 import store from 'config/store';
-import vueboot from 'vueboot';
+import vuestrapBase from 'vuestrap-base-components';
 
 import accountFormModalTemplate from './account-form-modal.html';
 
@@ -17,16 +18,17 @@ const {
   }
 } = store;
 
-export default {
+Vue.component('account-form-modal', {
   template: accountFormModalTemplate,
   components: {
-    modal: vueboot.modal
+    vsModal: vuestrapBase.modal
   },
   data() {
     return {
       account: {
         id: 0,
-        budget: false
+        budget: false,
+        type: 'default'
       }
     };
   },
@@ -45,10 +47,11 @@ export default {
       } else {
         this.account = {
           id: 0,
-          budget: false
+          budget: false,
+          type: 'default'
         };
       }
-      this.$refs.modal.showModal();
+      this.$refs.modal.show();
     },
     deleteAccount(account) {
       if (confirm(`Are you sure you would like to delete account ${account.name}?\nAll transactions assoicated with account will be deleted.`)) {
@@ -62,7 +65,7 @@ export default {
     },
     closeModal() {
       resetAccountsErrors(this.account.id);
-      this.$refs.modal.hideModal();
+      this.$refs.modal.hide();
     },
     saveAccount(account) {
       const completeSave = (data) => {
@@ -77,4 +80,4 @@ export default {
       }
     }
   }
-};
+});

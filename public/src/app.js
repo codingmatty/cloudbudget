@@ -8,16 +8,6 @@ const App = {
   template: appTemplate,
   components: {
     navbar
-  },
-  data() {
-    return {
-      modalComponent: 'modal'
-    };
-  },
-  methods: {
-    setModalComponent(modalComponent) {
-      this.modalComponent = modalComponent;
-    }
   }
 };
 

@@ -13,6 +13,11 @@ const router = new VueRouter({
 });
 
 router.map({
+  '/': {
+    name: 'dashboard',
+    component: components.dashboard,
+    auth: true
+  },
   '/login': {
     name: 'login',
     component: components.login,
@@ -45,10 +50,10 @@ router.map({
 
 router.beforeEach(({ to, next, redirect }) => {
   const verifyAuthentication = () => {
-    if (to.auth && !userState.user) {
+    if ((!to.fullPath || to.auth) && !userState.user) {
       redirect('/login');
-    } else if ((!to.fullPath || to.fullPath === '/' || to.fullPath === '/login') && userState.user) {
-      redirect('/accounts'); // this should be some home route
+    } else if ((!to.fullPath || to.fullPath === '/login') && userState.user) {
+      redirect('/');
     } else {
       next();
     }

@@ -1,0 +1,41 @@
+<div id="dashboard">
+  <div id="accounts-list">
+    <div class="title">
+      <h3>Accounts</h3>
+      <button class="add-account" @click="newAccount()">+</button>
+    </div>
+    <ul class="groups-list">
+      <li class="group">
+        <a v-link="{ path: '/accounts', exact: true }">
+          <span class="group-title">All Accounts</span>
+          <span class="balance" :class="{ 'negative': totalBalance < 0 }">{{totalBalance | cbCurrency}}</span>
+        </a>
+      </li>
+      <li class="group" v-for="group in groups">
+        <a v-link="{ path: '/accounts/' + group.id }">
+          <span class="group-title">{{group.name}} <i class="edit fa fa-pencil" @click.prevent="editGroup(group)"></i></span>
+          <span class="balance" :class="{ 'negative': group.balance < 0 }">{{group.balance | cbCurrency}}</span>
+        </a>
+        <ul class="accounts">
+          <li class="account">
+            <a v-for="account in group.accounts" v-link="{ path: '/accounts/' + account.id }">
+              <span class="name">{{account.name}} <i class="edit fa fa-pencil" @click.prevent="editAccount(account)"></i></span>
+              <span class="balance" :class="{ 'negative': account.balance < 0 }">{{account.balance | cbCurrency}}</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+  <div id="account-details" v-if="showAccountDetails">
+    <div id="account-chart">
+      <transactions-chart :account-id="transactionAccountId" :balance="transactionBalance"></transactions-chart>
+    </div>
+    <div id="account-transactions">
+      <transactions-table include-form :account-id="transactionAccountId" :balance="transactionBalance"></transactions-table>
+    </div>
+  </div>
+</div>
+
+<account-form-modal v-ref:account-form-modal></account-form-modal>
+<account-group-form-modal v-ref:group-form-modal></account-group-form-modal>

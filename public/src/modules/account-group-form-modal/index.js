@@ -1,6 +1,7 @@
 import _ from 'lodash';
+import Vue from 'config';
 import store from 'config/store';
-import vueboot from 'vueboot';
+import vuestrapBase from 'vuestrap-base-components';
 
 import accountGroupFormModalTemplate from './account-group-form-modal.html';
 
@@ -14,10 +15,10 @@ const {
   }
 } = store;
 
-export default {
+Vue.component('account-group-form-modal', {
   template: accountGroupFormModalTemplate,
   components: {
-    modal: vueboot.modal
+    vsModal: vuestrapBase.modal
   },
   data() {
     return {
@@ -33,12 +34,12 @@ export default {
     showModal(group) {
       if (group) {
         this.group = _.cloneDeep(group);
-        this.$refs.modal.showModal();
+        this.$refs.modal.show();
       }
     },
     closeModal() {
       this.group.accounts.forEach(account => resetAccountsErrors(account.id));
-      this.$refs.modal.hideModal();
+      this.$refs.modal.hide();
     },
     saveGroup(group) {
       updateAccounts(_.map(group.accounts, 'id'), { group: group.name }).then((data) => {
@@ -49,4 +50,4 @@ export default {
       });
     }
   }
-};
+});

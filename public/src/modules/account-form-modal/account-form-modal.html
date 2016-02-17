@@ -1,12 +1,12 @@
-<modal v-ref:modal>
-  <div class="modal-header" slot="header">
+<vs-modal v-ref:modal>
+  <div slot="modal-header">
     <h4 class="modal-title">
       <span v-if="account.id">Edit</span>
       <span v-else>New</span>
       Account
     </h4>
   </div>
-  <div class="modal-body" slot="body">
+  <div slot="modal-body">
     <div class="form-group row" :class="{ 'has-danger': errors.name }">
       <label for="name-input" class="form-control-label col-sm-2 text-xs-right">Name</label>
       <div class="col-sm-10">
@@ -26,7 +26,7 @@
       <label for="type-input" class="form-control-label col-sm-2 text-xs-right">Type</label>
       <div class="col-sm-10">
         <select class="form-control c-select" id="type-input" v-model="account.type">
-          <option selected>Please Select a Type...</option>
+          <option value="default" disabled>Please Select a Type...</option>
           <option value="savings">Savings</option>
           <option value="checking">Checking</option>
           <option value="credit_card">Credit Card</option>
@@ -50,9 +50,9 @@
       </div>
     </div>
   </div>
-  <div class="modal-footer" slot="footer">
+  <div slot="modal-footer">
     <button type="button" class="btn btn-danger" @click="deleteAccount(account)" v-if="account.id">Delete</button>
     <button type="button" class="btn btn-secondary" @click="closeModal()">Close</button>
     <button type="button" class="btn btn-primary" @click="saveAccount(account)">Save</button>
   </div>
-</modal>
+</vs-modal>

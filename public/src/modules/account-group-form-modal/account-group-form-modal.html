@@ -1,10 +1,10 @@
-<modal v-ref:modal>
-  <div class="modal-header" slot="header">
+<vs-modal v-ref:modal>
+  <div slot="modal-header">
     <h4 class="modal-title">
       Edit Account Group
     </h4>
   </div>
-  <div class="modal-body" slot="body">
+  <div slot="modal-body">
     <div class="form-group row" :class="{ 'has-danger': errors.group }">
       <label for="group-input" class="form-control-label col-sm-2 text-xs-right">Group</label>
       <div class="col-sm-10">
@@ -13,8 +13,8 @@
       </div>
     </div>
   </div>
-  <div class="modal-footer" slot="footer">
+  <div slot="modal-footer">
     <button type="button" class="btn btn-secondary" @click="closeModal()">Close</button>
     <button type="button" class="btn btn-primary" @click="saveGroup(group)">Save changes</button>
   </div>
-</modal>
+</vs-modal>

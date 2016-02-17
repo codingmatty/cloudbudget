@@ -30,7 +30,7 @@ export default {
         username,
         password
       ).then(() => {
-        this.$router.go('/accounts');
+        this.$router.go({ name: 'dashboard' });
       });
     }
   }

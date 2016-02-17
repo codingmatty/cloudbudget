@@ -24,6 +24,7 @@
     "eslint-friendly-formatter": "^1.2.2",
     "eslint-loader": "^1.2.0",
     "function-bind": "^1.0.2",
+    "gritcode-components": "^0.4.7",
     "html-loader": "^0.4.0",
     "jasmine-core": "^2.4.1",
     "jquery": "^2.2.0",
@@ -45,7 +46,7 @@
     "vue": "^1.0.0",
     "vue-resource": "^0.6.1",
     "vue-router": "^0.7.8",
-    "vueboot": "^0.3.0",
+    "vuestrap-base-components": "^0.8.3",
     "vuex": "^0.2.0",
     "webpack": "^1.12.2"
   }
