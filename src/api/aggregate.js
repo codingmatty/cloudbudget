@@ -14,8 +14,13 @@ api.get('/tags', (req, res) => {
   const query = buildQuery(Transaction, req);
   query.user = req.user.id;
   Transaction.find(query).select('tags').then((transactions) => {
-    let tags = _.chain(transactions).map('tags').flatten().uniq().compact().value();
-    tags = tags.concat(['Plan: Income', 'Plan: Bill', 'Plan: Regular']);
+    const tags = _.chain(transactions)
+      .map('tags')
+      .flatten()
+      .concat('Plan: Income', 'Plan: Bill', 'Plan: Regular')
+      .uniq()
+      .compact()
+      .value();
     tags.sort(compareStrings);
     res.status(200).send({
       data: tags

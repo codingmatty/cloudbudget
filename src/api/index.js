@@ -8,6 +8,7 @@ import oauth2 from './oauth2';
 import accounts from './accounts';
 import transactions from './transactions';
 import schedules from './schedules';
+import plan from './plan';
 import aggregate from './aggregate';
 
 const api = new Router();
@@ -24,6 +25,7 @@ api.use('/oauth2', oauth2);
 api.use('/accounts', accounts);
 api.use('/transactions', transactions);
 api.use('/schedules', schedules);
+api.use('/plan', plan);
 api.use('/aggregate', aggregate);
 
 api.use((req, res) => {

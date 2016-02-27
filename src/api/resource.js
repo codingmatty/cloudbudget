@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import async from 'async';
 import passport from 'passport';
+import { Schema } from 'mongoose';
 import { Router } from 'express';
 import * as db from '../db';
 import { handleError, getInclusions, buildQuery } from './index';
@@ -76,7 +77,14 @@ export function updateMethod(api, model, shouldAuthenticate, callback) {
     }
     Model.findOne(query, (findErr, doc) => {
       if (findErr) { return handleError(findErr, res, 'update', Model.modelName); }
-      const updatedDoc = _.merge(doc, Model.pruneReadOnlyProps(req.body));
+      const updateObj = Model.pruneReadOnlyProps(req.body);
+      Model.schema.eachPath((path, schemaObj) => {
+        if (schemaObj instanceof Schema.Types.Array && _.has(updateObj, path)) {
+          _.get(doc, path).addToSet(_.get(updateObj, path));
+          _.unset(updateObj, path);
+        }
+      });
+      const updatedDoc = _.merge(doc, updateObj);
       updatedDoc.save((saveErr, savedDoc) => {
         if (saveErr) { return handleError(saveErr, res, 'update', Model.modelName); }
         if (savedDoc.normalize) {
@@ -110,7 +118,7 @@ export function deleteMethod(api, model, shouldAuthenticate, callback) {
   });
 }
 
-export default function (model, shouldAuthenticate, actions = ['list', 'create', 'show', 'update', 'delete']) {
+export default function (model, shouldAuthenticate = true, actions = ['list', 'create', 'show', 'update', 'delete']) {
   const api = new Router();
 
   if (shouldAuthenticate) {

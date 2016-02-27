@@ -50,6 +50,6 @@ api.delete('/', (req, res) => {
   });
 });
 
-api.use('/', resource('Transaction', true));
+api.use('/', resource('Transaction'));
 
 export default api;

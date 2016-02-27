@@ -6,6 +6,7 @@ import Account from './account';
 import AccessToken from './accessToken';
 import Transaction from './transaction';
 import Schedule from './schedule';
+import Plan from './plan';
 import config from '../../config.json';
 
 const db = mongoose.connect(config[process.env.NODE_ENV].db);
@@ -47,5 +48,6 @@ export {
   AccessToken,
   Account,
   Transaction,
-  Schedule
+  Schedule,
+  Plan
 };

@@ -9,7 +9,13 @@ const schema = new Schema({
   type: { type: String, enum: ['savings', 'checking', 'credit_card', 'loan', 'asset', 'investment'], required: true },
   budget: { type: Boolean, required: true },
   notes: String,
-  user: { type: Schema.Types.ObjectId, ref: 'User', required: true }
+  user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+  meta: {
+    index: Number,
+    group: {
+      index: Number
+    }
+  }
 }, {
   toJSON: defaultJSONOptions()
 });

@@ -40,6 +40,6 @@ api.put('/', (req, res) => {
   });
 });
 
-api.use('/', resource('Account', true, ['list', 'create', 'show', 'update', 'delete']));
+api.use('/', resource('Account'));
 
 export default api;
