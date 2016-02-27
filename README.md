@@ -11,10 +11,10 @@ I already need to go back to the drawing board to create a better user experienc
 ### Develop:
 * Dependencies
 
-* NodeJS
-* npm
-* bower
-* mongo
+ * NodeJS
+ * npm
+ * bower
+ * mongo
 
 * Setup
 
