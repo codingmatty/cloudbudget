@@ -8,6 +8,20 @@ I already need to go back to the drawing board to create a better user experienc
 
 ## Notes: 
 
+### Develop:
+* Dependencies
+
+* NodeJS
+* npm
+* bower
+* mongo
+
+* Setup
+
+I still need to work on making this easier to setup for people who wanted to tinker with it, but the following screenshot is the current UI. You can create an account, and transaction, and the graph helps you visualize the change in balance over time:
+
+![ScreenShot](ScreenShot.png)
+
 ### Deploy:
 
 * Checkout `master` and make sure `develop` is merged into `master`.
