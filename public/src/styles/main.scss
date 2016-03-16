@@ -2,8 +2,8 @@
 @import 'abstracts/mixins';
 @import 'abstracts/variables';
 
-@import 'vendors/bootstrap/bootstrap';
-@import 'vendors/c3/main';
+@import '~bootstrap/scss/bootstrap';
+@import '~c3/src/scss/main';
 
 @import 'base/base';
 @import 'base/reset';
