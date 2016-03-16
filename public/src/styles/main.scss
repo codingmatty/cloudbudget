@@ -16,10 +16,11 @@
 @import 'layout/navigation';
 @import 'layout/sidebar';
 
-@import 'components/account-form-modal';
-@import 'components/buttons';
-@import 'components/transactions-chart';
-@import 'components/transactions-table';
+@import 'components/micro/buttons';
+
+@import 'components/macro/account-form-modal';
+@import 'components/macro/transactions-chart';
+@import 'components/macro/transactions-table';
 
 @import 'pages/404';
 @import 'pages/accounts';
