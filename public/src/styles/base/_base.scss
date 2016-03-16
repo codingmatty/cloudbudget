@@ -1,0 +1,27 @@
+html {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  body {
+    overflow: hidden;
+    font-family: Helvetica, sans-serif;
+    #app {
+      height: 100%;
+      width: 100%;
+
+      .content {
+        @extend .container-fluid;
+        position: absolute;
+        top: 54px;
+        height: calc(100% - 54px);
+        width: 100%;
+      }
+    }
+  }
+}
+
+.ui-autocomplete {
+  z-index: 10000;
+}
+
+

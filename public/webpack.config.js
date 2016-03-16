@@ -3,7 +3,7 @@ var path = require('path');
 module.exports = {
   entry: {
     app: "./src/app.js",
-    styles: "./src/main.scss"
+    styles: "./src/styles/main.scss"
   },
   output: {
     path: path.resolve(__dirname, './dist/static'),
@@ -14,7 +14,7 @@ module.exports = {
     alias: {
       'config': path.resolve(__dirname, './src/config'),
       'components': path.resolve(__dirname, './src/components'),
-      'modules': path.resolve(__dirname, './src/modules')
+      'pages': path.resolve(__dirname, './src/pages')
     }
   },
   module: {

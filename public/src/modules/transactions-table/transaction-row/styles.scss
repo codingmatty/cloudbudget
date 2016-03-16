@@ -1,9 +1,0 @@
-.transaction-row {
-  td {
-    @extend .text-xs-center;
-    padding: 0.25rem;
-    &.column.selected {
-      padding: 0.25rem 0.75rem;
-    }
-  }
-}

@@ -1,14 +1,10 @@
 import 'config';
-import './modules';
+import 'components';
 import router from 'config/router';
-import { navbar } from 'components';
 import appTemplate from './App.html';
 
 const App = {
-  template: appTemplate,
-  components: {
-    navbar
-  }
+  template: appTemplate
 };
 
 router.start(App, 'app');

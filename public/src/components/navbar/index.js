@@ -1,3 +1,4 @@
+import Vue from 'config';
 import store from 'config/store';
 import navbarTemplate from './navbar.html';
 
@@ -10,7 +11,7 @@ const {
   }
 } = store;
 
-export default {
+Vue.component('navbar', {
   template: navbarTemplate,
   computed: {
     user() {
@@ -24,4 +25,4 @@ export default {
       });
     }
   }
-};
+});
